@@ -46,3 +46,14 @@ export const FEED_PHOTO_NATIVE = gql`
     }
     ${PHOTO_FRAGMENT_NATIVE}
 `
+
+export const ROOM_FRAGMENT_NATIVE = gql`
+    fragment RoomParts on Room {
+      id
+      unreadTotal
+      users {
+        username
+        avatar
+      }
+    }
+`

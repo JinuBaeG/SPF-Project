@@ -1,16 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import { ReactNativeFile } from "apollo-upload-client";
 import React, { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { ActivityIndicator, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { colors } from "../color";
 import DissmissKeyboard from "../components/DismissKeyboard";
 import { FEED_PHOTO_NATIVE } from "../fragments";
-
-interface IUploadProps {
-  caption: string;
-}
 
 const UPLOAD_PHOTO_MUTATION = gql`
   mutation uploadPhoto($file: Upload!, $caption: String) {
@@ -51,18 +47,25 @@ export default function UploadForm({ route, navigation }: any) {
     const {
       data: { uploadPhoto },
     } = result;
+
     if (uploadPhoto.id) {
       cache.modify({
         id: "ROOT_QUERY",
-        fileds: {
+        fields: {
           seeFeed(prev: any) {
             return [uploadPhoto, ...prev];
           },
         },
       });
+      navigation.navigate("Tabs");
     }
   };
-  const [uploadPhotoMutation, { loading }] = useMutation(UPLOAD_PHOTO_MUTATION);
+  const [uploadPhotoMutation, { loading }] = useMutation(
+    UPLOAD_PHOTO_MUTATION,
+    {
+      update: updateUploadPhoto,
+    }
+  );
   const HeaderRight = () => {
     return (
       <TouchableOpacity onPress={handleSubmit(onValid)}>
@@ -83,7 +86,7 @@ export default function UploadForm({ route, navigation }: any) {
       ...(loading && { headerLeft: () => null }),
     });
   }, []);
-  const onValid: SubmitHandler<IUploadProps> = ({ caption }) => {
+  const onValid = ({ caption }: any) => {
     const file = new ReactNativeFile({
       uri: route.params.file,
       name: `1.jpg`,
@@ -106,7 +109,7 @@ export default function UploadForm({ route, navigation }: any) {
             placeholder="Write..."
             placeholderTextColor="rgba(0,0,0,0.5)"
             onSubmitEditing={handleSubmit(onValid)}
-            onChangeText={(text: string) => setValue("cation", text)}
+            onChangeText={(text: string) => setValue("caption", text)}
           />
         </CaptionContainer>
       </Container>

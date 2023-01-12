@@ -7,4 +7,6 @@ export type RootStackParamList = {
   Photo: undefined;
   Likes: { photoId: number };
   Comments: undefined;
+  Rooms: undefined;
+  Room: { id: number; talkingTo: string };
 };

@@ -43,7 +43,7 @@ const HeaderRightText = styled.Text`
 
 export default function SelectPhoto({ navigation }: any) {
   const [ok, setOk] = useState(false);
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState<MediaLibrary.Asset[]>([]);
   const [chosenPhoto, setChosenPhoto] = useState("");
   const getPhotos = async () => {
     if (ok) {

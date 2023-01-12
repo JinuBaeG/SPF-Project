@@ -166,7 +166,7 @@ export default function PhotoComp({
         resizeMode="cover"
         style={{
           width,
-          height: Platform.OS === "ios" ? imageHeight / 3 : imageHeight,
+          height: imageHeight,
         }}
         source={{ uri: file }}
       />
