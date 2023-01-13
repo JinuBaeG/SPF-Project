@@ -3,7 +3,7 @@ import React from "react";
 import { ROOM_FRAGMENT_NATIVE } from "../fragments";
 import ScreenLayout from "../components/ScreenLayout";
 import { FlatList, View } from "react-native";
-import RoomComp from "../components/rooms/RoomComp";
+import RoomListComp from "../components/rooms/RoomListComp";
 
 const SEE_ROOMS_QUERY = gql`
   query seeRooms {
@@ -17,8 +17,9 @@ const SEE_ROOMS_QUERY = gql`
 export default function RoomList() {
   const { data, loading } = useQuery(SEE_ROOMS_QUERY);
   const renderItem = ({ item: room }: any) => {
-    return <RoomComp {...room} />;
+    return <RoomListComp {...room} />;
   };
+
   return (
     <ScreenLayout loading={loading}>
       <FlatList

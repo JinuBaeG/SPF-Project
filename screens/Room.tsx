@@ -7,6 +7,7 @@ import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { useForm } from "react-hook-form";
 import useMe from "../hooks/useMe";
 import { Ionicons } from "@expo/vector-icons";
+import { cache } from "../apollo";
 
 const ROOM_UPDATES = gql`
   subscription roomUpdates($id: Int!) {
@@ -154,6 +155,7 @@ export default function Room({ route, navigation }: any) {
   });
 
   const client = useApolloClient();
+
   const updateQuery = (prevQuery: any, options: any) => {
     const {
       subscriptionData: {

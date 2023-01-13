@@ -4,12 +4,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ActivityIndicator, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+import client from "../apollo";
 import { colors } from "../color";
 import DissmissKeyboard from "../components/DismissKeyboard";
 import { FEED_PHOTO_NATIVE } from "../fragments";
 
 const UPLOAD_PHOTO_MUTATION = gql`
-  mutation uploadPhoto($file: Upload!, $caption: String) {
+  mutation uploadPhoto($file: Upload, $caption: String) {
     uploadPhoto(file: $file, caption: $caption) {
       ...FeedPhoto
     }
@@ -49,11 +50,21 @@ export default function UploadForm({ route, navigation }: any) {
     } = result;
 
     if (uploadPhoto.id) {
+      const newFeed = client.cache.writeFragment({
+        fragment: gql`
+          fragment newPhoto on Photo {
+            ...FeedPhotoNative
+          }
+          ${FEED_PHOTO_NATIVE}
+        `,
+        data: uploadPhoto,
+      });
+
       cache.modify({
-        id: "ROOT_QUERY",
+        id: `Photo:${uploadPhoto.id}`,
         fields: {
           seeFeed(prev: any) {
-            return [uploadPhoto, ...prev];
+            return [newFeed, ...prev];
           },
         },
       });

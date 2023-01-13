@@ -24,11 +24,11 @@ export const logUserOut = async () => {
 }
 
 const uploadHttpLink = createUploadLink({
-    uri: "https://easy-teeth-accept-14-36-162-26.loca.lt/graphql",
+    uri: "https://fifty-rice-end-14-36-162-26.loca.lt/graphql",
 });
 
 const wsLink = new WebSocketLink({
-    uri: "https://easy-teeth-accept-14-36-162-26.loca.lt/graphql",
+    uri: "https://fifty-rice-end-14-36-162-26.loca.lt/graphql",
     options: {
         connectionParams: () => ({
             token : tokenVar()

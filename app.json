@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "songym-native",
-    "slug": "songym-native",
+    "name": "playinus-react-native",
+    "slug": "playinus-react-native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
-      "bundleIdentifier": "com.funnyground.songymnative",
+      "bundleIdentifier": "com.funnyground.playinusreactnative",
       "buildNumber": "1.0.0",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos.",
@@ -28,7 +28,7 @@
       }
     },
     "android": {
-      "package": "com.funnyground.songymnative",
+      "package": "com.funnyground.playinusreactnative",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
