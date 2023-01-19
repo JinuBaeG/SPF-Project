@@ -27,12 +27,16 @@ interface IPhotoCompProps {
     username: string;
   };
   caption: string;
-  files: {
+  feedUpload: {
     map: any;
     id: number;
     fileUrl: string;
     length: number;
   };
+  feedCategoryList: {
+    id: number;
+    name: string;
+  }[];
   isLiked: boolean;
   likes: number;
   commentNumber: number;
@@ -109,11 +113,19 @@ const ActionText = styled.Text`
 `;
 const Caption = styled.View`
   flex-direction: row;
-  padding: 16px;
+  padding: 4px 16px 16px;
 `;
 const CaptionText = styled.Text`
   margin-left: 10px;
   color: ${(props) => props.theme.textColor};
+`;
+const Category = styled.View`
+  flex-direction: row;
+  padding: 16px 16px 4px;
+`;
+const CategoryText = styled.Text`
+  margin-left: 10px;
+  color: ${(props) => props.theme.greenActColor};
 `;
 const Likes = styled.Text`
   color: ${(props) => props.theme.grayInactColor};
@@ -145,7 +157,8 @@ export default function PhotoComp({
   id,
   user,
   caption,
-  files,
+  feedUpload,
+  feedCategoryList,
   isLiked,
   likes,
   commentNumber,
@@ -195,7 +208,6 @@ export default function PhotoComp({
     });
   };
   const isDark = useColorScheme() === "dark";
-
   return (
     <Container>
       <Header onPress={goToProfile}>
@@ -212,6 +224,9 @@ export default function PhotoComp({
       <TouchableOpacity
         onPress={() => navigation.navigate("PhotoDetail", { id: id })}
       >
+        <Category>
+          <CategoryText>{feedCategoryList[0].name}</CategoryText>
+        </Category>
         <Caption>
           <CaptionText>
             {caption !== null
@@ -222,7 +237,7 @@ export default function PhotoComp({
           </CaptionText>
         </Caption>
       </TouchableOpacity>
-      {files.length > 0 ? (
+      {feedUpload.length > 0 ? (
         <>
           <Swiper
             loop
@@ -242,14 +257,14 @@ export default function PhotoComp({
               bottom: 0,
             }}
           >
-            {files.map((file: any, index: any) => (
+            {feedUpload.map((file: any, index: any) => (
               <File
                 resizeMode="cover"
                 style={{
                   width,
                   height: imageHeight,
                 }}
-                source={{ uri: file.fileUrl }}
+                source={{ uri: file.imagePath }}
                 key={index}
               />
             ))}

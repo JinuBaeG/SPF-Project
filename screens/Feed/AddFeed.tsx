@@ -46,12 +46,10 @@ const UPLOAD_PHOTO_MUTATION = gql`
 `;
 
 const CATEGORYLIST_QUERY = gql`
-  query categoryList($offset: Int!) {
-    categoryList(offset: $offset) {
+  query seeFeedCategoryList {
+    seeFeedCategoryList {
       id
-      hashtag
-      totalPhotos
-      updatedAt
+      name
     }
   }
 `;
@@ -136,8 +134,8 @@ export default function AddFeed({ route, navigation }: any) {
   const [tagIndex, setTagIndex] = useState<number | string | undefined>(0);
   const getTagArray: ITagProps[] = [];
 
-  categoryData?.categoryList.map((item: any) =>
-    getTagArray.push(item?.hashtag)
+  categoryData?.seeFeedCategoryList.map((item: any) =>
+    getTagArray.push(item?.name)
   );
 
   // 사진 첨부 시작

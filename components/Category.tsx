@@ -3,13 +3,11 @@ import React from "react";
 import { FlatList, Text, View } from "react-native";
 import styled from "styled-components/native";
 
-const CATEGORYLIST_QUERY = gql`
-  query categoryList($offset: Int!) {
-    categoryList(offset: $offset) {
+const CATEGORY_QUERY = gql`
+  query seeCategory($offset: Int) {
+    seeCategory(offset: $offset) {
       id
-      hashtag
-      totalPhotos
-      updatedAt
+      name
     }
   }
 `;
@@ -38,15 +36,16 @@ const CategoryText = styled.Text`
 `;
 
 export default function Category() {
-  const { data, loading } = useQuery(CATEGORYLIST_QUERY, {
+  const { data, loading } = useQuery(CATEGORY_QUERY, {
     variables: {
       offset: 0,
     },
   });
+
   const renderCategory = ({ item: category }: any) => {
     return (
       <CategoryView>
-        <CategoryText>{category.hashtag}</CategoryText>
+        <CategoryText>{category.name}</CategoryText>
       </CategoryView>
     );
   };
@@ -57,7 +56,7 @@ export default function Category() {
       </CategoryView>
       <FlatList
         horizontal={true}
-        data={data?.categoryList}
+        data={data?.seeCategory}
         keyExtractor={(category: any) => "" + category.id}
         renderItem={renderCategory}
       />

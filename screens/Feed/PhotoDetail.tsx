@@ -102,14 +102,27 @@ const ActionText = styled.Text`
   color: ${(props) => props.theme.grayInactColor};
   margin-left: 4px;
 `;
+
 const Caption = styled.View`
   flex-direction: row;
-  padding: 16px;
+  padding: 4px 16px 16px;
 `;
+
 const CaptionText = styled.Text`
   margin-left: 10px;
   color: ${(props) => props.theme.textColor};
 `;
+
+const Category = styled.View`
+  flex-direction: row;
+  padding: 16px 16px 4px;
+`;
+
+const CategoryText = styled.Text`
+  margin-left: 10px;
+  color: ${(props) => props.theme.greenActColor};
+`;
+
 const Likes = styled.Text`
   color: ${(props) => props.theme.grayInactColor};
   margin: 8px 4px;
@@ -199,10 +212,13 @@ export default function Detail({ route }: any) {
         />
         <Username>{data?.seePhoto?.user.username}</Username>
       </Header>
+      <Category>
+        <CategoryText>{data?.seePhoto?.feedCategoryList[0].name}</CategoryText>
+      </Category>
       <Caption>
         <CaptionText>{data?.seePhoto?.caption}</CaptionText>
       </Caption>
-      {data?.seePhoto?.files.length > 0 ? (
+      {data?.seePhoto?.feedUpload.length > 0 ? (
         <>
           <Swiper
             loop
@@ -222,15 +238,15 @@ export default function Detail({ route }: any) {
               bottom: 0,
             }}
           >
-            {data?.seePhoto?.files.map((file: any, index: any) => (
+            {data?.seePhoto?.feedUpload.map((file: any, index: any) => (
               <File
                 resizeMode="cover"
                 style={{
                   width,
                   height: imageHeight,
                 }}
-                source={{ uri: file.fileUrl }}
-                key={index}
+                source={{ uri: file.imagePath }}
+                key={file.id}
               />
             ))}
           </Swiper>

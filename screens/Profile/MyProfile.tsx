@@ -24,6 +24,7 @@ export default function MyProfile({ navigation }: any) {
       <TouchableOpacity
         onPress={() => {
           cache.gc();
+          cache.evict({ id: `User:${data?.me?.username}` });
           logUserOut();
         }}
       >

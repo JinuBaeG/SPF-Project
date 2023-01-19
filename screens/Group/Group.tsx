@@ -45,7 +45,7 @@ const FilterContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
-  margin: 4px 0 1px;
+  margin: 1px 0 1px;
 `;
 
 const FilterTitle = styled.Text`
@@ -57,10 +57,12 @@ const FilterTitle = styled.Text`
 const FilterBtnContainer = styled.View``;
 
 const EmptyContainer = styled.View`
+  flex: 1;
   background-color: ${(props) => props.theme.mainBgColor};
   justify-content: center;
   align-items: center;
   height: 168px;
+  margin-bottom: 1px;
 `;
 
 const EmptyText = styled.Text`
@@ -74,6 +76,13 @@ const CreateGroupBtn = styled.TouchableOpacity`
   font-size: 16px;
   margin-top: 40px;
   border-radius: 8px;
+`;
+
+const CreateGroupText = styled.Text`
+  color: ${(props) => props.theme.whiteColor};
+  font-size: 20px;
+  font-weight: 600;
+  padding: 16px;
 `;
 
 export default function Group({ navigation }: any) {
@@ -113,6 +122,7 @@ export default function Group({ navigation }: any) {
   useEffect(() => {
     refresh();
     navigation.setOptions({
+      title: "그룹",
       headerRight: MessageButton,
     });
   }, []);
@@ -121,6 +131,34 @@ export default function Group({ navigation }: any) {
 
   return (
     <ScreenLayout loading={groupLoading}>
+      <>
+        <MyGroupHeader>
+          <MyGroupTitle>My그룹</MyGroupTitle>
+        </MyGroupHeader>
+        {myGroupData?.seeMyGroup?.length > 0 ? (
+          <Swiper
+            loop
+            horizontal
+            showsButtons={false}
+            showsPagination={false}
+            autoplay
+            autoplayTimeout={3.5}
+            containerStyle={{
+              width: "100%",
+              height: 168,
+              backgroundColor: isDark ? "#1e272e" : "#ffffff",
+            }}
+          >
+            {myGroupData?.seeMyGroup.map((group: any) => (
+              <Slide key={group.id} {...group} navigation={navigation} />
+            ))}
+          </Swiper>
+        ) : (
+          <EmptyContainer>
+            <EmptyText>동호회나 PT그룳에서 함께 즐겨보세요!</EmptyText>
+          </EmptyContainer>
+        )}
+      </>
       {groupData?.seeGroups?.length > 0 ? (
         <FlatList
           onEndReachedThreshold={0.5}
@@ -134,50 +172,29 @@ export default function Group({ navigation }: any) {
           onRefresh={refresh}
           refreshing={refreshing}
           ListHeaderComponent={
-            <>
-              <MyGroupHeader>
-                <MyGroupTitle>My그룹</MyGroupTitle>
-              </MyGroupHeader>
-              {myGroupData?.seeMyGroup?.length > 0 ? (
-                <Swiper
-                  loop
-                  horizontal
-                  showsButtons={false}
-                  showsPagination={false}
-                  autoplay
-                  autoplayTimeout={3.5}
-                  containerStyle={{
-                    width: "100%",
-                    height: 168,
-                    backgroundColor: isDark ? "#1e272e" : "#ffffff",
-                  }}
-                >
-                  {myGroupData?.seeMyGroup.map((group: any) => (
-                    <Slide key={group.id} {...group} navigation={navigation} />
-                  ))}
-                </Swiper>
-              ) : (
-                <EmptyContainer>
-                  <EmptyText>동호회나 PT그룳에서 함께 즐겨보세요!</EmptyText>
-                </EmptyContainer>
-              )}
-
-              <FilterContainer>
-                <FilterTitle>우리동네 그룹</FilterTitle>
-                <FilterBtnContainer></FilterBtnContainer>
-              </FilterContainer>
-            </>
+            <FilterContainer>
+              <FilterTitle>우리동네 그룹</FilterTitle>
+              <FilterBtnContainer></FilterBtnContainer>
+            </FilterContainer>
           }
           keyExtractor={(item) => item.id + ""}
           data={groupData?.seeGroups}
           renderItem={renderGroupList}
         />
       ) : (
-        <EmptyContainer>
-          <EmptyText>우리 지역에 아직 그룹이 없네요!</EmptyText>
-          <EmptyText>그룹을 만들어 사람들을 초대해보세요!</EmptyText>
-          <CreateGroupBtn>그룹만들기</CreateGroupBtn>
-        </EmptyContainer>
+        <>
+          <FilterContainer>
+            <FilterTitle>우리동네 그룹</FilterTitle>
+            <FilterBtnContainer></FilterBtnContainer>
+          </FilterContainer>
+          <EmptyContainer>
+            <EmptyText>우리 지역에 아직 그룹이 없네요!</EmptyText>
+            <EmptyText>그룹을 만들어 사람들을 초대해보세요!</EmptyText>
+            <CreateGroupBtn onPress={() => navigation.navigate("AddGroup")}>
+              <CreateGroupText>그룹만들기</CreateGroupText>
+            </CreateGroupBtn>
+          </EmptyContainer>
+        </>
       )}
     </ScreenLayout>
   );

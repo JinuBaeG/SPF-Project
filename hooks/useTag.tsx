@@ -1,17 +1,16 @@
-import { gql, useQuery, useReactiveVar } from "@apollo/client";
-import { TAG_FRAGMENT_NATIVE } from "../fragments";
+import { gql, useQuery } from "@apollo/client";
 
-const SEE_TAG_QUERY = gql`
+const SEETAG_QUERY = gql`
   query seeTag($offset: Int!) {
     seeTag(offset: $offset) {
-      ...TagFragmentNative
+      id
+      name
     }
   }
-  ${TAG_FRAGMENT_NATIVE}
 `;
 
 export default function useTag() {
-  const { data: tagList } = useQuery(SEE_TAG_QUERY, {
+  const { data: tagList } = useQuery(SEETAG_QUERY, {
     variables: {
       offset: 0,
     },
@@ -19,10 +18,10 @@ export default function useTag() {
 
   const tagData: any = [];
   if (tagList) {
-    tagList.seeTag.map((tag: any) => {
+    tagList?.seeTag.map((tag: any) => {
       tagData.push({
         id: tag.id,
-        tagname: tag.tagname,
+        name: tag.name,
         isUse: false,
         isCustom: false,
       });

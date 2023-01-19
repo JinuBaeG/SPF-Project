@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 
-const ScreenLayoutContiner = styled.View`
+const ScreenLayoutContiner = styled.SafeAreaView`
   flex: 1;
   background-color: ${(props) => props.theme.grayInactColor};
 `;

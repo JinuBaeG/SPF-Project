@@ -14,6 +14,7 @@ import GroupNav from "./GroupNav";
 import { Ionicons } from "@expo/vector-icons";
 import EditGroup from "../screens/Group/EditGroup";
 import ActiveArea from "../screens/ActiveArea";
+import AddGroup from "../screens/Group/AddGroup";
 
 interface IStackNavFactoryProps {
   screenName: string;
@@ -64,6 +65,7 @@ export default function StackNavFactroy({ screenName }: IStackNavFactoryProps) {
       <Stack.Screen name="GroupDetail" component={GroupNav} />
       <Stack.Screen name="JoinConfirm" component={JoinConfirm} />
       <Stack.Screen name="EditGroup" component={EditGroup} />
+      <Stack.Screen name="AddGroup" component={AddGroup} />
       <Stack.Screen name="ActiveArea" component={ActiveArea} />
     </Stack.Navigator>
   );

@@ -1,28 +1,28 @@
 import { gql, useQuery } from "@apollo/client";
-import { EVENT_FRAGMENT_NATIVE } from "../fragments";
 
-const SEE_EVENT_QUERY = gql`
-  query seeSportsEvent($offset: Int!) {
+const SEESPORTSEVENT_QUERY = gql`
+  query seeSportsEvent($offset: Int) {
     seeSportsEvent(offset: $offset) {
-      ...EventFragmentNative
+      id
+      name
     }
   }
-  ${EVENT_FRAGMENT_NATIVE}
 `;
 
 export default function useSportsEvent() {
-  const { data: eventList } = useQuery(SEE_EVENT_QUERY, {
+  const { data: eventList } = useQuery(SEESPORTSEVENT_QUERY, {
     variables: {
       offset: 0,
     },
   });
 
   const tagData: any = [];
-  if (eventList) {
+
+  if (eventList && eventList !== undefined && eventList !== null) {
     eventList.seeSportsEvent.map((event: any) => {
       tagData.push({
         id: event.id,
-        eventname: event.eventname,
+        name: event.name,
         isChecked: false,
       });
     });
