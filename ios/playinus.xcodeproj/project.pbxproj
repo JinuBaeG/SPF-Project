@@ -23,7 +23,7 @@
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* playinus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = playinus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* playinus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "playinus.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = playinusreactnative/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = playinusreactnative/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = playinusreactnative/Images.xcassets; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 				A93F070170C244A69846DFA6 /* noop-file.swift */,
 				6854E6B929DA7EA300CC552E /* SwiftBridge.swift */,
 			);
-			name = playinus;
+			name = "playinus";
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -209,7 +209,7 @@
 			);
 			dependencies = (
 			);
-			name = playinus;
+			name = "playinus";
 			productName = playinusreactnative;
 			productReference = 13B07F961A680F5B00A75B9A /* playinus.app */;
 			productType = "com.apple.product-type.application";
@@ -417,7 +417,7 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = playinusreactnative/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "playinus-react-native";
+				INFOPLIST_KEY_CFBundleDisplayName = "playinus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -427,8 +427,8 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.funnyground.playinus.reactnative;
-				PRODUCT_NAME = playinus;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.funnyground.playinus.reactnative";
+				PRODUCT_NAME = "playinus";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -450,7 +450,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = UE53L7WZ87;
 				INFOPLIST_FILE = playinusreactnative/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "playinus-react-native";
+				INFOPLIST_KEY_CFBundleDisplayName = "playinus";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -460,8 +460,8 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.funnyground.playinus.reactnative;
-				PRODUCT_NAME = playinus;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.funnyground.playinus.reactnative";
+				PRODUCT_NAME = "playinus";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -1,5 +1,5 @@
 {
-  "name": "playinus-react-native",
+  "name": "playinus",
   "version": "1.0.0",
   "scripts": {
     "start": "npx react-native start",
