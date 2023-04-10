@@ -1,6 +1,5 @@
 <resources>
-  <string name="app_name">playinus</string>
+  <string name="app_name">playinus-react-native</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
-  <string name="kakao_app_key">c04ec021f301f3eed44735b3c4c130e6</string>
 </resources>

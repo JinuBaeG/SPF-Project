@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.funnyground.playinus.reactnative.BuildConfig;
-import com.funnyground.playinus.reactnative.newarchitecture.components.MainComponentsRegistry;
-import com.funnyground.playinus.reactnative.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.funnyground.playinusreactnative.BuildConfig;
+import com.funnyground.playinusreactnative.newarchitecture.components.MainComponentsRegistry;
+import com.funnyground.playinusreactnative.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

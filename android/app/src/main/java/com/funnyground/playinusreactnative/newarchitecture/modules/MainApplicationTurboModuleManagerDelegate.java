@@ -1,4 +1,4 @@
-package com.funnyground.playinus.reactnative.newarchitecture.modules;
+package com.funnyground.playinusreactnative.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

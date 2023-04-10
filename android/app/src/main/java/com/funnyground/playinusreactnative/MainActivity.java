@@ -1,4 +1,4 @@
-package com.funnyground.playinus.reactnative;
+package com.funnyground.playinusreactnative;
 
 import android.os.Build;
 import android.os.Bundle;

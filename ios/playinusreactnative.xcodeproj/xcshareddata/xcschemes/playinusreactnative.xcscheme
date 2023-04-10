@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "playinus.app"
-               BlueprintName = "playinus"
-               ReferencedContainer = "container:playinus.xcodeproj">
+               BuildableName = "playinusreactnative.app"
+               BlueprintName = "playinusreactnative"
+               ReferencedContainer = "container:playinusreactnative.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "playinusreactnativeTests.xctest"
                BlueprintName = "playinusreactnativeTests"
-               ReferencedContainer = "container:playinus.xcodeproj">
+               ReferencedContainer = "container:playinusreactnative.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,14 +55,14 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "playinus.app"
-            BlueprintName = "playinus"
-            ReferencedContainer = "container:playinus.xcodeproj">
+            BuildableName = "playinusreactnative.app"
+            BlueprintName = "playinusreactnative"
+            ReferencedContainer = "container:playinusreactnative.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "playinus.app"
-            BlueprintName = "playinus"
-            ReferencedContainer = "container:playinus.xcodeproj">
+            BuildableName = "playinusreactnative.app"
+            BlueprintName = "playinusreactnative"
+            ReferencedContainer = "container:playinusreactnative.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -82,7 +82,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
