@@ -142,21 +142,7 @@ const GroupHeaderEditButtonText = styled.Text`
   color: ${(props) => props.theme.greenActColor};
 `;
 
-export default function GroupHeader({
-  id,
-  groupname,
-  photoUrl,
-  sportsEvent,
-  userCount,
-  maxMember,
-  activeArea,
-  discription,
-  isJoin,
-  isPresident,
-  isJoining,
-  navigation,
-  refresh,
-}: any) {
+export default function GroupHeader({ navigation, refresh, groupData }: any) {
   const updateJoinGroup = (cache: any, result: any) => {
     const {
       data: {
@@ -164,7 +150,7 @@ export default function GroupHeader({
       },
     } = result;
     if (ok) {
-      const joinId = `Group:${id}`;
+      const joinId = `Group:${groupData.id}`;
       cache.modify({
         id: joinId,
         fields: {
@@ -185,7 +171,7 @@ export default function GroupHeader({
   const onValid = async () => {
     joinGroupMutation({
       variables: {
-        id,
+        id: groupData.id,
       },
     });
   };
@@ -200,7 +186,7 @@ export default function GroupHeader({
   const onWithdraw = async () => {
     withdrawGroupMutation({
       variables: {
-        id,
+        id: groupData.id,
       },
     });
   };
@@ -208,47 +194,49 @@ export default function GroupHeader({
   return (
     <GroupHeaderContainer>
       <GroupHeaderWrap>
-        <GroupHeaderImage source={{ uri: photoUrl }} />
+        <GroupHeaderImage source={{ uri: groupData.imagePath?.imagePath }} />
       </GroupHeaderWrap>
       <GroupHeaderInfoContainer>
         <GroupHeaderInfoWrap>
           <GroupHeaderInfoTitleWrap>
-            <GroupHeaderTitle>{groupname}</GroupHeaderTitle>
-            <GroupHeaderEvent>{sportsEvent}</GroupHeaderEvent>
+            <GroupHeaderTitle>{groupData.name}</GroupHeaderTitle>
+            <GroupHeaderEvent>{groupData.sportsEvent}</GroupHeaderEvent>
             <GroupHeaderPoint />
             <GroupHeaderMember>
               <Ionicons name="people-outline" size={12} />
               <GroupHeaderUserCount>
-                {userCount} / {maxMember}
+                {groupData.userCount} / {groupData.maxMember}
               </GroupHeaderUserCount>
             </GroupHeaderMember>
           </GroupHeaderInfoTitleWrap>
-          <GroupHeaderActiveArea>{activeArea}</GroupHeaderActiveArea>
-          <GroupHeaderDisc>{discription}</GroupHeaderDisc>
+          <GroupHeaderActiveArea>{groupData.activeArea}</GroupHeaderActiveArea>
+          <GroupHeaderDisc>{groupData.discription}</GroupHeaderDisc>
           <GroupHeaderTagWrap></GroupHeaderTagWrap>
         </GroupHeaderInfoWrap>
         {loading ? (
           <GroupHeaderButton>
             <ActivityIndicator color="white" />
           </GroupHeaderButton>
-        ) : isPresident ? (
+        ) : groupData.isPresident ? (
           <GroupHeaderButtonWrap>
             <GroupHeaderEditButton
-              onPress={() => navigation.navigate("EditGroup", { id })}
+              onPress={() => navigation.push("EditGroup", { groupData })}
             >
               <GroupHeaderEditButtonText>정보수정</GroupHeaderEditButtonText>
             </GroupHeaderEditButton>
             <GroupHeaderButton
-              onPress={() => navigation.navigate("JoinConfirm", { id })}
+              onPress={() =>
+                navigation.push("JoinConfirm", { id: groupData.id })
+              }
             >
               <GroupHeaderButtonText>신청확인</GroupHeaderButtonText>
             </GroupHeaderButton>
           </GroupHeaderButtonWrap>
-        ) : isJoin ? (
+        ) : groupData.isJoin ? (
           <GroupHeaderButton onPress={handleSubmit(onWithdraw)}>
             <GroupHeaderButtonText>탈퇴하기</GroupHeaderButtonText>
           </GroupHeaderButton>
-        ) : isJoining ? (
+        ) : groupData.isJoining ? (
           <GroupHeaderButton onPress={handleSubmit(onValid)}>
             <GroupHeaderButtonText>가입취소</GroupHeaderButtonText>
           </GroupHeaderButton>

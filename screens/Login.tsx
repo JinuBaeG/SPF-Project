@@ -4,8 +4,12 @@ import { TextInput } from "../components/auth/AuthShared";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
 import { gql, useMutation } from "@apollo/client";
-import { logUserIn } from "../apollo";
+import { logUserIn, onPressGoogleBtn, signInWithKakao } from "../apollo";
 import { useColorScheme } from "react-native";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from "@react-native-google-signin/google-signin";
 
 const LOG_IN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
@@ -17,7 +21,7 @@ const LOG_IN_MUTATION = gql`
   }
 `;
 
-export default function Login({ route: { params } }: any) {
+export default function Login({ navigation, route: { params } }: any) {
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
       password: params?.password,
@@ -31,6 +35,7 @@ export default function Login({ route: { params } }: any) {
     } = data;
     if (ok) {
       await logUserIn(token);
+      navigation.navigate("Tabs");
     }
     if (error) {
       console.log(error);
@@ -57,6 +62,13 @@ export default function Login({ route: { params } }: any) {
     register("username", { required: true });
     register("password", { required: true });
   }, [register]);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "126129061327-f509efju0jqkqbd54ccldv2nqe9dg95k.apps.googleusercontent.com",
+    });
+  }, []);
 
   const isDark = useColorScheme() === "dark";
 
@@ -95,6 +107,12 @@ export default function Login({ route: { params } }: any) {
         loading={loading}
         onPress={handleSubmit(onValid)}
       />
+      <AuthButton
+        text={"Kakao Log In"}
+        loading={loading}
+        onPress={signInWithKakao}
+      />
+      <GoogleSigninButton onPress={() => onPressGoogleBtn()} />
     </AuthLayout>
   );
 }

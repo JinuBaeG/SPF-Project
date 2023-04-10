@@ -1,20 +1,32 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { Image, useColorScheme } from "react-native";
-import Comments from "../screens/Comments";
+import { useColorScheme } from "react-native";
+import Comments from "../screens/Feed/Comments";
 import Feed from "../screens/Feed/Feed";
 import Group from "../screens/Group/Group";
 import Home from "../screens/Home";
 import MyProfile from "../screens/Profile/MyProfile";
 import Photo from "../screens/Feed/Photo";
 import PhotoDetail from "../screens/Feed/PhotoDetail";
-import Tutor from "../screens/Tutor/Tutor";
-import JoinConfirm from "../screens/Group/JoinConfirm";
-import GroupNav from "./GroupNav";
-import { Ionicons } from "@expo/vector-icons";
-import EditGroup from "../screens/Group/EditGroup";
-import ActiveArea from "../screens/ActiveArea";
-import AddGroup from "../screens/Group/AddGroup";
+import GroupNav from "../screens/Group/GroupNav";
+import { TutorFacilityNav } from "./TutorFacilityNav";
+import TutorNav from "../screens/Tutor/TutorNav";
+import TutorInquiry from "../screens/Tutor/TutorInquiry";
+import TutorInquiryDetail from "../screens/Tutor/TutorInquiryDetail";
+import TutorInquiryResponse from "../screens/Tutor/TutorInquiryResponse";
+import AddBoard from "../screens/Board/AddBoard";
+import BoardList from "../screens/Board/BoardList";
+import BoardDetail from "../screens/Board/BoardDetail";
+import BoardReComments from "../screens/Board/BoardReComments";
+import AddNotice from "../screens/Notice/AddNotice";
+import NoticeList from "../screens/Notice/NoticeList";
+import NoticeDetail from "../screens/Notice/NoticeDetail";
+import NoticeReComments from "../screens/Notice/NoticeReComments";
+import ReComments from "../screens/Feed/ReComments";
+import AdminNoticeDetail from "../screens/Profile/AdminNoticeDetail";
+import AdminNotice from "../screens/Profile/AdminNotice";
+import AdminFaq from "../screens/Profile/AdminFaq";
+import AdminFaqDetail from "../screens/Profile/AdminFaqDetail";
 
 interface IStackNavFactoryProps {
   screenName: string;
@@ -24,6 +36,7 @@ const Stack = createStackNavigator();
 
 export default function StackNavFactroy({ screenName }: IStackNavFactoryProps) {
   const isDark = useColorScheme() === "dark";
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -46,7 +59,7 @@ export default function StackNavFactroy({ screenName }: IStackNavFactoryProps) {
         <Stack.Screen name={"TabGroup"} component={Group} />
       ) : null}
       {screenName === "Tutor" ? (
-        <Stack.Screen name={"TabTutor"} component={Tutor} />
+        <Stack.Screen name={"TabTutor"} component={TutorFacilityNav} />
       ) : null}
       {screenName === "MyProfile" ? (
         <Stack.Screen name={"My Profile"} component={MyProfile} />
@@ -62,11 +75,27 @@ export default function StackNavFactroy({ screenName }: IStackNavFactoryProps) {
       />
       <Stack.Screen name="PhotoDetail" component={PhotoDetail} />
       <Stack.Screen name="Comments" component={Comments} />
+      <Stack.Screen name="ReComments" component={ReComments} />
       <Stack.Screen name="GroupDetail" component={GroupNav} />
-      <Stack.Screen name="JoinConfirm" component={JoinConfirm} />
-      <Stack.Screen name="EditGroup" component={EditGroup} />
-      <Stack.Screen name="AddGroup" component={AddGroup} />
-      <Stack.Screen name="ActiveArea" component={ActiveArea} />
+      <Stack.Screen name="TutorDetail" component={TutorNav} />
+      <Stack.Screen name="SeeInquiry" component={TutorInquiry} />
+      <Stack.Screen name="TutorInquiryDetail" component={TutorInquiryDetail} />
+      <Stack.Screen
+        name="TutorInquiryResponse"
+        component={TutorInquiryResponse}
+      />
+      <Stack.Screen name="AddBoard" component={AddBoard} />
+      <Stack.Screen name="BoardList" component={BoardList} />
+      <Stack.Screen name="BoardDetail" component={BoardDetail} />
+      <Stack.Screen name="BoardReComments" component={BoardReComments} />
+      <Stack.Screen name="AddNotice" component={AddNotice} />
+      <Stack.Screen name="NoticeList" component={NoticeList} />
+      <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
+      <Stack.Screen name="NoticeReComments" component={NoticeReComments} />
+      <Stack.Screen name="AdminNotice" component={AdminNotice} />
+      <Stack.Screen name="AdminNoticeDetail" component={AdminNoticeDetail} />
+      <Stack.Screen name="AdminFaq" component={AdminFaq} />
+      <Stack.Screen name="AdminFaqDetail" component={AdminFaqDetail} />
     </Stack.Navigator>
   );
 }

@@ -8,7 +8,7 @@ export const PHOTO_FRAGMENT_NATIVE = gql`
       imagePath
     }
     likes
-    commentNumber
+    commentCount
     isLiked
     feedCategoryList {
       id
@@ -31,6 +31,23 @@ export const COMMENT_FRAGMENT_NATIVE = gql`
   }
 `;
 
+export const RECOMMENT_FRAGMENT_NATIVE = gql`
+  fragment ReCommentFragmentNative on ReComment {
+    id
+    comment {
+      id
+    }
+    user {
+      id
+      username
+      avatar
+    }
+    payload
+    isMine
+    createdAt
+  }
+`;
+
 export const USER_FRAGMENT_NATIVE = gql`
   fragment UserFragmentNative on User {
     id
@@ -40,6 +57,7 @@ export const USER_FRAGMENT_NATIVE = gql`
     isMe
   }
 `;
+
 export const FEED_PHOTO_NATIVE = gql`
   fragment FeedPhoto on Photo {
     ...PhotoFragmentNative
@@ -78,6 +96,13 @@ export const GROUP_FRAGMENT_NATIVE = gql`
   fragment GroupFragmentNative on Group {
     id
     name
+    sidoName
+    gusiName
+    dongEubMyunName
+    riName
+    roadName
+    buildingNumber
+    zipcode
     activeArea
     address
     addrRoad
@@ -85,7 +110,10 @@ export const GROUP_FRAGMENT_NATIVE = gql`
     areaLatitude
     areaLongitude
     sportsEvent
-    imagePath
+    groupImage {
+      id
+      imagePath
+    }
     discription
     users {
       id
@@ -114,8 +142,6 @@ export const GROUP_FRAGMENT_NATIVE = gql`
     groupTag {
       id
       name
-      isUse
-      isCustom
     }
     userCount
     maxMember
@@ -139,5 +165,219 @@ export const GROUP_FRAGMENT_NATIVE = gql`
         avatar
       }
     }
+  }
+`;
+
+export const TUTOR_FRAGMENT_NATIVE = gql`
+  fragment TutorFragmentNative on Tutor {
+    id
+    user {
+      id
+      username
+    }
+    name
+    discription
+    sidoName
+    gusiName
+    dongEubMyunName
+    riName
+    roadName
+    buildingNumber
+    zipcode
+    activeArea
+    address
+    addrRoad
+    addAddr
+    areaLatitude
+    areaLongitude
+    tutorImage {
+      id
+      imagePath
+    }
+    group {
+      id
+      name
+      sportsEvent
+      discription
+      maxMember
+      groupTag {
+        id
+        name
+        imagePath
+      }
+    }
+    facility {
+      id
+      name
+    }
+    tutorInfo {
+      id
+      discription
+      awardDate
+    }
+    tutorTag {
+      id
+      name
+      imagePath
+    }
+    tutorInquiry {
+      id
+      user {
+        id
+      }
+      tutor {
+        id
+      }
+      inquiryTitle
+      inquiryDiscription
+    }
+    tutorSportsEvent {
+      id
+      name
+    }
+    isTutor
+  }
+`;
+
+export const TUTOR_INQUIRY_FRAGMENT_NATIVE = gql`
+  fragment TutorInquiryFragmentNative on TutorInquiry {
+    id
+    user {
+      id
+    }
+    tutor {
+      id
+    }
+    tutorInquiryComment {
+      id
+      responseTitle
+      responseDiscription
+      answerOk
+      createdAt
+    }
+    inquiryTitle
+    inquiryDiscription
+    inquiryResponse
+    createdAt
+  }
+`;
+
+export const BOARD_FRAGMENT_NATIVE = gql`
+  fragment BoardFragmentNative on Board {
+    id
+    user {
+      id
+      username
+      avatar
+    }
+    group {
+      id
+    }
+    tutor {
+      id
+    }
+    title
+    discription
+    sortation
+    hits
+    createdAt
+    likes
+    boardCommentCount
+    isLiked
+  }
+`;
+
+export const BOARD_COMMENT_FRAGMENT_NATIVE = gql`
+  fragment BoardCommentFragmentNative on BoardComment {
+    id
+    board {
+      id
+    }
+    user {
+      id
+      username
+      avatar
+    }
+    payload
+    isMine
+    boardReCommentCount
+    createdAt
+  }
+`;
+
+export const BOARD_RECOMMENT_FRAGMENT_NATIVE = gql`
+  fragment BoardReCommentFragmentNative on BoardReComment {
+    id
+    boardComment {
+      id
+    }
+    user {
+      id
+      username
+      avatar
+    }
+    payload
+    isMine
+    createdAt
+  }
+`;
+
+export const NOTICE_FRAGMENT_NATIVE = gql`
+  fragment NoticeFragmentNative on Notice {
+    id
+    user {
+      id
+      username
+      avatar
+    }
+    group {
+      id
+    }
+    tutor {
+      id
+    }
+    title
+    discription
+    sortation
+    hits
+    createdAt
+    likes
+    noticeCommentCount
+    isLiked
+  }
+`;
+
+export const NOTICE_COMMENT_FRAGMENT_NATIVE = gql`
+  fragment NoticeCommentFragmentNative on NoticeComment {
+    id
+    notice {
+      id
+    }
+    user {
+      id
+      username
+      avatar
+    }
+    payload
+    isMine
+    noticeReCommentCount
+    createdAt
+  }
+`;
+
+export const NOTICE_RECOMMENT_FRAGMENT_NATIVE = gql`
+  fragment NoticeReCommentFragmentNative on NoticeReComment {
+    id
+    noticeComment {
+      id
+    }
+    user {
+      id
+      username
+      avatar
+    }
+    payload
+    isMine
+    createdAt
   }
 `;

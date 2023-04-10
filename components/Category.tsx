@@ -16,7 +16,7 @@ const CategoryContainer = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 8px 16px;
+  padding: 8px;
   width: 100%;
   background-color: ${(props) => props.theme.mainBgColor};
 `;

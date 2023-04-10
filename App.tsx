@@ -9,7 +9,12 @@ import { ApolloProvider, useReactiveVar } from "@apollo/client";
 import client, { cache, isLoggedInVar, logUserOut, tokenVar } from "./apollo";
 import LoggedInNav from "./navigators/LoggedInNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SafeAreaView, StatusBar, useColorScheme } from "react-native";
+import {
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
+} from "react-native";
 import { AsyncStorageWrapper, CachePersistor } from "apollo3-cache-persist";
 import { ThemeProvider } from "styled-components/native";
 import { darkTheme, lightTheme } from "./styles";
@@ -27,6 +32,7 @@ export default function App() {
       require("./assets/emptyAvatar.png"),
       "https://raw.githubusercontent.com/nomadcoders/instaclone-native/93a5b77e98eefdf5084bfae44653ba67e4ca312c/assets/logo.png",
     ];
+
     const imagePromises = imagesToLoad.map((image: any) =>
       Asset.loadAsync(image)
     );
@@ -66,7 +72,7 @@ export default function App() {
         <NavigationContainer>
           <SafeAreaView />
           <StatusBar />
-          {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
+          <LoggedInNav />
         </NavigationContainer>
       </ThemeProvider>
     </ApolloProvider>

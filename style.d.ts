@@ -7,7 +7,7 @@ declare module "styled-components/native" {
     mainBgColor: string;
     textColor: string;
     blackColor: string;
-    whiteColor: String;
+    whiteColor: string;
     grayColor: string;
     grayInactColor: string;
     grayLineColor: string;
@@ -15,5 +15,11 @@ declare module "styled-components/native" {
     greenInactColor: string;
     greenTextColor: string;
     baseMargin: string;
+    size4: string;
+    size8: string;
+    size12: string;
+    size16: string;
+    size20: string;
+    size24: string;
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 
@@ -23,11 +23,9 @@ const WriteButtonContainer = styled.TouchableOpacity`
 `;
 
 export default function SharedWriteButton() {
+  const route = useRoute();
   const navigation = useNavigation<UploadCompNavigationProps>();
-  const getName = navigation.getState().routes.map((item) => {
-    return item.name;
-  });
-  const screenName = getName[0].toString();
+  const screenName = route.name;
 
   const onPress = () => {
     if (screenName === "TabFeed") {
@@ -38,6 +36,8 @@ export default function SharedWriteButton() {
       return navigation.navigate("AddTutor", { screenName });
     } else if (screenName === "TabFacility") {
       return navigation.navigate("AddFacility", { screenName });
+    } else if (screenName === "BoardList") {
+      return navigation.navigate("AddBoard", { screenName });
     }
   };
 

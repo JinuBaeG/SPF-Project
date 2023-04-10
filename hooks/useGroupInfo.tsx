@@ -19,9 +19,8 @@ export default function useGroupInfo(id: number) {
 
   const groupInfoData: any = [];
   if (groupInfoList) {
-    groupInfoList?.seeGroupInfo?.map((info: any) => {
+    groupInfoList?.seeGroupInfo?.map((info: any, index: number) => {
       groupInfoData.push({
-        index: info.id,
         awardDate: info.awardDate,
         discription: info.discription,
       });

@@ -10,6 +10,8 @@ const ME_QUERY = gql`
       avatar
       totalFollowing
       totalFollowers
+      groupCount
+      tutorCount
     }
   }
 `;

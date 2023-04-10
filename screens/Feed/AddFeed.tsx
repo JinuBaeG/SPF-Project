@@ -111,6 +111,7 @@ const CaptionContainer = styled.View`
   height: 150px;
   margin-top: 16px;
 `;
+
 const Caption = styled.TextInput`
   background-color: ${(props) => props.theme.grayInactColor};
   color: black;
@@ -134,9 +135,9 @@ export default function AddFeed({ route, navigation }: any) {
   const [tagIndex, setTagIndex] = useState<number | string | undefined>(0);
   const getTagArray: ITagProps[] = [];
 
-  categoryData?.seeFeedCategoryList.map((item: any) =>
+  /*categoryData?.seeFeedCategoryList.map((item: any) =>
     getTagArray.push(item?.name)
-  );
+  );*/
 
   // 사진 첨부 시작
   const [images, setImages] = useState([]);
@@ -250,7 +251,7 @@ export default function AddFeed({ route, navigation }: any) {
       headerRight: loading ? HeaderRightLoading : HeaderRight,
       ...(loading && { headerLeft: () => null }),
     });
-  }, []);
+  }, [loading]);
   const onValid = async ({ caption, files }: any) => {
     uploadPhotoMutation({
       variables: {

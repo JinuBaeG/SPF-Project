@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Photo: undefined;
   Likes: { photoId: number };
   Comments: { id: number };
+  ReComments: any | undefined;
   Rooms: undefined;
   Room: { id: number; talkingTo: string };
   PhotoDetail: { id: number };
@@ -17,11 +18,25 @@ export type RootStackParamList = {
   AddGroup: { screenName: string };
   Tutor: { screenName: string };
   AddTutor: { screenName: string };
+  TutorGroup: any | undefined;
   Facility: { screenName: string };
   AddFacility: { screenName: string };
   GroupDetail: any | undefined;
   FacilityDetail: any | undefined;
   ActiveArea: any | undefined;
+  TutorDetail: any | undefined;
+  TutorInquiryDetail: any | undefined;
+  Board: any | undefined;
+  AddBoard: any | undefined;
+  BoardList: any | undefined;
+  BoardDetail: any | undefined;
+  BoardReComments: any | undefined;
+  Notice: any | undefined;
+  AddNotice: any | undefined;
+  NoticeList: any | undefined;
+  NoticeDetail: any | undefined;
+  NoticeReComments: any | undefined;
+  LoggedOutNav: any | undefined;
 };
 
 export const SHOW_OPTION = ["전체공개", "팔로우", "나만보기"];

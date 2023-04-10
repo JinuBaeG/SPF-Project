@@ -1,4 +1,4 @@
-package com.funnyground.playinusreactnative.newarchitecture.components;
+package com.funnyground.playinus.reactnative.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

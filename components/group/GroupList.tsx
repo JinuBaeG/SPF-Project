@@ -74,23 +74,40 @@ const GroupListDisc = styled.Text`
 
 export default function GroupList({
   id,
-  groupname,
+  name,
   sportsEvent,
   discription,
   userCount,
   maxMember,
   groupTag,
-  photoUrl,
+  sidoName,
+  gusiName,
+  dongEubMyunName,
+  riName,
+  roadName,
+  buildingNumber,
+  address,
+  addrRoad,
+  activeArea,
+  areaLatitude,
+  areaLongitude,
+  zipcode,
+  groupImage,
 }: any) {
   const navigation = useNavigation<GroupCompNavigationProps>();
+
   return (
     <GroupListContainer
-      onPress={() => navigation.navigate("GroupDetail", { id })}
+      onPress={() =>
+        navigation.navigate("GroupDetail", {
+          id,
+        })
+      }
     >
-      <GroupListImage source={{ uri: photoUrl }} />
+      <GroupListImage source={{ uri: groupImage }} />
       <GroupListInfoWrap>
         <GroupListTitleWrap>
-          <GroupListTitle>{groupname}</GroupListTitle>
+          <GroupListTitle>{name}</GroupListTitle>
           <GroupListEvent>{sportsEvent}</GroupListEvent>
           <GroupListPoint />
           <GroupListMember>

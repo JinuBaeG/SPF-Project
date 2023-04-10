@@ -16,6 +16,9 @@ export default function LoggedOutNav() {
         headerTitle: () => false,
         headerTransparent: true,
         headerTintColor: isDark ? "#ffffff" : "#1e272e",
+        headerStyle: {
+          backgroundColor: isDark ? "#ffffff" : "#1e272e",
+        },
       }}
     >
       <Stack.Screen

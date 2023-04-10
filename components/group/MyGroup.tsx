@@ -10,7 +10,6 @@ type GroupCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const GroupListContainer = styled.View`
-  width: 33.33%;
   padding: 16px;
   background-color: ${(props) => props.theme.mainBgColor};
   justify-content: center;
@@ -41,16 +40,16 @@ const GroupDetailBtn = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export default function Slide({ id, groupname, photoUrl }: any) {
+export default function MyGroup({ id, name, groupImage }: any) {
   const navigation = useNavigation<GroupCompNavigationProps>();
   return (
     <GroupListContainer>
       <GroupDetailBtn
         onPress={() => navigation.navigate("GroupDetail", { id })}
       >
-        <GroupListImage source={{ uri: photoUrl }} />
+        <GroupListImage source={{ uri: groupImage }} />
         <GroupListTitleWrap>
-          <GroupListTitle>{groupname}</GroupListTitle>
+          <GroupListTitle>{name}</GroupListTitle>
         </GroupListTitleWrap>
       </GroupDetailBtn>
     </GroupListContainer>

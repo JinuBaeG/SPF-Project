@@ -12,6 +12,12 @@ export const lightTheme: DefaultTheme = {
   greenInactColor: "rgba(1, 170, 115, 0.4)",
   greenTextColor: "#ffffff",
   baseMargin: "0px 16px",
+  size4: "4px",
+  size8: "8px",
+  size12: "12px",
+  size16: "16px",
+  size20: "20px",
+  size24: "24px",
 };
 export const darkTheme: DefaultTheme = {
   mainBgColor: "#121212",
@@ -25,4 +31,10 @@ export const darkTheme: DefaultTheme = {
   greenInactColor: "rgba(1, 170, 115, 0.4)",
   greenTextColor: "#ffffff",
   baseMargin: "0 16px",
+  size4: "4px",
+  size8: "8px",
+  size12: "12px",
+  size16: "16px",
+  size20: "20px",
+  size24: "24px",
 };

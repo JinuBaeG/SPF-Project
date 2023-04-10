@@ -62,7 +62,6 @@ const Username = styled.Text`
 
 export default function GroupInfo({ navigation, route }: any) {
   const data = route.params.data;
-
   const goToProfile = ({ username, id }: any) => {
     navigation.navigate("Profile", {
       username: username,
@@ -76,16 +75,16 @@ export default function GroupInfo({ navigation, route }: any) {
         <InfoTitle>기본 정보</InfoTitle>
         <InfoWrap>
           <InfoLabel>종목</InfoLabel>
-          <InfoText>{data.sportsEvent}</InfoText>
+          <InfoText>{data?.sportsEvent}</InfoText>
         </InfoWrap>
         <InfoWrap>
           <InfoLabel>활동 지역</InfoLabel>
-          <InfoText>{data.activeArea}</InfoText>
+          <InfoText>{data?.activeArea}</InfoText>
         </InfoWrap>
         <InfoWrap>
           <InfoLabel>인원</InfoLabel>
           <InfoText>
-            {data.userCount} / {data.maxMember}
+            {data?.userCount} / {data?.maxMember}
           </InfoText>
         </InfoWrap>
         <InfoWrap>
@@ -95,7 +94,7 @@ export default function GroupInfo({ navigation, route }: any) {
       </InfoContainer>
       <InfoContainer>
         <InfoTitle>활동 정보</InfoTitle>
-        {data.groupInfo.map((info: any) => (
+        {data?.groupInfo?.map((info: any) => (
           <InfoWrap key={info.id}>
             <InfoLabel>{info.awardDate}</InfoLabel>
             <InfoText>{info.discription}</InfoText>
@@ -104,13 +103,13 @@ export default function GroupInfo({ navigation, route }: any) {
       </InfoContainer>
       <InfoContainer>
         <InfoTitle>자주 찾는 시설</InfoTitle>
-        {data.facility.map((facility: any) => (
+        {data?.facility?.map((facility: any) => (
           <FacilityList {...facility} key={facility.id} />
         ))}
       </InfoContainer>
       <InfoContainer>
         <InfoTitle>회원</InfoTitle>
-        {data.users.map((user: any) => {
+        {data?.users?.map((user: any) => {
           return (
             <UserWrap
               key={user.id}

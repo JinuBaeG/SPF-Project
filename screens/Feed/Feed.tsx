@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
-import PhotoComp from "../../components/PhotoComp";
+import PhotoComp from "../../components/feed/PhotoComp";
 import ScreenLayout from "../../components/ScreenLayout";
 import {
   COMMENT_FRAGMENT_NATIVE,
@@ -53,12 +53,14 @@ export default function Feed({ navigation }: any) {
   };
   useEffect(() => {
     navigation.setOptions({
+      title: "동네소식",
       headerRight: MessageButton,
     });
   }, []);
 
   return (
     <ScreenLayout loading={loading}>
+      <Category />
       <FlatList
         onEndReachedThreshold={0.5}
         onEndReached={() =>
@@ -70,12 +72,11 @@ export default function Feed({ navigation }: any) {
         }
         refreshing={refreshing}
         onRefresh={refresh}
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: 1 }}
         showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
         keyExtractor={(photo) => "" + photo.id}
         renderItem={renderPhoto}
-        ListHeaderComponent={Category}
       />
       <SharedWriteButton />
     </ScreenLayout>

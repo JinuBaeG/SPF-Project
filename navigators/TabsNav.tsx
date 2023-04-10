@@ -33,6 +33,7 @@ export default function TabsNav() {
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"home"} color={color} focused={focused} />
           ),
+          tabBarLabelStyle: { fontSize: 12 },
         }}
       >
         {() => <StackNavFactroy screenName="Home" />}
@@ -43,6 +44,7 @@ export default function TabsNav() {
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"list"} color={color} focused={focused} />
           ),
+          tabBarLabelStyle: { fontSize: 12 },
         }}
       >
         {() => <StackNavFactroy screenName="Feed" />}
@@ -53,6 +55,7 @@ export default function TabsNav() {
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"people"} color={color} focused={focused} />
           ),
+          tabBarLabelStyle: { fontSize: 12 },
         }}
       >
         {() => <StackNavFactroy screenName="Group" />}
@@ -63,13 +66,16 @@ export default function TabsNav() {
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"calendar"} color={color} focused={focused} />
           ),
+          tabBarLabelStyle: { fontSize: 12 },
         }}
       >
         {() => <StackNavFactroy screenName="Tutor" />}
       </Tabs.Screen>
       <Tabs.Screen
-        name="내 Gym"
+        name="MyProfile"
         options={{
+          title: "내 Gym",
+          tabBarLabelStyle: { fontSize: 12 },
           tabBarIcon: ({ focused, color, size }) =>
             data?.me?.avatar ? (
               <Image
