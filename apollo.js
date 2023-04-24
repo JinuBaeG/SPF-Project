@@ -87,11 +87,11 @@ export const logUserOut = async () => {
 };
 
 const uploadHttpLink = createUploadLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "http://ec2-3-36-68-172.ap-northeast-2.compute.amazonaws.com:4000/graphql",
 });
 
 const wsLink = new WebSocketLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "http://ec2-3-36-68-172.ap-northeast-2.compute.amazonaws.com:4000/graphql",
   options: {
     connectionParams: () => ({
       token: tokenVar(),
