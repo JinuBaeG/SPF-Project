@@ -6,10 +6,17 @@ import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
 
 const LoginLink = styled.Text`
-  color: ${colors.blue};
+  color: ${(props) => props.theme.textColor};
   font-weight: 600;
-  margin-top: 10px;
   text-align: center;
+`;
+
+const LoginLinkBtn = styled.TouchableOpacity`
+  background-color: "#01aa73";
+  padding: 12px 8px;
+  border-radius: 4px;
+  width: 100%;
+  border: 1px solid rgba(20, 20, 20, 0.2);
 `;
 
 export default function Welcome({ navigation }: any) {
@@ -22,13 +29,14 @@ export default function Welcome({ navigation }: any) {
   return (
     <AuthLayout>
       <AuthButton
+        separate={"normal"}
         onPress={goToCreateAccount}
         disabled={false}
-        text={"Create New Account"}
+        text={"회원가입"}
       />
-      <TouchableOpacity onPress={goToLogin}>
-        <LoginLink>Log In</LoginLink>
-      </TouchableOpacity>
+      <LoginLinkBtn onPress={goToLogin}>
+        <LoginLink>로그인</LoginLink>
+      </LoginLinkBtn>
     </AuthLayout>
   );
 }

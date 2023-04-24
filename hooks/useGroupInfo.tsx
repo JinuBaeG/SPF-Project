@@ -15,6 +15,7 @@ export default function useGroupInfo(id: number) {
     variables: {
       id,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const groupInfoData: any = [];

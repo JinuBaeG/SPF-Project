@@ -49,6 +49,7 @@ export default function TabsNav() {
       >
         {() => <StackNavFactroy screenName="Feed" />}
       </Tabs.Screen>
+      {/* 
       <Tabs.Screen
         name="그룹"
         options={{
@@ -94,6 +95,7 @@ export default function TabsNav() {
       >
         {() => <StackNavFactroy screenName="MyProfile" />}
       </Tabs.Screen>
+      */}
     </Tabs.Navigator>
   );
 }

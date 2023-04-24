@@ -11,6 +11,7 @@ import { WebSocketLink } from "@apollo/client/link/ws";
 import { login, logout, getProfile } from "@react-native-seoul/kakao-login";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
+import { appleAuth } from "@invertase/react-native-apple-authentication";
 
 const TOKEN = "token";
 const PLATFORM = "platform";
@@ -18,28 +19,42 @@ const PLATFORM = "platform";
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
 
+export const onAppleButtonPress = async () => {
+  const appleAuthRequestResponse = await appleAuth.performRequest({
+    requestedOperation: appleAuth.Operation.LOGIN,
+    requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+  });
+
+  const credentialState = await appleAuth.getCredentialStateForUser(
+    appleAuthRequestResponse.user
+  );
+
+  if (credentialState === appleAuth.State.AUTHORIZED) {
+    const { user: uid, identityToken: token } = appleAuthRequestResponse;
+
+    return { uid, token };
+  }
+};
+
 export const onPressGoogleBtn = async () => {
   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
   const { idToken } = await GoogleSignin.signIn();
-  console.log("idToekn : ", idToken);
-  if (idToken) {
-    tokenVar(idToken);
-  }
+
   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
   const res = await auth().signInWithCredential(googleCredential);
-  console.log(res);
+  const { email, uid } = res;
+
+  return { email, uid, idToken: token };
 };
 
 export const signInWithKakao = async () => {
   try {
-    const token = await login();
+    const kakaoToken = await login();
     const kakaoProfile = await getProfile();
-    AsyncStorage.setItem(TOKEN, JSON.stringify(token));
-    AsyncStorage.setItem(PLATFORM, "kakao");
-    isLoggedInVar(true);
-    tokenVar(JSON.stringify(token));
-    console.log(JSON.stringify(token));
-    console.log(kakaoProfile);
+    const token = kakaoToken.accessToken;
+    const { email, id: uid } = kakaoProfile;
+
+    return { email, uid, token };
   } catch (err) {
     console.error("login err", err);
   }
@@ -72,11 +87,11 @@ export const logUserOut = async () => {
 };
 
 const uploadHttpLink = createUploadLink({
-  uri: "http://172.30.1.20:4000/graphql",
+  uri: "http://localhost:4000/graphql",
 });
 
 const wsLink = new WebSocketLink({
-  uri: "http://172.30.1.20:4000/graphql",
+  uri: "http://localhost:4000/graphql",
   options: {
     connectionParams: () => ({
       token: tokenVar(),
@@ -116,6 +131,9 @@ export const cache = new InMemoryCache({
     Message: {
       fields: {
         user: {
+          merge: true,
+        },
+        feedCategory: {
           merge: true,
         },
       },

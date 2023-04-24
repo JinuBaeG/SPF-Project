@@ -39,4 +39,7 @@ export type RootStackParamList = {
   LoggedOutNav: any | undefined;
 };
 
-export const SHOW_OPTION = ["전체공개", "팔로우", "나만보기"];
+export const SHOW_OPTION = [
+  { id: 0, name: "전체공개", isChecked: true },
+  { id: 1, name: "나만보기", isChecked: false },
+];

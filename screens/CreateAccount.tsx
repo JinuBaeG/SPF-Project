@@ -1,22 +1,21 @@
 import { gql, useMutation } from "@apollo/client";
-import React, { RefObject, useEffect, useRef } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useColorScheme } from "react-native";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
+import styled from "styled-components/native";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount(
-    $firstName: String!
-    $lastName: String!
+    $phoneNumber: String!
     $username: String!
     $email: String!
     $password: String!
   ) {
     createAccount(
-      firstName: $firstName
-      lastName: $lastName
+      phoneNumber: $phoneNumber
       username: $username
       email: $email
       password: $password
@@ -25,6 +24,28 @@ const CREATE_ACCOUNT_MUTATION = gql`
       error
     }
   }
+`;
+
+const PhoneCheck = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+`;
+
+const PhoneCheckBtn = styled.TouchableOpacity<{ certified: Boolean }>`
+  padding: 16px 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  width: 36%;
+  border: 1px solid rgba(20, 20, 20, 0.2);
+  opacity: ${(props) => (props.certified ? "0.5" : "1")};
+`;
+
+const PhoneCheckText = styled.Text`
+  text-align: center;
+  font-weight: 600;
 `;
 
 export default function CreateAccount({ navigation }: any) {
@@ -47,8 +68,7 @@ export default function CreateAccount({ navigation }: any) {
     CREATE_ACCOUNT_MUTATION,
     { onCompleted }
   );
-  const lastNameRef: React.MutableRefObject<null> = useRef(null);
-  const userNameRef: React.MutableRefObject<null> = useRef(null);
+  const phoneNumberRef: React.MutableRefObject<null> = useRef(null);
   const emailRef: React.MutableRefObject<null> = useRef(null);
   const passwordRef: React.MutableRefObject<null> = useRef(null);
 
@@ -67,8 +87,7 @@ export default function CreateAccount({ navigation }: any) {
   };
 
   useEffect(() => {
-    register("firstName", { required: true });
-    register("lastName", { required: true });
+    register("phoneNumber", { required: true });
     register("username", { required: true });
     register("email", { required: true });
     register("password", { required: true });
@@ -76,30 +95,12 @@ export default function CreateAccount({ navigation }: any) {
 
   const isDark = useColorScheme() === "dark";
 
+  const [certified, setCertified] = useState(false);
+
   return (
     <AuthLayout>
       <TextInput
-        placeholder="First Name"
-        placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
-        returnKeyType="next"
-        lastOne={false}
-        isDark={isDark}
-        onSubmitEditing={() => onFocusNext(lastNameRef)}
-        onChangeText={(text: string) => setValue("firstName", text)}
-      />
-      <TextInput
-        ref={lastNameRef}
-        placeholder="Last Name"
-        placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
-        returnKeyType="next"
-        lastOne={false}
-        isDark={isDark}
-        onSubmitEditing={() => onFocusNext(userNameRef)}
-        onChangeText={(text: string) => setValue("lastName", text)}
-      />
-      <TextInput
-        ref={userNameRef}
-        placeholder="User Name"
+        placeholder="이름 또는 닉네임"
         placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
         returnKeyType="next"
         lastOne={false}
@@ -109,7 +110,7 @@ export default function CreateAccount({ navigation }: any) {
       />
       <TextInput
         ref={emailRef}
-        placeholder="Email"
+        placeholder="이메일"
         placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
         keyboardType="email-address"
         returnKeyType="next"
@@ -120,22 +121,43 @@ export default function CreateAccount({ navigation }: any) {
       />
       <TextInput
         ref={passwordRef}
-        placeholder="Password"
+        placeholder="비밀번호"
         placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
         secureTextEntry
-        returnKeyType="join"
-        lastOne={true}
+        returnKeyType="next"
+        lastOne={false}
         isDark={isDark}
-        onSubmitEditing={handleSubmit(onValid)}
+        onSubmitEditing={() => onFocusNext(phoneNumberRef)}
         onChangeText={(text: string) => setValue("password", text)}
       />
+      <PhoneCheck>
+        <TextInput
+          ref={phoneNumberRef}
+          placeholder="휴대폰번호"
+          placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
+          returnKeyType="join"
+          lastOne={false}
+          isDark={isDark}
+          onSubmitEditing={handleSubmit(onValid)}
+          onChangeText={(text: string) => setValue("phoneNumber", text)}
+          style={{ width: "62%" }}
+        />
+        <PhoneCheckBtn
+          onPress={() => {
+            setCertified(!certified);
+          }}
+          disabled={certified}
+          certified={certified}
+        >
+          <PhoneCheckText>인증</PhoneCheckText>
+        </PhoneCheckBtn>
+      </PhoneCheck>
       <AuthButton
         onPress={handleSubmit(onValid)}
-        text={"Create Account"}
+        text={"회원가입"}
         loading={loading}
         disabled={
-          !watch("firstName") ||
-          !watch("lastName") ||
+          !watch("phoneNumber") ||
           !watch("username") ||
           !watch("email") ||
           !watch("password")

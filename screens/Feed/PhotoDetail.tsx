@@ -297,11 +297,13 @@ export default function PhotoDetail({ navigation, route }: any) {
             </BoardInfo>
           </UserInfoWrap>
         </Header>
-        <Category>
-          <CategoryText>
-            {feedData?.seePhoto?.feedCategoryList[0].name}
-          </CategoryText>
-        </Category>
+        {feedData?.seePhoto?.feedCategoryList !== null ? (
+          <Category>
+            <CategoryText>
+              {feedData?.seePhoto?.feedCategoryList[0].name}
+            </CategoryText>
+          </Category>
+        ) : null}
         <Caption>
           <CaptionText>{feedData?.seePhoto?.caption}</CaptionText>
         </Caption>

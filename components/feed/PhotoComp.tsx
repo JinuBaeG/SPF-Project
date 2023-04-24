@@ -232,9 +232,11 @@ export default function PhotoComp({
           }
         }}
       >
-        <Category>
-          <CategoryText>{feedCategoryList[0].name}</CategoryText>
-        </Category>
+        {feedCategoryList !== null ? (
+          <Category>
+            <CategoryText>{feedCategoryList[0].name}</CategoryText>
+          </Category>
+        ) : null}
         <Caption>
           <CaptionText>
             {caption !== null

@@ -3,13 +3,15 @@ import { useForm } from "react-hook-form";
 import { TextInput } from "../components/auth/AuthShared";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
-import { gql, useMutation } from "@apollo/client";
-import { logUserIn, onPressGoogleBtn, signInWithKakao } from "../apollo";
-import { useColorScheme } from "react-native";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
-  GoogleSignin,
-  GoogleSigninButton,
-} from "@react-native-google-signin/google-signin";
+  logUserIn,
+  onAppleButtonPress,
+  onPressGoogleBtn,
+  signInWithKakao,
+} from "../apollo";
+import { Platform, useColorScheme } from "react-native";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const LOG_IN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
@@ -21,7 +23,26 @@ const LOG_IN_MUTATION = gql`
   }
 `;
 
+const LOGIN_CHECK = gql`
+  query loginCheck($uid: String, $interlock: String) {
+    loginCheck(uid: $uid, interlock: $interlock) {
+      ok
+    }
+  }
+`;
+
 export default function Login({ navigation, route: { params } }: any) {
+  const LoginCheck = (uid: string, interlock: string) => {
+    const { data } = useQuery(LOGIN_CHECK, {
+      variables: {
+        uid,
+        interlock,
+      },
+    });
+
+    return data.ok;
+  };
+
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
       password: params?.password,
@@ -58,6 +79,44 @@ export default function Login({ navigation, route: { params } }: any) {
     }
   };
 
+  const KakaoLogin = async () => {
+    const { email, uid, token }: any = await signInWithKakao();
+    const loginCheck = LoginCheck(uid, "kakao");
+
+    if (loginCheck) {
+      await logUserIn(token);
+      navigation.navigate("Tabs");
+    } else {
+      navigation.navigate("CreateAccount", { uid, email });
+    }
+  };
+
+  const GoogleLogin = async () => {
+    const { email, uid, token }: any = await onPressGoogleBtn();
+
+    const loginCheck = LoginCheck(uid, "google");
+
+    if (loginCheck) {
+      await logUserIn(token);
+      navigation.navigate("Tabs");
+    } else {
+      navigation.navigate("CreateAccount", { uid, email });
+    }
+  };
+
+  const AppleLogin = async () => {
+    const { email, uid, token }: any = await onAppleButtonPress();
+
+    const loginCheck = LoginCheck(uid, "apple");
+
+    if (loginCheck) {
+      await logUserIn(token);
+      navigation.navigate("Tabs");
+    } else {
+      navigation.navigate("CreateAccount", { uid, email });
+    }
+  };
+
   useEffect(() => {
     register("username", { required: true });
     register("password", { required: true });
@@ -66,11 +125,13 @@ export default function Login({ navigation, route: { params } }: any) {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "126129061327-f509efju0jqkqbd54ccldv2nqe9dg95k.apps.googleusercontent.com",
+        "126129061327-ee1846j62rtbip9ocbc7acnmmimdk0tm.apps.googleusercontent.com",
     });
   }, []);
 
   const isDark = useColorScheme() === "dark";
+
+  const platform = Platform.OS;
 
   return (
     <AuthLayout>
@@ -102,17 +163,36 @@ export default function Login({ navigation, route: { params } }: any) {
         onChangeText={(text: string) => setValue("password", text)}
       />
       <AuthButton
-        text={"Log In"}
+        text={"로그인"}
         disabled={!watch("username") || !watch("password")}
         loading={loading}
         onPress={handleSubmit(onValid)}
+        separate={"normal"}
       />
       <AuthButton
-        text={"Kakao Log In"}
+        text={"카카오로 로그인"}
         loading={loading}
-        onPress={signInWithKakao}
+        onPress={KakaoLogin}
+        separate={"kakao"}
       />
-      <GoogleSigninButton onPress={() => onPressGoogleBtn()} />
+      {platform === "ios" ? (
+        <AuthButton
+          text={"애플로 로그인"}
+          loading={loading}
+          onPress={() => {
+            AppleLogin();
+          }}
+          separate={"apple"}
+        />
+      ) : null}
+
+      <AuthButton
+        text={"구글로 로그인"}
+        loading={loading}
+        onPress={() => GoogleLogin()}
+        style={{ width: "100%" }}
+        separate={"google"}
+      />
     </AuthLayout>
   );
 }

@@ -15,7 +15,7 @@ export default function useSportsEvent(sportsEvent: any | undefined) {
     variables: {
       offset: 0,
     },
-    fetchPolicy: "network-only",
+    fetchPolicy: "cache-and-network",
   });
 
   const tagData: any = [];

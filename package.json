@@ -1,6 +1,6 @@
 {
   "name": "playinus",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "start": "npx react-native start",
     "android": "npx react-native run-android",
@@ -13,6 +13,7 @@
     "8": "0.0.1",
     "@apollo/client": "^3.7.1",
     "@baronha/react-native-multiple-image-picker": "^0.4.13",
+    "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/cli": "^9.3.2",
     "@react-native-community/masked-view": "^0.1.11",
@@ -28,6 +29,7 @@
     "@react-navigation/native-stack": "^6.9.1",
     "@react-navigation/stack": "^6.3.3",
     "@types/apollo-upload-client": "^17.0.2",
+    "@types/node": "^18.15.13",
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/styled-components": "^5.1.26",
     "apollo-upload-client": "^17.0.0",
@@ -46,6 +48,8 @@
     "expo-status-bar": "~1.4.0",
     "expo-updates": "~0.14.7",
     "graphql": "^15.5.0",
+    "jwt-decode": "^3.1.2",
+    "node": "^19.8.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.39.0",
@@ -54,6 +58,7 @@
     "react-native-calendars": "^1.1292.0",
     "react-native-cli": "^2.0.1",
     "react-native-fix-image": "^2.1.0",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-nmap": "0.0.66",
@@ -81,5 +86,6 @@
     "jetifier": "^2.0.0",
     "typescript": "~4.3.5"
   },
-  "private": true
+  "private": true,
+  "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs,https --hack"
 }

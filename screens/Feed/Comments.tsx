@@ -110,7 +110,7 @@ export default function Comments({ id, commentCount, refresh }: any) {
       // 피드에 새로 작성되어 캐시에 저장된 댓글을 업데이트
       cache.modify({
         id: `Photo:${id}`,
-        fids: {
+        fields: {
           newComments(prev: seeFeed_seeFeed_comments[]) {
             return [...prev, newCacheComment];
           },

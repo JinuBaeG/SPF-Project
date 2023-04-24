@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
+import { useReactiveVar } from "@apollo/client";
+import { isLoggedInVar } from "../../apollo";
 
 type UploadCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -23,6 +25,7 @@ const WriteButtonContainer = styled.TouchableOpacity`
 `;
 
 export default function SharedWriteButton() {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const route = useRoute();
   const navigation = useNavigation<UploadCompNavigationProps>();
   const screenName = route.name;
@@ -39,6 +42,21 @@ export default function SharedWriteButton() {
     } else if (screenName === "BoardList") {
       return navigation.navigate("AddBoard", { screenName });
     }
+    /*if (!isLoggedIn) {
+      navigation.navigate("LoggedOutNav");
+    } else {
+      if (screenName === "TabFeed") {
+        return navigation.navigate("AddFeed", { screenName });
+      } else if (screenName === "TabGroup") {
+        return navigation.navigate("AddGroup", { screenName });
+      } else if (screenName === "TabTutor") {
+        return navigation.navigate("AddTutor", { screenName });
+      } else if (screenName === "TabFacility") {
+        return navigation.navigate("AddFacility", { screenName });
+      } else if (screenName === "BoardList") {
+        return navigation.navigate("AddBoard", { screenName });
+      }
+    }*/
   };
 
   return (

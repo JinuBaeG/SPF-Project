@@ -13,6 +13,7 @@ export default function HeaderNav({ navigation }: any) {
   const isDark = useColorScheme() === "dark";
   return (
     <HeaderNavContainer>
+      {/* 
       <TouchableOpacity
         style={{ marginRight: 16 }}
         onPress={() => navigation.navigate("Notifications")}
@@ -30,6 +31,7 @@ export default function HeaderNav({ navigation }: any) {
           size={24}
         />
       </TouchableOpacity>
+      */}
     </HeaderNavContainer>
   );
 }
