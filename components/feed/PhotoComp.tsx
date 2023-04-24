@@ -225,11 +225,7 @@ export default function PhotoComp({
       </Header>
       <TouchableOpacity
         onPress={() => {
-          if (isLoggedIn) {
-            navigation.navigate("PhotoDetail", { id: id });
-          } else {
-            navigation.navigate("LoggedOutNav");
-          }
+          navigation.navigate("PhotoDetail", { id: id });
         }}
       >
         {feedCategoryList !== null ? (
@@ -290,11 +286,7 @@ export default function PhotoComp({
         <Actions>
           <Action
             onPress={() => {
-              if (isLoggedIn) {
-                navigation.navigate("PhotoDetail", { id: id });
-              } else {
-                navigation.navigate("LoggedOutNav");
-              }
+              navigation.navigate("PhotoDetail", { id: id });
             }}
           >
             <Ionicons
@@ -307,11 +299,7 @@ export default function PhotoComp({
           </Action>
           <Action
             onPress={() => {
-              if (isLoggedIn) {
-                toggleLikeMutation();
-              } else {
-                navigation.navigate("LoggedOutNav");
-              }
+              toggleLikeMutation();
             }}
           >
             <Ionicons
