@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import styled from "styled-components/native";
@@ -7,54 +7,65 @@ import { Ionicons } from "@expo/vector-icons";
 import { BOARD_FRAGMENT_NATIVE } from "../../fragments";
 import BoardComp from "../../components/board/BoardComp";
 import SharedWriteButton from "../../components/shared/SharedWriteButton";
+import useMe from "../../hooks/useMe";
+import { isLoggedInVar } from "../../apollo";
 
 const SEE_BOARDS_QUERY = gql`
-  query seeBoards($id: Int, $sortation: String, $offset: Int) {
-    seeBoards(id: $id, sortation: $sortation, offset: $offset) {
+  query seeBoards(
+    $id: Int
+    $sortation: String
+    $offset: Int
+    $blockUsers: [BlockUsers]
+  ) {
+    seeBoards(
+      id: $id
+      sortation: $sortation
+      offset: $offset
+      blockUsers: $blockUsers
+    ) {
       ...BoardFragmentNative
     }
   }
   ${BOARD_FRAGMENT_NATIVE}
 `;
 
-const ListContainer = styled.View``;
-
-const BoardWrap = styled.TouchableOpacity`
-  flex-direction: row;
+const WriteButtonContainer = styled.TouchableOpacity`
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background-color: ${(props) => props.theme.greenActColor};
   align-items: center;
-  padding: 4px 8px;
-  height: 44px;
-  background-color: ${(props) => props.theme.mainBgColor};
-`;
-
-const BoardLine = styled.View`
-  width: 100%;
-  height: 1px;
-  background-color: ${(props) => props.theme.grayInactColor};
-`;
-
-const BoardPoint = styled.View`
-  padding: 0 4px;
-`;
-
-const BoardTitle = styled.Text`
-  width: 282px;
-  padding: 0 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: ${(props) => props.theme.textColor};
-`;
-
-const BoardDate = styled.Text`
-  padding: 0 4px;
-  font-size: 12px;
-  font-weight: 400;
-  color: ${(props) => props.theme.textColor};
+  justify-content: center;
 `;
 
 export default function BoardList({ navigation, route }: any) {
   const id = route.params.id;
   const sortation = route.params.sortation;
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const [blockUsers, setBlockUsers] = useState<any>([]);
+
+  const me = useMe();
+
+  const setBlockUserList = () => {
+    if (isLoggedIn) {
+      const blockUserList = me?.data.me.blockedBy;
+      setBlockUsers([]);
+
+      if (blockUserList !== undefined && blockUserList !== null) {
+        blockUserList.map((item: any) => {
+          let blockUserId = { blockId: item.blockedBy.id };
+          setBlockUsers([blockUserId, ...blockUsers]);
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    setBlockUserList();
+  }, [me?.data?.me?.blockedBy]);
 
   const {
     data,
@@ -66,6 +77,7 @@ export default function BoardList({ navigation, route }: any) {
       id,
       sortation,
       offset: 0,
+      blockUsers,
     },
   });
 
@@ -107,7 +119,13 @@ export default function BoardList({ navigation, route }: any) {
         data={data?.seeBoards}
         renderItem={renderBoardList}
       />
-      <SharedWriteButton />
+      {route.params.isJoin ? (
+        <WriteButtonContainer
+          onPress={() => navigation.navigate("AddBoard", { id, sortation })}
+        >
+          <Ionicons name={"ios-add"} size={28} color="white" />
+        </WriteButtonContainer>
+      ) : null}
     </ScreenLayout>
   );
 }

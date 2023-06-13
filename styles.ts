@@ -3,9 +3,10 @@ import { DefaultTheme } from "styled-components/native";
 export const lightTheme: DefaultTheme = {
   mainBgColor: "#ffffff",
   textColor: "#1e272e",
-  blackColor: "#121212",
+  blackColor: "#00000",
   whiteColor: "#ffffff",
   grayColor: "#888888",
+  grayBackground: "rgba(136, 136, 136, 0.1)",
   grayInactColor: "rgba(136, 136, 136, 0.4)",
   grayLineColor: "rgba(136, 136, 136, 0.1)",
   greenActColor: "#01aa73",
@@ -20,11 +21,12 @@ export const lightTheme: DefaultTheme = {
   size24: "24px",
 };
 export const darkTheme: DefaultTheme = {
-  mainBgColor: "#121212",
-  textColor: "#d2dae2",
-  blackColor: "#121212",
+  mainBgColor: "#000000",
+  textColor: "#ffffff",
+  blackColor: "#000000",
   whiteColor: "#ffffff",
   grayColor: "#888888",
+  grayBackground: "rgba(136, 136, 136, 0.1)",
   grayInactColor: "rgba(136, 136, 136, 0.4)",
   grayLineColor: "rgba(136, 136, 136, 0.1)",
   greenActColor: "#01aa73",

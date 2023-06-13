@@ -12,20 +12,24 @@ const Button = styled.TouchableOpacity<{ disabled: boolean; separate: string }>`
       ? "#FEE500"
       : props.separate === "google"
       ? "#000000"
+      : props.separate === "naver"
+      ? "#2DB400"
       : "#FFFFFF"};
   padding: 12px 8px;
   border-radius: 4px;
   width: 100%;
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};
   margin-bottom: 8px;
-  border: 1px solid rgba(20, 20, 20, 0.2);
+  border: 1px solid #ccc;
 `;
 
 const ButtonText = styled.Text<{ separate: string }>`
   color: ${(props) =>
-    props.separate === "normal" || props.separate === "google"
+    props.separate === "normal" ||
+    props.separate === "google" ||
+    props.separate === "naver"
       ? props.theme.whiteColor
-      : props.theme.textColor};
+      : props.theme.blackColor};
   text-align: center;
   font-weight: 600;
 `;
@@ -62,6 +66,11 @@ export default function AuthButton({
       ) : separate === "google" ? (
         <>
           <LoginIcon source={require("../../assets/google.png")} />
+          <ButtonText separate={separate}>{text}</ButtonText>
+        </>
+      ) : separate === "naver" ? (
+        <>
+          <LoginIcon source={require("../../assets/naver.png")} />
           <ButtonText separate={separate}>{text}</ButtonText>
         </>
       ) : (

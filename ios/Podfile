@@ -5,7 +5,7 @@ require File.join(File.dirname(`node --print "require.resolve('@react-native-com
 require 'json'
 podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}
 
-platform :ios, podfile_properties['ios.deploymentTarget'] || '12.4'
+platform :ios, podfile_properties['ios.deploymentTarget'] || '13.0'
 install! 'cocoapods',
   :deterministic_uuids => false
 
@@ -15,6 +15,7 @@ target 'playinus' do
   pod 'FirebaseCore', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   pod 'NMapsMap', '3.10.1'
+  pod 'naveridlogin-sdk-ios'
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
 

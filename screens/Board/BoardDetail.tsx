@@ -1,8 +1,8 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, useColorScheme } from "react-native";
 import styled from "styled-components/native";
 import { RootStackParamList } from "../../shared.types";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import {
   BOARD_COMMENT_FRAGMENT_NATIVE,
   BOARD_FRAGMENT_NATIVE,
 } from "../../fragments";
+import ContentsMenu from "../../components/ContentsMenu";
 
 type BoardCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -47,13 +48,20 @@ const BOARD_TOGGLE_LIKE_MUTATION = gql`
   }
 `;
 
-const Container = styled.SafeAreaView`
+const Container = styled.ScrollView`
+  flex: 1;
   background-color: ${(props) => props.theme.mainBgColor};
   width: 100%;
 `;
 
-const Header = styled.TouchableOpacity`
-  padding: 12px;
+const Header = styled.View`
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -77,15 +85,15 @@ const BoardInfo = styled.View`
   align-items: center;
 `;
 
-const CreateDate = styled.Text`
+const SportsName = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
-  margin-right: 8px;
+  color: ${(props) => props.theme.grayColor};
 `;
 
-const Hits = styled.Text`
+const CreateDate = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayColor};
+  margin-right: 8px;
 `;
 
 const File = styled.Image``;
@@ -110,7 +118,7 @@ const ActionText = styled.Text`
 
 const Caption = styled.View`
   flex-direction: row;
-  padding: 4px 16px 16px;
+  padding: 4px 4px 16px;
 `;
 
 const CaptionText = styled.Text`
@@ -120,39 +128,27 @@ const CaptionText = styled.Text`
 
 const Category = styled.View`
   flex-direction: row;
-  padding: 16px 16px 4px;
+  padding: 4px;
 `;
 
 const CategoryText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
   margin-left: 10px;
-  font-weight: 600;
   color: ${(props) => props.theme.textColor};
-`;
-
-const Likes = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
-`;
-
-const CommentNumber = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
 `;
 
 const ExtraContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
 `;
 
-const NumberContainer = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 16px;
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 export default function BoardDetail({ navigation, route }: any) {
@@ -232,6 +228,8 @@ export default function BoardDetail({ navigation, route }: any) {
     return <CommentComp {...comment} />;
   };
 
+  const isDark = useColorScheme() === "dark";
+
   const ListHeader = () => {
     const getDate = new Date(parseInt(boardData?.seeBoard?.createdAt));
 
@@ -241,25 +239,31 @@ export default function BoardDetail({ navigation, route }: any) {
 
     return (
       <Container>
-        <Header onPress={goToProfile}>
-          <UserAvatar
-            resizeMode="cover"
-            source={
-              boardData?.seeBoard?.user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
-                : { uri: boardData?.seeBoard?.user.avatar }
-            }
+        <Header>
+          <UserInfo onPress={goToProfile}>
+            <UserAvatar
+              resizeMode="cover"
+              source={
+                boardData?.seeBoard?.user.avatar === null
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
+                  : { uri: boardData?.seeBoard?.user.avatar }
+              }
+            />
+            <UserInfoWrap>
+              <Username>{boardData?.seeBoard?.user.username}</Username>
+              <BoardInfo>
+                <CreateDate>{year + "." + month + "." + date}</CreateDate>
+              </BoardInfo>
+            </UserInfoWrap>
+          </UserInfo>
+          <ContentsMenu
+            id={boardData?.seeBoard?.id}
+            userId={boardData?.seeBoard?.user.id}
+            isMine={boardData?.seeBoard?.isMine}
+            screen="BoardDetail"
           />
-          <UserInfoWrap>
-            <Username>{boardData?.seeBoard?.user.username}</Username>
-            <BoardInfo>
-              <CreateDate>{year + "." + month + "." + date}</CreateDate>
-              <Hits>
-                <Ionicons name="eye-outline" />
-                {" " + boardData?.seeBoard?.hits}
-              </Hits>
-            </BoardInfo>
-          </UserInfoWrap>
         </Header>
         <Category>
           <CategoryText>{boardData?.seeBoard?.title}</CategoryText>
@@ -267,8 +271,20 @@ export default function BoardDetail({ navigation, route }: any) {
         <Caption>
           <CaptionText>{boardData?.seeBoard?.discription}</CaptionText>
         </Caption>
+        <BoardLine />
         <ExtraContainer>
           <Actions>
+            <Action>
+              <Ionicons
+                name="chatbubble-outline"
+                color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+                style={{ marginBottom: 2 }}
+                size={16}
+              />
+              <ActionText>
+                댓글 {boardData?.seeBoard?.boardCommentCount}
+              </ActionText>
+            </Action>
             <Action onPress={() => toggleLikeMutation()}>
               <Ionicons
                 name={boardData?.seeBoard?.isLiked ? "heart" : "heart-outline"}
@@ -283,6 +299,7 @@ export default function BoardDetail({ navigation, route }: any) {
             </Action>
           </Actions>
         </ExtraContainer>
+        <BoardLine />
         <BoardComments
           id={boardData?.seeBoard?.id}
           boardCommentCount={boardData?.seeBoard?.boardCommentCount}
@@ -291,6 +308,12 @@ export default function BoardDetail({ navigation, route }: any) {
       </Container>
     );
   };
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    refresh();
+  }, [isFocused]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -301,7 +324,7 @@ export default function BoardDetail({ navigation, route }: any) {
             : route.params.title
           : "제목없음",
     });
-  });
+  }, []);
 
   return (
     <ScreenLayout loading={listLoading}>

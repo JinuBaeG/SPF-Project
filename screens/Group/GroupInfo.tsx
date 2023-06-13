@@ -1,17 +1,18 @@
 import React from "react";
 import styled from "styled-components/native";
 import FacilityList from "../../components/facility/FacilityList";
+import { useColorScheme } from "react-native";
 
 const MainContainer = styled.ScrollView`
   flex: 1;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.grayBackground};
 `;
 
 const InfoContainer = styled.View`
   padding: 8px 16px 16px;
   width: 100%;
   background-color: ${(props) => props.theme.mainBgColor};
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 `;
 const InfoTitle = styled.Text`
   font-size: 16px;
@@ -56,7 +57,7 @@ const Avatar = styled.Image`
 
 const Username = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.blackColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: 600;
 `;
 
@@ -68,6 +69,8 @@ export default function GroupInfo({ navigation, route }: any) {
       id: id,
     });
   };
+
+  const isDark = useColorScheme() === "dark";
 
   return (
     <MainContainer>
@@ -117,7 +120,15 @@ export default function GroupInfo({ navigation, route }: any) {
                 goToProfile({ username: user.username, id: user.id })
               }
             >
-              <Avatar source={{ uri: user.avatar }} />
+              <Avatar
+                source={
+                  user.avatar === null
+                    ? isDark
+                      ? require(`../../assets/emptyAvatar_white.png`)
+                      : require(`../../assets/emptyAvatar.png`)
+                    : { uri: user.avatar }
+                }
+              />
               <Username>{user.username}</Username>
             </UserWrap>
           );

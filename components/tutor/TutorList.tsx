@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
+import { useColorScheme } from "react-native";
 
 type TutorCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -36,7 +37,7 @@ const TutorListTitleWrap = styled.View`
 `;
 
 const TutorListTitle = styled.Text`
-  color: ${(props) => props.theme.blackColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 16px;
   font-weight: 600;
   margin-right: 8px;
@@ -75,7 +76,7 @@ const TutorListDisc = styled.Text`
 export default function TutorList({
   id,
   name,
-  sportsEvent,
+  tutorSportsEvent,
   discription,
   userCount,
   maxMember,
@@ -95,6 +96,7 @@ export default function TutorList({
   tutorImage,
 }: any) {
   const navigation = useNavigation<TutorCompNavigationProps>();
+  const isDark = useColorScheme() === "dark";
 
   return (
     <TutorListContainer
@@ -108,10 +110,25 @@ export default function TutorList({
       <TutorListInfoWrap>
         <TutorListTitleWrap>
           <TutorListTitle>{name}</TutorListTitle>
-          <TutorListEvent>{sportsEvent}</TutorListEvent>
-          <TutorListPoint />
+          {tutorSportsEvent.map((item: any, index: number) => {
+            return (
+              <>
+                <TutorListEvent key={item.id}>{item.name}</TutorListEvent>
+
+                {tutorSportsEvent.length - 1 === index ? null : (
+                  <TutorListPoint />
+                )}
+              </>
+            );
+          })}
+
           <TutorListMember>
-            <Ionicons name="people-outline" size={12} />
+            <Ionicons
+              name="people-outline"
+              size={12}
+              color={isDark ? "white" : "black"}
+              style={{ marginHorizontal: 4 }}
+            />
             <TutorListUserCount>
               {userCount} / {maxMember}
             </TutorListUserCount>

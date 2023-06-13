@@ -7,6 +7,7 @@
 #import <React/RCTConvert.h>
 #import <Firebase.h>
 #import <React/RCTAppSetupUtils.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
@@ -17,6 +18,7 @@
 #import <ReactCommon/RCTTurboModuleManager.h>
 
 #import <react/config/ReactNativeConfig.h>
+
 
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
@@ -99,6 +101,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 // Linking API
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+
+  // for naver login
+  if ([url.scheme isEqualToString:@"com.funnyground.playinus.reactnative"]) {
+    return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
+  }
+  
   return [super application:application openURL:url options:options] || [RCTLinkingManager application:application openURL:url options:options];
 }
 

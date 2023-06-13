@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Platform, useColorScheme } from "react-native";
 
 const JOIN_GROUP_MUTATION = gql`
   mutation joinGroup($id: Int!) {
@@ -23,7 +23,6 @@ const WITHDRAW_GROUP_MUTATION = gql`
 `;
 
 const GroupHeaderContainer = styled.View`
-  flex: 0.5;
   width: 100%;
   background-color: ${(props) => props.theme.mainBgColor};
 `;
@@ -75,7 +74,7 @@ const GroupHeaderTitle = styled.Text`
 `;
 
 const GroupHeaderEvent = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
@@ -83,7 +82,7 @@ const GroupHeaderEvent = styled.Text`
 const GroupHeaderPoint = styled.View`
   width: 1px;
   height: 1px;
-  background-color: ${(props) => props.theme.grayColor};
+  background-color: ${(props) => props.theme.textColor};
   margin: 4px;
 `;
 
@@ -92,20 +91,20 @@ const GroupHeaderMember = styled.View`
 `;
 
 const GroupHeaderUserCount = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
 
 const GroupHeaderActiveArea = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
   margin-bottom: 8px;
 `;
 
 const GroupHeaderDisc = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
   margin-bottom: 8px;
@@ -191,10 +190,19 @@ export default function GroupHeader({ navigation, refresh, groupData }: any) {
     });
   };
 
+  const ContainerFlex = Platform.OS === "ios" ? 0.5 : 0.75;
+  const isDark = useColorScheme() === "dark";
+
   return (
-    <GroupHeaderContainer>
+    <GroupHeaderContainer style={{ flex: 0.5 }}>
       <GroupHeaderWrap>
-        <GroupHeaderImage source={{ uri: groupData.imagePath?.imagePath }} />
+        <GroupHeaderImage
+          source={
+            groupData.groupImage !== null
+              ? { uri: groupData.groupImage.imagePath }
+              : {}
+          }
+        />
       </GroupHeaderWrap>
       <GroupHeaderInfoContainer>
         <GroupHeaderInfoWrap>
@@ -203,7 +211,11 @@ export default function GroupHeader({ navigation, refresh, groupData }: any) {
             <GroupHeaderEvent>{groupData.sportsEvent}</GroupHeaderEvent>
             <GroupHeaderPoint />
             <GroupHeaderMember>
-              <Ionicons name="people-outline" size={12} />
+              <Ionicons
+                name="people-outline"
+                size={12}
+                color={isDark ? "white" : "black"}
+              />
               <GroupHeaderUserCount>
                 {groupData.userCount} / {groupData.maxMember}
               </GroupHeaderUserCount>

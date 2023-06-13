@@ -9,6 +9,7 @@ import { gql, useQuery } from "@apollo/client";
 import { TUTOR_FRAGMENT_NATIVE } from "../../fragments";
 import ScreenLayout from "../../components/ScreenLayout";
 import TutorHeader from "../../components/tutor/TutorHeader";
+import { useIsFocused } from "@react-navigation/native";
 
 const TUTOR_INFO_QUERY = gql`
   query seeTutor($id: Int!) {
@@ -29,6 +30,7 @@ const TutorBottomContainer = styled.View`
 `;
 
 export default function TutorNav({ navigation, route }: any) {
+  const isFocused = useIsFocused();
   const isDark = useColorScheme() === "dark";
   const id = parseInt(route.params.id);
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +56,7 @@ export default function TutorNav({ navigation, route }: any) {
     navigation.setOptions({
       title: data?.seeTutor?.name,
     });
-  }, [route.params, data]);
+  }, [route.params, data, isFocused]);
   return (
     <ScreenLayout loading={loading}>
       <TutorHeader
@@ -85,6 +87,7 @@ export default function TutorNav({ navigation, route }: any) {
             initialParams={{ data: data?.seeTutor }}
             component={TutorBoard}
           />
+          {/* 
           <Tab.Screen
             name="TutorCalendar"
             options={{
@@ -94,6 +97,7 @@ export default function TutorNav({ navigation, route }: any) {
             }}
             component={TutorCalendar}
           />
+          */}
           <Tab.Screen
             name="TutorInfo"
             options={{

@@ -32,7 +32,7 @@ const TextInput = styled.TextInput`
 `;
 
 const Upload = styled.TouchableOpacity`
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -122,6 +122,7 @@ export function GroupImageComp({ id, setValue, imagePath }: any) {
             justifyContent: "center",
             width: mediaWidth,
             height: mediaWidth,
+            marginTop: 10,
           }}
           key={item}
         >

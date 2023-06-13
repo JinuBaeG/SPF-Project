@@ -35,7 +35,7 @@ const ListButton = styled.TouchableOpacity`
 `;
 
 const Upload = styled.TouchableOpacity`
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 8px;

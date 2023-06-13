@@ -10,6 +10,9 @@ import {
   NOTICE_FRAGMENT_NATIVE,
 } from "../../fragments";
 import NoticeComments from "./NoticeComments";
+import { useColorScheme } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import ContentsMenu from "../../components/ContentsMenu";
 
 const SEE_NOTICE_QUERY = gql`
   query seeNotice($id: Int) {
@@ -38,13 +41,20 @@ const NOTICE_TOGGLE_LIKE_MUTATION = gql`
   }
 `;
 
-const Container = styled.SafeAreaView`
+const Container = styled.ScrollView`
+  flex: 1;
   background-color: ${(props) => props.theme.mainBgColor};
   width: 100%;
 `;
 
-const Header = styled.TouchableOpacity`
-  padding: 12px;
+const Header = styled.View`
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -68,15 +78,15 @@ const BoardInfo = styled.View`
   align-items: center;
 `;
 
-const CreateDate = styled.Text`
+const SportsName = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
-  margin-right: 8px;
+  color: ${(props) => props.theme.grayColor};
 `;
 
-const Hits = styled.Text`
+const CreateDate = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayColor};
+  margin-right: 8px;
 `;
 
 const File = styled.Image``;
@@ -101,7 +111,7 @@ const ActionText = styled.Text`
 
 const Caption = styled.View`
   flex-direction: row;
-  padding: 4px 16px 16px;
+  padding: 4px 4px 16px;
 `;
 
 const CaptionText = styled.Text`
@@ -111,39 +121,27 @@ const CaptionText = styled.Text`
 
 const Category = styled.View`
   flex-direction: row;
-  padding: 16px 16px 4px;
+  padding: 4px;
 `;
 
 const CategoryText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
   margin-left: 10px;
-  font-weight: 600;
   color: ${(props) => props.theme.textColor};
-`;
-
-const Likes = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
-`;
-
-const CommentNumber = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
 `;
 
 const ExtraContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
 `;
 
-const NumberContainer = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 16px;
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 export default function NoticeDetail({ navigation, route }: any) {
@@ -165,7 +163,7 @@ export default function NoticeDetail({ navigation, route }: any) {
       },
     } = result;
     if (ok) {
-      const noticeId = `Board:${noticeData?.seeNotice?.id}`;
+      const noticeId = `Notice:${noticeData?.seeNotice?.id}`;
       cache.modify({
         id: noticeId,
         fields: {
@@ -224,6 +222,8 @@ export default function NoticeDetail({ navigation, route }: any) {
     return <CommentComp {...comment} />;
   };
 
+  const isDark = useColorScheme() === "dark";
+
   const ListHeader = () => {
     const getDate = new Date(parseInt(noticeData?.seeNotice?.createdAt));
 
@@ -233,25 +233,30 @@ export default function NoticeDetail({ navigation, route }: any) {
 
     return (
       <Container>
-        <Header onPress={goToProfile}>
-          <UserAvatar
-            resizeMode="cover"
-            source={
-              noticeData?.seeNotice?.user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
-                : { uri: noticeData?.seeNotice?.user.avatar }
-            }
+        <Header>
+          <UserInfo onPress={goToProfile}>
+            <UserAvatar
+              resizeMode="cover"
+              source={
+                noticeData?.seeNotice?.user.avatar === null
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
+                  : { uri: noticeData?.seeNotice?.user.avatar }
+              }
+            />
+            <UserInfoWrap>
+              <Username>{noticeData?.seeNotice?.user.username}</Username>
+              <BoardInfo>
+                <CreateDate>{year + "." + month + "." + date}</CreateDate>
+              </BoardInfo>
+            </UserInfoWrap>
+          </UserInfo>
+          <ContentsMenu
+            id={noticeData?.seeNotice?.id}
+            isMine={noticeData?.seeNotice?.isMine}
+            screen="NoticeDetail"
           />
-          <UserInfoWrap>
-            <Username>{noticeData?.seeNotice?.user.username}</Username>
-            <BoardInfo>
-              <CreateDate>{year + "." + month + "." + date}</CreateDate>
-              <Hits>
-                <Ionicons name="eye-outline" />
-                {" " + noticeData?.seeNotice?.hits}
-              </Hits>
-            </BoardInfo>
-          </UserInfoWrap>
         </Header>
         <Category>
           <CategoryText>{noticeData?.seeNotice?.title}</CategoryText>
@@ -259,8 +264,20 @@ export default function NoticeDetail({ navigation, route }: any) {
         <Caption>
           <CaptionText>{noticeData?.seeNotice?.discription}</CaptionText>
         </Caption>
+        <BoardLine />
         <ExtraContainer>
           <Actions>
+            <Action>
+              <Ionicons
+                name="chatbubble-outline"
+                color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+                style={{ marginBottom: 2 }}
+                size={16}
+              />
+              <ActionText>
+                댓글 {noticeData?.seeNotice?.noticeCommentCount}
+              </ActionText>
+            </Action>
             <Action onPress={() => toggleLikeMutation()}>
               <Ionicons
                 name={
@@ -277,14 +294,22 @@ export default function NoticeDetail({ navigation, route }: any) {
             </Action>
           </Actions>
         </ExtraContainer>
+        <BoardLine />
         <NoticeComments
           id={noticeData?.seeNotice?.id}
           noticeCommentCount={noticeData?.seeNotice?.noticeCommentCount}
           refresh={refresh}
         />
+        <BoardLine />
       </Container>
     );
   };
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    refresh();
+  }, [isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

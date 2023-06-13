@@ -4,12 +4,12 @@ import Board from "../../components/board/Board";
 import Notice from "../../components/notice/Notice";
 
 const BoardContainer = styled.ScrollView`
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.grayBackground};
 `;
 
 const BoardLine = styled.View`
   height: 4px;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 export default function GroupBoard({ navigation, route }: any) {

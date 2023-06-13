@@ -24,25 +24,14 @@ const WriteButtonContainer = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export default function SharedWriteButton() {
+export default function SharedWriteButton({ route: nRoute }: any) {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const route = useRoute();
   const navigation = useNavigation<UploadCompNavigationProps>();
   const screenName = route.name;
 
   const onPress = () => {
-    if (screenName === "TabFeed") {
-      return navigation.navigate("AddFeed", { screenName });
-    } else if (screenName === "TabGroup") {
-      return navigation.navigate("AddGroup", { screenName });
-    } else if (screenName === "TabTutor") {
-      return navigation.navigate("AddTutor", { screenName });
-    } else if (screenName === "TabFacility") {
-      return navigation.navigate("AddFacility", { screenName });
-    } else if (screenName === "BoardList") {
-      return navigation.navigate("AddBoard", { screenName });
-    }
-    /*if (!isLoggedIn) {
+    if (!isLoggedIn) {
       navigation.navigate("LoggedOutNav");
     } else {
       if (screenName === "TabFeed") {
@@ -51,12 +40,8 @@ export default function SharedWriteButton() {
         return navigation.navigate("AddGroup", { screenName });
       } else if (screenName === "TabTutor") {
         return navigation.navigate("AddTutor", { screenName });
-      } else if (screenName === "TabFacility") {
-        return navigation.navigate("AddFacility", { screenName });
-      } else if (screenName === "BoardList") {
-        return navigation.navigate("AddBoard", { screenName });
       }
-    }*/
+    }
   };
 
   return (

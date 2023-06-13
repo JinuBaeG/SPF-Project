@@ -12,9 +12,10 @@ import { login, logout, getProfile } from "@react-native-seoul/kakao-login";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
 import { appleAuth } from "@invertase/react-native-apple-authentication";
+import { OPER_URL, LOCAL_URL } from "@env";
+import { Platform } from "react-native";
 
 const TOKEN = "token";
-const PLATFORM = "platform";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -38,13 +39,13 @@ export const onAppleButtonPress = async () => {
 
 export const onPressGoogleBtn = async () => {
   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-  const { idToken } = await GoogleSignin.signIn();
+  const { idToken: token } = await GoogleSignin.signIn();
 
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  const googleCredential = auth.GoogleAuthProvider.credential(token);
   const res = await auth().signInWithCredential(googleCredential);
-  const { email, uid } = res;
+  const { email, uid } = res.user;
 
-  return { email, uid, idToken: token };
+  return { email, uid, token };
 };
 
 export const signInWithKakao = async () => {
@@ -74,24 +75,35 @@ export const signOutWithKakao = async () => {
 
 export const logUserIn = async (token) => {
   await AsyncStorage.setItem(TOKEN, token);
-  await AsyncStorage.setItem(PLATFORM, "playinus");
   isLoggedInVar(true);
   tokenVar(token);
 };
 
 export const logUserOut = async () => {
   await AsyncStorage.removeItem(TOKEN);
-  await AsyncStorage.setItem(PLATFORM, "playinus");
   isLoggedInVar(false);
   tokenVar(null);
 };
 
+//uri: "http://172.30.1.20:4000/graphql",
+//uri: "http://ec2-13-125-37-103.ap-northeast-2.compute.amazonaws.com:4000/graphql"
+
 const uploadHttpLink = createUploadLink({
-  uri: "http://ec2-3-36-68-172.ap-northeast-2.compute.amazonaws.com:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "development"
+      ? Platform.OS === "ios"
+        ? `${LOCAL_URL}:4000/graphql`
+        : "http://10.44.100.43:4000/graphql"
+      : `${OPER_URL}:4000/graphql`,
 });
 
 const wsLink = new WebSocketLink({
-  uri: "http://ec2-3-36-68-172.ap-northeast-2.compute.amazonaws.com:4000/graphql",
+  uri:
+    process.env.NODE_ENV === "development"
+      ? Platform.OS === "ios"
+        ? `${LOCAL_URL}:4000/graphql`
+        : "http://10.44.100.43:4000/graphql"
+      : `${OPER_URL}:4000/graphql`,
   options: {
     connectionParams: () => ({
       token: tokenVar(),
@@ -126,7 +138,14 @@ export const cache = new InMemoryCache({
       },
     },
     User: {
-      keyFields: (obj) => `User:${obj.username}`,
+      keyFields: (obj) => `User:${obj.id}`,
+      fields: {
+        blockedBy: {
+          merge(existing = [], incoming = []) {
+            return [...existing, ...incoming];
+          },
+        },
+      },
     },
     Message: {
       fields: {

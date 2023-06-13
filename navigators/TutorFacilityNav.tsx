@@ -1,11 +1,14 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import styled from "styled-components/native";
 import HeaderNav from "../components/nav/HeaderNav";
 import ScreenLayout from "../components/ScreenLayout";
 import Facility from "../screens/Facility/Facility";
 import Tutor from "../screens/Tutor/Tutor";
+import { useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HeaderFilter from "../components/nav/HeaderFilter";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -22,9 +25,15 @@ export function TutorFacilityNav({ navigation }: any) {
   const MessageButton = () => {
     return <HeaderNav navigation={navigation} />;
   };
+
+  const FilterButton = () => {
+    return <HeaderFilter navigation={navigation} />;
+  };
+
   useEffect(() => {
     navigation.setOptions({
-      title: "튜터/시설",
+      title: "",
+      headerLeft: FilterButton,
       headerRight: MessageButton,
     });
   }, []);

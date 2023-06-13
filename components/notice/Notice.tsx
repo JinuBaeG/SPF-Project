@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
+import { isLoggedInVar } from "../../apollo";
+import useMe from "../../hooks/useMe";
+import { Alert, Dimensions } from "react-native";
 /**
  * Discription : 그룹 게시판의 공지사항
  *
@@ -30,7 +33,6 @@ type NoticeNavigationProps = NativeStackNavigationProp<
 >;
 
 const BoardContainer = styled.SafeAreaView`
-  padding: 16px;
   width: 100%;
   height: 274px;
   background-color: ${(props) => props.theme.mainBgColor};
@@ -86,16 +88,15 @@ const EmptyText = styled.Text`
 const CreateGroupBtn = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.greenActColor};
   color: ${(props) => props.theme.textColor};
-  font-size: 16px;
-  margin-top: 40px;
+  margin-top: 20px;
   border-radius: 8px;
+  padding: 4px;
 `;
 
 const CreateGroupText = styled.Text`
   color: ${(props) => props.theme.whiteColor};
-  font-size: 20px;
   font-weight: 600;
-  padding: 16px;
+  padding: 4px;
 `;
 
 const ListContainer = styled.View``;
@@ -112,8 +113,8 @@ const BoardPoint = styled.View`
   padding: 0 4px;
 `;
 
-const BoardTitle = styled.Text`
-  width: 282px;
+const BoardTitle = styled.Text<{ deviceWidth: number }>`
+  width: ${(props) => props.deviceWidth};
   padding: 0 4px;
   font-size: 12px;
   font-weight: 600;
@@ -128,7 +129,10 @@ const BoardDate = styled.Text`
 `;
 
 export default function Notice({ data, sortation }: any) {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const navigation = useNavigation<NoticeNavigationProps>();
+  const deviceWidth = Dimensions.get("window").width - 90;
+
   const {
     data: noticeData,
     loading: noticeLoading,
@@ -159,10 +163,21 @@ export default function Notice({ data, sortation }: any) {
         <Title>공지사항</Title>
         <DiscBtn
           onPress={() => {
-            navigation.navigate("NoticeList", {
-              id: noticeData?.seeNotices?.group?.id,
-              sortation,
-            });
+            if (data.isJoin) {
+              navigation.navigate("NoticeList", {
+                id: data.id,
+                isPresident: data.isPresident,
+                sortation,
+              });
+            } else if (sortation === "facility") {
+              navigation.navigate("NoticeList", {
+                id: data.id,
+                isPresident: data.isPresident,
+                sortation,
+              });
+            } else {
+              Alert.alert("그룹 또는 튜터 가입 후 사용할 수 있습니다.");
+            }
           }}
         >
           <Disc>더보기 </Disc>
@@ -196,10 +211,11 @@ export default function Notice({ data, sortation }: any) {
                   });
                 }}
               >
-                <BoardPoint>
-                  <Ionicons name="caret-forward" size={16} color="#01aa73" />
-                </BoardPoint>
-                <BoardTitle numberOfLines={1} ellipsizeMode="tail">
+                <BoardTitle
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  deviceWidth={deviceWidth}
+                >
                   {item.title}
                 </BoardTitle>
                 <BoardDate>{year + "-" + month + "-" + date}</BoardDate>
@@ -211,13 +227,15 @@ export default function Notice({ data, sortation }: any) {
       ) : (
         <EmptyContainer>
           <EmptyText>공지사항이 없네요!</EmptyText>
-          <CreateGroupBtn
-            onPress={() => {
-              navigation.navigate("AddNotice", { id: data.id, sortation });
-            }}
-          >
-            <CreateGroupText>글 남기기</CreateGroupText>
-          </CreateGroupBtn>
+          {data.isPresident ? (
+            <CreateGroupBtn
+              onPress={() => {
+                navigation.navigate("AddNotice", { id: data.id, sortation });
+              }}
+            >
+              <CreateGroupText>글 남기기</CreateGroupText>
+            </CreateGroupBtn>
+          ) : null}
         </EmptyContainer>
       )}
     </BoardContainer>

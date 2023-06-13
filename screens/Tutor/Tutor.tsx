@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import NaverMapView, {
@@ -13,10 +13,14 @@ import GroupList from "../../components/group/GroupList";
 import ScreenLayout from "../../components/ScreenLayout";
 import TutorList from "../../components/tutor/TutorList";
 import { TUTOR_FRAGMENT_NATIVE } from "../../fragments";
+import { useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AroundDistance } from "../../shared.types";
+import { isLoggedInVar } from "../../apollo";
 
 const TUTOR_QUERY = gql`
-  query seeTutors($offset: Int!) {
-    seeTutors(offset: $offset) {
+  query seeTutors($offset: Int!, $sportsEvent: String) {
+    seeTutors(offset: $offset, sportsEvent: $sportsEvent) {
       ...TutorFragmentNative
     }
   }
@@ -78,9 +82,9 @@ const CreateGroupBtn = styled.TouchableOpacity`
 
 const CreateGroupText = styled.Text`
   color: ${(props) => props.theme.whiteColor};
-  font-size: 20px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 16px;
+  padding: 8px;
 `;
 
 const CreateGroupSmallBtn = styled.TouchableOpacity`
@@ -97,6 +101,21 @@ const CreateGroupSmallText = styled.Text`
 `;
 
 export default function Tutor({ navigation }: any) {
+  const isFocused = useIsFocused();
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const [sportsEvent, setSportsEvent] = useState<any>(undefined);
+  const [curLocation, setcurLocation] = useState<any>(null);
+
+  useEffect(() => {
+    (async () => {
+      const value = await AsyncStorage.getItem("filterSports");
+      const latitude = await AsyncStorage.getItem("latitude");
+      const longitude = await AsyncStorage.getItem("longitude");
+      setSportsEvent(value);
+      setcurLocation({ latitude, longitude });
+    })();
+  }, [isFocused]);
+
   const {
     data: tutorData,
     loading: tutorLoading,
@@ -105,7 +124,9 @@ export default function Tutor({ navigation }: any) {
   } = useQuery(TUTOR_QUERY, {
     variables: {
       offset: 0,
+      sportsEvent,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const renderTutorList = ({ item: tutor }: any) => {
@@ -120,35 +141,69 @@ export default function Tutor({ navigation }: any) {
     setRefreshing(false);
   };
 
-  const P0 = { latitude: 37.481492, longitude: 126.884963 };
-  const P1 = { latitude: 37.481492, longitude: 126.889963 };
-  const [latitude, setLatitude] = useState<string>();
-  const [longitude, setLongitude] = useState<string>();
+  const [location, setLocation] = useState<any>([]);
+
+  useEffect(() => {
+    if (curLocation !== null) {
+      setLocation([
+        ...location,
+        {
+          latitude: parseFloat(curLocation.latitude),
+          longitude: parseFloat(curLocation.longitude),
+        },
+      ]);
+    }
+  }, [curLocation]);
 
   return (
-    <ScreenLayout loading={false}>
+    <ScreenLayout loading={tutorLoading}>
+      {/*
       <NaverMapView
         style={{ width: "100%", height: "100%", flex: 0.5 }}
         showsMyLocationButton={true}
-        center={{ ...P0, zoom: 14 }}
+        center={{ ...location[0], zoom: 14 }}
         onCameraChange={(e) =>
           console.warn("onCameraChange", JSON.stringify(e))
         }
         onMapClick={(e) => console.warn("onMapClick", JSON.stringify(e))}
       >
-        <Marker coordinate={P0} onClick={() => console.warn("onClick! p0")} />
-        <Marker coordinate={P1} onClick={() => console.warn("onClick! p1")} />
+        <Marker
+          coordinate={location[0]}
+          onClick={() => console.warn("onClick! p0")}
+        />
         <Circle
-          coordinate={P0}
+          coordinate={location[0]}
           color={"rgba(255,0,0,0.3)"}
           radius={500}
           onClick={() => console.warn("onClick! circle")}
         />
       </NaverMapView>
+      */}
       <FilterSmallContainer>
         <FilterSmallTitle>우리동네 튜터</FilterSmallTitle>
         <FilterBtnContainer>
-          <CreateGroupSmallBtn onPress={() => navigation.navigate("AddTutor")}>
+          <CreateGroupSmallBtn
+            onPress={() => {
+              if (isLoggedIn) {
+                navigation.navigate("RequestAddTutor", {
+                  sidoName: undefined,
+                  gusiName: undefined,
+                  dongEubMyunName: undefined,
+                  riName: undefined,
+                  roadName: undefined,
+                  buildingNumber: undefined,
+                  address: undefined,
+                  addrRoad: undefined,
+                  activeArea: undefined,
+                  areaLatitude: undefined,
+                  areaLongitude: undefined,
+                  zipcode: undefined,
+                });
+              } else {
+                navigation.navigate("LoggedOutNav");
+              }
+            }}
+          >
             <CreateGroupSmallText>튜터 신청하기</CreateGroupSmallText>
           </CreateGroupSmallBtn>
         </FilterBtnContainer>
@@ -178,22 +233,26 @@ export default function Tutor({ navigation }: any) {
             <EmptyText>우리 지역에 아직 튜터가 없네요!</EmptyText>
             <EmptyText>튜터가 되어 사람들을 초대해보세요!</EmptyText>
             <CreateGroupBtn
-              onPress={() =>
-                navigation.navigate("AddTutor", {
-                  sidoName: undefined,
-                  gusiName: undefined,
-                  dongEubMyunName: undefined,
-                  riName: undefined,
-                  roadName: undefined,
-                  buildingNumber: undefined,
-                  address: undefined,
-                  addrRoad: undefined,
-                  activeArea: undefined,
-                  areaLatitude: undefined,
-                  areaLongitude: undefined,
-                  zipcode: undefined,
-                })
-              }
+              onPress={() => {
+                if (isLoggedIn) {
+                  navigation.navigate("RequestAddTutor", {
+                    sidoName: undefined,
+                    gusiName: undefined,
+                    dongEubMyunName: undefined,
+                    riName: undefined,
+                    roadName: undefined,
+                    buildingNumber: undefined,
+                    address: undefined,
+                    addrRoad: undefined,
+                    activeArea: undefined,
+                    areaLatitude: undefined,
+                    areaLongitude: undefined,
+                    zipcode: undefined,
+                  });
+                } else {
+                  navigation.navigate("LoggedOutNav");
+                }
+              }}
             >
               <CreateGroupText>튜터 신청하기</CreateGroupText>
             </CreateGroupBtn>

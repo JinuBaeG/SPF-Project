@@ -1,8 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
-import styled from "styled-components/native";
-import { cache } from "../../apollo";
 import ScreenLayout from "../../components/ScreenLayout";
 import InquiryList from "../../components/shared/InquiryList";
 import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
@@ -29,6 +27,7 @@ export default function TutorInquiry({ navigation, route }: any) {
       id,
       offset: 0,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const renderInquiryList = ({ item: inquiry }: any) => {
@@ -45,7 +44,7 @@ export default function TutorInquiry({ navigation, route }: any) {
 
   useEffect(() => {
     navigation.setOptions({
-      title: "문의보기",
+      title: "문의확인",
     });
   }, []);
 

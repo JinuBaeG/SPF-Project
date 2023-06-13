@@ -16,8 +16,8 @@ import ProfileInfo from "./ProfileInfo";
 import ProfileHeader from "../../components/Profile/ProfileHeader";
 
 const USER_INFO_QUERY = gql`
-  query seeProfile($username: String!) {
-    seeProfile(username: $username) {
+  query seeProfile($id: Int!) {
+    seeProfile(id: $id) {
       ...UserFragmentNative
       photos {
         ...FeedPhoto
@@ -52,7 +52,7 @@ export default function Profile({ navigation, route }: any) {
   const [refreshing, setRefreshing] = useState(false);
   const { data, loading, refetch } = useQuery(USER_INFO_QUERY, {
     variables: {
-      username,
+      id,
     },
     fetchPolicy: "cache-and-network",
   });
@@ -100,6 +100,7 @@ export default function Profile({ navigation, route }: any) {
             initialParams={{ id }}
             component={ProfileFeed}
           />
+          {/*
           <Tab.Screen
             name="ProfieCalendar"
             options={{
@@ -109,6 +110,7 @@ export default function Profile({ navigation, route }: any) {
             }}
             component={ProfileCalendar}
           />
+          
           <Tab.Screen
             name="ProfieInfo"
             options={{
@@ -119,6 +121,7 @@ export default function Profile({ navigation, route }: any) {
             initialParams={{ data: data?.seeProfile }}
             component={ProfileInfo}
           />
+          */}
         </Tab.Navigator>
       </GroupBottomContainer>
     </ScreenLayout>

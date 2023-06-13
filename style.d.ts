@@ -9,6 +9,7 @@ declare module "styled-components/native" {
     blackColor: string;
     whiteColor: string;
     grayColor: string;
+    grayBackground: string;
     grayInactColor: string;
     grayLineColor: string;
     greenActColor: string;

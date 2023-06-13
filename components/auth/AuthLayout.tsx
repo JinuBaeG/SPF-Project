@@ -41,14 +41,14 @@ export default function AuthLayout({ children }: any) {
             width: "100%",
           }}
           behavior="padding"
-          keyboardVerticalOffset={Platform.OS === "ios" ? 50 : -150}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 150 : -150}
         >
           <Logo
             resizeMode="contain"
             source={
               isDark
-                ? require("../../assets/white_logo.png")
-                : require("../../assets/logo.png")
+                ? require("../../assets/splash.png")
+                : require("../../assets/black_logo.png")
             }
           />
           {children}

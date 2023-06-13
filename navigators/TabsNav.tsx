@@ -4,6 +4,7 @@ import { Image, useColorScheme, View } from "react-native";
 import TabIcon from "../components/nav/TabIcon";
 import useMe from "../hooks/useMe";
 import StackNavFactroy from "./SharedStackNav";
+import lightTheme from "../style";
 
 interface ITabsNavProps {
   screenName: string;
@@ -21,7 +22,7 @@ export default function TabsNav() {
         headerShown: false,
         headerTransparent: true,
         tabBarStyle: {
-          backgroundColor: isDark ? "#1e272e" : "#ffffff",
+          backgroundColor: isDark ? "#000000" : "#ffffff",
           borderTopColor: "rgba(255,255,255,0.5)",
         },
         tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
@@ -49,7 +50,7 @@ export default function TabsNav() {
       >
         {() => <StackNavFactroy screenName="Feed" />}
       </Tabs.Screen>
-      {/* 
+
       <Tabs.Screen
         name="그룹"
         options={{
@@ -95,7 +96,6 @@ export default function TabsNav() {
       >
         {() => <StackNavFactroy screenName="MyProfile" />}
       </Tabs.Screen>
-      */}
     </Tabs.Navigator>
   );
 }

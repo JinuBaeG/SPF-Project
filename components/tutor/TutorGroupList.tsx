@@ -124,7 +124,6 @@ export default function TutorGroupList({
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log(selected);
           navigation.navigate(route.params.previousScreen, {
             selected,
             merge: true,

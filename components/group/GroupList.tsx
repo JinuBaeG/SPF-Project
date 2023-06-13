@@ -4,6 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
+import { isLoggedInVar } from "../../apollo";
+import { useReactiveVar } from "@apollo/client";
+import { useColorScheme } from "react-native";
 
 type GroupCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -21,7 +24,6 @@ const GroupListImage = styled.Image`
   width: 108px;
   height: 104px;
   border-radius: 8px;
-  border: 1px solid black;
 `;
 
 const GroupListInfoWrap = styled.View`
@@ -36,14 +38,14 @@ const GroupListTitleWrap = styled.View`
 `;
 
 const GroupListTitle = styled.Text`
-  color: ${(props) => props.theme.blackColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 16px;
   font-weight: 600;
   margin-right: 8px;
 `;
 
 const GroupListEvent = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
@@ -51,22 +53,23 @@ const GroupListEvent = styled.Text`
 const GroupListPoint = styled.View`
   width: 1px;
   height: 1px;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.textColor};
   margin: 4px;
 `;
 
 const GroupListMember = styled.View`
   flex-direction: row;
+  align-items: center;
 `;
 
 const GroupListUserCount = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
 
 const GroupListDisc = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
   margin: 8px 0;
@@ -95,23 +98,41 @@ export default function GroupList({
   groupImage,
 }: any) {
   const navigation = useNavigation<GroupCompNavigationProps>();
-
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const isDark = useColorScheme() === "dark";
   return (
     <GroupListContainer
-      onPress={() =>
-        navigation.navigate("GroupDetail", {
-          id,
-        })
-      }
+      onPress={() => {
+        if (isLoggedIn) {
+          navigation.navigate("GroupDetail", {
+            id,
+          });
+        } else {
+          navigation.navigate("LoggedOutNav");
+        }
+      }}
     >
-      <GroupListImage source={{ uri: groupImage }} />
+      <GroupListImage
+        source={
+          groupImage !== null
+            ? { uri: groupImage.imagePath }
+            : isDark
+            ? require("../../assets/emptyGroup_white.png")
+            : require("../../assets/emptyGroup.png")
+        }
+      />
       <GroupListInfoWrap>
         <GroupListTitleWrap>
           <GroupListTitle>{name}</GroupListTitle>
           <GroupListEvent>{sportsEvent}</GroupListEvent>
           <GroupListPoint />
           <GroupListMember>
-            <Ionicons name="people-outline" size={12} />
+            <Ionicons
+              name="people-outline"
+              size={12}
+              color={isDark ? "white" : "black"}
+              style={{ marginHorizontal: 4 }}
+            />
             <GroupListUserCount>
               {userCount} / {maxMember}
             </GroupListUserCount>

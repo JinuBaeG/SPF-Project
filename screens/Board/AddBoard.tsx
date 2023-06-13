@@ -6,7 +6,6 @@ import { SelectList } from "react-native-select-bottom-list";
 import styled from "styled-components/native";
 import { colors } from "../../color";
 import DissmissKeyboard from "../../components/DismissKeyboard";
-import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
 
 const ADD_BOARD_MUTATION = gql`
   mutation createBoard(
@@ -35,7 +34,7 @@ const ADD_BOARD_MUTATION = gql`
 // Styled-Component START
 const Container = styled.View`
   flex: 1;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.greenInactColor};
   padding: 16px;
 `;
 
@@ -49,7 +48,7 @@ const HeaderRightText = styled.Text`
 const TitleContainer = styled.View``;
 
 const Title = styled.TextInput`
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.whiteColor};
   color: black;
   padding: 12px;
   border-radius: 8px;
@@ -61,7 +60,7 @@ const DiscContainer = styled.View`
 `;
 
 const Disc = styled.TextInput`
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.whiteColor};
   color: black;
   padding: 12px;
   border-radius: 8px;
@@ -70,12 +69,6 @@ const Disc = styled.TextInput`
 
 export default function AddBoard({ navigation, route }: any) {
   const { register, handleSubmit, setValue } = useForm();
-  useEffect(() => {
-    register("id");
-    register("discription");
-    register("title");
-    register("sortation");
-  }, [register]);
 
   const updateBoard = (cache: any, result: any) => {
     const {
@@ -113,6 +106,13 @@ export default function AddBoard({ navigation, route }: any) {
   const HeaderRightLoading = () => (
     <ActivityIndicator size="small" color="white" style={{ marginRight: 10 }} />
   );
+
+  useEffect(() => {
+    register("id");
+    register("discription");
+    register("title");
+    register("sortation");
+  }, [register]);
 
   useEffect(() => {
     setValue("id", route.params.id);

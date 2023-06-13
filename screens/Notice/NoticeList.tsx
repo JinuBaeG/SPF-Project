@@ -4,8 +4,9 @@ import { FlatList } from "react-native";
 import styled from "styled-components/native";
 import ScreenLayout from "../../components/ScreenLayout";
 import { NOTICE_FRAGMENT_NATIVE } from "../../fragments";
-import SharedWriteButton from "../../components/shared/SharedWriteButton";
+import { Ionicons } from "@expo/vector-icons";
 import NoticeComp from "../../components/notice/NoticeComp";
+import { useIsFocused } from "@react-navigation/native";
 
 const SEE_NOTICES_QUERY = gql`
   query seeNotices($id: Int, $sortation: String, $offset: Int) {
@@ -16,7 +17,20 @@ const SEE_NOTICES_QUERY = gql`
   ${NOTICE_FRAGMENT_NATIVE}
 `;
 
+const WriteButtonContainer = styled.TouchableOpacity`
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background-color: ${(props) => props.theme.greenActColor};
+  align-items: center;
+  justify-content: center;
+`;
+
 export default function NoticeList({ navigation, route }: any) {
+  const isFocused = useIsFocused();
   const id = route.params.id;
   const sortation = route.params.sortation;
 
@@ -34,7 +48,7 @@ export default function NoticeList({ navigation, route }: any) {
   });
 
   const renderNoticeList = ({ item: board }: any) => {
-    return <NoticeComp {...board} />;
+    return <NoticeComp {...board} refresh={refresh} />;
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -49,7 +63,8 @@ export default function NoticeList({ navigation, route }: any) {
     navigation.setOptions({
       title: "공지사항 리스트",
     });
-  }, []);
+    refresh();
+  }, [isFocused]);
 
   return (
     <ScreenLayout loading={noticeLoading}>
@@ -71,7 +86,13 @@ export default function NoticeList({ navigation, route }: any) {
         data={data?.seeNotices}
         renderItem={renderNoticeList}
       />
-      <SharedWriteButton />
+      {route.params.isPresident ? (
+        <WriteButtonContainer
+          onPress={() => navigation.navigate("AddNotice", { id, sortation })}
+        >
+          <Ionicons name={"ios-add"} size={28} color="white" />
+        </WriteButtonContainer>
+      ) : null}
     </ScreenLayout>
   );
 }

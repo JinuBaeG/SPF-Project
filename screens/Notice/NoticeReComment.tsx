@@ -4,7 +4,12 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
 import useMe from "../../hooks/useMe";
 import { Ionicons } from "@expo/vector-icons";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  useColorScheme,
+} from "react-native";
 import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -22,23 +27,7 @@ const CREATE_NOTICE_RECOMMENT_MUTATION = gql`
 `;
 
 const InputContainer = styled.View`
-  padding: 16px;
-  margin-top: 16px;
-  background-color: ${(props) => props.theme.greenActColor};
-`;
-
-const CommentCount = styled.View``;
-
-const CountWrap = styled.View`
-  margin-bottom: 8px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CountText = styled.Text`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${(props) => props.theme.whiteColor};
+  background-color: ${(props) => props.theme.mainBgColor};
 `;
 
 const MessageWrap = styled.View`
@@ -49,10 +38,8 @@ const MessageWrap = styled.View`
 const MessageInput = styled.TextInput`
   align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
-  padding: 8px 12px;
+  padding: 16px;
   color: ${(props) => props.theme.textColor};
-  border-radius: 4px;
-  border: 2px solid ${(props) => props.theme.grayColor};
   margin-right: 8px;
 `;
 
@@ -63,6 +50,8 @@ export default function NoticeReComment({
   noticeReCommentCount,
   refresh,
 }: any) {
+  const deviceWidth = Dimensions.get("window").width;
+  const isDark = useColorScheme() === "dark";
   // 댓글달기
   const { data: userData } = useMe();
   const { register, handleSubmit, setValue, getValues, watch } = useForm();
@@ -144,21 +133,9 @@ export default function NoticeReComment({
 
   return (
     <InputContainer>
-      <CommentCount>
-        <CountWrap>
-          <Ionicons
-            name="chatbubble"
-            color={"#ffffff"}
-            style={{ marginRight: 2 }}
-            size={24}
-          />
-          <CountText>답글 </CountText>
-          <CountText>{noticeReCommentCount}</CountText>
-        </CountWrap>
-      </CommentCount>
       <MessageWrap>
         <MessageInput
-          placeholderTextColor="rgba(0,0,0,0.5)"
+          placeholderTextColor="rgba(136, 136, 136, 0.4)"
           placeholder="내용을 입력해주세요."
           returnKeyLabel="Done"
           returnKeyType="done"
@@ -166,7 +143,7 @@ export default function NoticeReComment({
           onSubmitEditing={handleSubmit(onValid)}
           onChangeText={(text) => setValue("payload", text)}
           value={watch("payload")}
-          style={{ width: 320, height: 80 }}
+          style={{ width: deviceWidth - 40, height: 80 }}
         />
         <SendButton
           onPress={handleSubmit(onValid)}
@@ -175,7 +152,11 @@ export default function NoticeReComment({
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload")) ? "rgba(255, 255, 255, 1)" : "white"
+              !Boolean(watch("payload"))
+                ? "rgba(136, 136, 136, 0.4)"
+                : isDark
+                ? "white"
+                : "black"
             }
             size={20}
           />

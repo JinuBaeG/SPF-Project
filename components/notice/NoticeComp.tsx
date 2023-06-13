@@ -8,11 +8,13 @@ import {
   Text,
   useColorScheme,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import styled from "styled-components/native";
 import { RootStackParamList } from "../../shared.types";
 import { gql, useMutation } from "@apollo/client";
 import Swiper from "react-native-swiper";
+import ContentsMenu from "../ContentsMenu";
 
 type PhotoCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -41,108 +43,35 @@ const NOTICE_TOGGLE_LIKE_MUTATION = gql`
   }
 `;
 
-const Container = styled.View`
+const ListContainer = styled.View``;
+
+const BoardWrap = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 8px;
+  height: 44px;
   background-color: ${(props) => props.theme.mainBgColor};
-  margin-bottom: 8px;
-`;
-const Header = styled.TouchableOpacity`
-  padding: 12px;
-  flex-direction: row;
-  align-items: center;
-`;
-const UserAvatar = styled.Image`
-  margin-right: 10px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50px;
 `;
 
-const UserInfoWrap = styled.View``;
-const Username = styled.Text`
-  color: ${(props) => props.theme.textColor};
-  font-weight: 600;
-`;
-
-const BoardInfo = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CreateDate = styled.Text`
-  font-size: 12px;
-  color: ${(props) => props.theme.textColor};
-  margin-right: 8px;
-`;
-
-const Hits = styled.Text`
-  font-size: 12px;
-  color: ${(props) => props.theme.textColor};
-`;
-
-const File = styled.Image``;
-
-const Actions = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-right: 4px;
-`;
-const Action = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  margin-right: 12px;
-`;
-
-const ActionText = styled.Text`
+const BoardTitle = styled.Text<{ deviceWidth: number }>`
+  width: ${(props) => props.deviceWidth}px;
+  padding: 0 4px;
   font-size: 16px;
-  color: ${(props) => props.theme.grayInactColor};
-  margin-left: 4px;
-`;
-
-const Caption = styled.View`
-  flex-direction: row;
-  padding: 4px 16px 16px;
-`;
-
-const CaptionText = styled.Text`
-  margin-left: 10px;
-  color: ${(props) => props.theme.textColor};
-`;
-
-const Category = styled.View`
-  flex-direction: row;
-  padding: 16px 16px 4px;
-`;
-
-const CategoryText = styled.Text`
-  margin-left: 10px;
   font-weight: 600;
   color: ${(props) => props.theme.textColor};
 `;
 
-const Likes = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
+const BoardDate = styled.Text`
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: ${(props) => props.theme.textColor};
 `;
 
-const CommentNumber = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
-`;
-
-const ExtraContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-`;
-
-const NumberContainer = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 16px;
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayInactColor};
 `;
 
 export default function NoticeComp({
@@ -157,10 +86,13 @@ export default function NoticeComp({
   noticeComments,
   createdAt,
   sortation,
+  isMine,
+  refresh,
 }: any) {
   const navigation = useNavigation<PhotoCompNavigationProps>();
   const { width, height } = useWindowDimensions();
   const [imageHeight, setImageHeight] = useState(height / 3);
+  const deviceWidth = Dimensions.get("window").width - 90;
 
   const updateToggleLike = (cache: any, result: any) => {
     const {
@@ -210,28 +142,8 @@ export default function NoticeComp({
   let year = getDate.getFullYear();
 
   return (
-    <Container>
-      <Header onPress={goToProfile}>
-        <UserAvatar
-          resizeMode="cover"
-          source={
-            user.avatar === null
-              ? require(`../../assets/emptyAvatar.png`)
-              : { uri: user.avatar }
-          }
-        />
-        <UserInfoWrap>
-          <Username>{user.username}</Username>
-          <BoardInfo>
-            <CreateDate>{year + "." + month + "." + date}</CreateDate>
-            <Hits>
-              <Ionicons name="eye-outline" />
-              {" " + hits}
-            </Hits>
-          </BoardInfo>
-        </UserInfoWrap>
-      </Header>
-      <TouchableOpacity
+    <ListContainer>
+      <BoardWrap
         onPress={() => {
           navigation.navigate("NoticeDetail", {
             id,
@@ -245,70 +157,21 @@ export default function NoticeComp({
             noticeComments,
             createdAt,
             sortation,
+            isMine,
+            refresh,
           });
         }}
       >
-        <Category>
-          <CategoryText>
-            {title !== null
-              ? title.length > 30
-                ? "제목 : " + title.substring(0, 29) + "..."
-                : "제목 : " + title
-              : null}
-          </CategoryText>
-        </Category>
-        <Caption>
-          <CaptionText>
-            {discription !== null
-              ? discription.length > 150
-                ? discription.substring(0, 149) + "..."
-                : discription
-              : null}
-          </CaptionText>
-        </Caption>
-      </TouchableOpacity>
-
-      <NumberContainer>
-        <Likes>좋아요 {likes}</Likes>
-        <CommentNumber>댓글 {noticeCommentCount}</CommentNumber>
-      </NumberContainer>
-      <ExtraContainer>
-        <Actions>
-          <Action
-            onPress={() => {
-              navigation.navigate("NoticeDetail", {
-                id,
-                user,
-                title,
-                discription,
-                isLiked,
-                likes,
-                hits,
-                noticeCommentCount,
-                noticeComments,
-                createdAt,
-                sortation,
-              });
-            }}
-          >
-            <Ionicons
-              name="chatbubble-outline"
-              color={isDark ? "#ffffff" : "#1e272e"}
-              style={{ marginBottom: 2 }}
-              size={16}
-            />
-            <ActionText>댓글 달기</ActionText>
-          </Action>
-          <Action onPress={() => toggleLikeMutation()}>
-            <Ionicons
-              name={isLiked ? "heart" : "heart-outline"}
-              color={isLiked ? "tomato" : isDark ? "#ffffff" : "#1e272e"}
-              size={20}
-            />
-            <ActionText>좋아요</ActionText>
-          </Action>
-        </Actions>
-      </ExtraContainer>
-    </Container>
+        <BoardTitle
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          deviceWidth={deviceWidth}
+        >
+          {title}
+        </BoardTitle>
+        <BoardDate>{year + "-" + month + "-" + date}</BoardDate>
+      </BoardWrap>
+      <BoardLine />
+    </ListContainer>
   );
 }

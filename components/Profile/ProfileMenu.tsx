@@ -23,16 +23,16 @@ const MenuDisc = styled.Text`
   margin-top: 4px;
 `;
 
-export default function ProfileMenu({ title, disc, navi }: any) {
+export default function ProfileMenu({ title, disc, navi, params }: any) {
   const navigation = useNavigation<any>();
 
   return (
-    <MenuWrap onPress={() => navigation.navigate(navi)}>
+    <MenuWrap onPress={() => navigation.navigate(navi, params)}>
       <MenuTextWrap>
         <MenuTitle>{title}</MenuTitle>
         {disc !== undefined ? <MenuDisc>{disc}</MenuDisc> : null}
       </MenuTextWrap>
-      <Ionicons name="chevron-forward" size={24} />
+      <Ionicons name="chevron-forward" size={20} />
     </MenuWrap>
   );
 }

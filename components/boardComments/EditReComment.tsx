@@ -64,7 +64,7 @@ export default function EditReComment({
   refresh,
 }: any) {
   const { register, handleSubmit, setValue, getValues, watch } = useForm();
-  const editBoardReCommentUpdate = (cache: any, result: any) => {
+  const editReCommentUpdate = (cache: any, result: any) => {
     const { payload } = getValues();
     setValue("payload", "");
     const {
@@ -76,7 +76,7 @@ export default function EditReComment({
     if (ok) {
       // 게시글에 새로 작성되어 캐시에 저장된 댓글을 업데이트
       cache.modify({
-        id: `BoardReComment:${id}`,
+        id: `ReBoardComment:${id}`,
         fields: {
           payload() {
             return payload;
@@ -90,7 +90,7 @@ export default function EditReComment({
 
   const [editBoardReCommentMutation, { loading: editCommentloading }] =
     useMutation(EDIT_BOARD_RECOMMENT_MUTATION, {
-      update: editBoardReCommentUpdate,
+      update: editReCommentUpdate,
     });
   const onValidEdit = (data: any) => {
     const { editPayload: payload } = data;

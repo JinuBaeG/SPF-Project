@@ -8,15 +8,6 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { gql, useQuery } from "@apollo/client";
 import useCategory from "../../hooks/useCategory";
 
-const CATEGORYLIST_QUERY = gql`
-  query seeFeedCategoryList {
-    seeFeedCategoryList {
-      id
-      name
-    }
-  }
-`;
-
 interface FeedCategoryProps {
   id: number | undefined;
   name: string | undefined;
@@ -36,7 +27,7 @@ const TextInput = styled.TextInput`
 `;
 
 const Upload = styled.TouchableOpacity`
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -58,7 +49,7 @@ const ListLabel = styled.Text`
 const ListButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -104,7 +95,7 @@ export function FeedCategoryComp({ id, name, setValue }: FeedCategoryProps) {
   const onCategoryClose = () => {
     let temp = categoryData.map((event: any) => {
       if (event.isChecked) {
-        setValue("feedCategory", name);
+        setValue("feedCategory", event.name);
         return event.name;
       }
     });

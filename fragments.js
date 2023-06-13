@@ -10,10 +10,8 @@ export const PHOTO_FRAGMENT_NATIVE = gql`
     likes
     commentCount
     isLiked
-    feedCategoryList {
-      id
-      name
-    }
+    sportsEvent
+    feedCategory
   }
 `;
 
@@ -25,6 +23,7 @@ export const COMMENT_FRAGMENT_NATIVE = gql`
       username
       avatar
     }
+    reCommentCount
     payload
     isMine
     createdAt
@@ -53,8 +52,27 @@ export const USER_FRAGMENT_NATIVE = gql`
     id
     username
     avatar
-    isFollowing
     isMe
+    blockedBy {
+      id
+    }
+  }
+`;
+
+export const USER_FULL_FRAGMENT_NATIVE = gql`
+  fragment UserFullFragmentNative on User {
+    id
+    username
+    email
+    createdAt
+    updatedAt
+    avatar
+    gender
+    googleConnect
+    kakaoConnect
+    naverConnect
+    appleConnect
+    phoneNumber
   }
 `;
 
@@ -190,6 +208,8 @@ export const TUTOR_FRAGMENT_NATIVE = gql`
     addAddr
     areaLatitude
     areaLongitude
+    maxMember
+    userCount
     tutorImage {
       id
       imagePath
@@ -235,7 +255,16 @@ export const TUTOR_FRAGMENT_NATIVE = gql`
       id
       name
     }
-    isTutor
+    isJoin
+    isPresident
+    tutorPresident {
+      id
+      user {
+        id
+        username
+        avatar
+      }
+    }
   }
 `;
 
@@ -284,6 +313,7 @@ export const BOARD_FRAGMENT_NATIVE = gql`
     likes
     boardCommentCount
     isLiked
+    isMine
   }
 `;
 
@@ -302,6 +332,72 @@ export const BOARD_COMMENT_FRAGMENT_NATIVE = gql`
     isMine
     boardReCommentCount
     createdAt
+  }
+`;
+
+export const FACILITY_FRAGMENT_NATIVE = gql`
+  fragment FacilityFragmentNative on Facility {
+    id
+    name
+    discription
+    sidoName
+    gusiName
+    dongEubMyunName
+    riName
+    roadName
+    buildingNumber
+    zipcode
+    activeArea
+    address
+    addrRoad
+    detailAddress
+    areaLatitude
+    areaLongitude
+    facilityImage {
+      id
+      imagePath
+    }
+    group {
+      id
+      name
+      sportsEvent
+      discription
+      maxMember
+      groupTag {
+        id
+        name
+        imagePath
+      }
+    }
+    tutor {
+      id
+      name
+      tutorSportsEvent {
+        id
+        name
+      }
+      discription
+      maxMember
+      tutorTag {
+        id
+        name
+        imagePath
+      }
+    }
+    facilityInfo {
+      id
+      discription
+      awardDate
+    }
+    facilityTag {
+      id
+      name
+      imagePath
+    }
+    facilitySports {
+      id
+      name
+    }
   }
 `;
 
@@ -344,6 +440,7 @@ export const NOTICE_FRAGMENT_NATIVE = gql`
     likes
     noticeCommentCount
     isLiked
+    isMine
   }
 `;
 

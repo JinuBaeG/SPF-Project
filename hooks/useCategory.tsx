@@ -16,7 +16,7 @@ export default function useCategory(name: any | undefined) {
     },
     fetchPolicy: "cache-and-network",
   });
-  const tagData: any = [{ id: "-", name: "선택안함", isChecked: true }];
+  let tagData: any = [];
 
   if (categoryList) {
     categoryList.seeFeedCategoryList.map((category: any) => {
@@ -28,7 +28,7 @@ export default function useCategory(name: any | undefined) {
     });
   }
 
-  if (name) {
+  if (name !== "") {
     tagData.map((item: any, index: number) => {
       if (item.name === name) {
         tagData[index].isChecked = true;

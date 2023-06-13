@@ -7,7 +7,7 @@ import { TrackingMode } from "react-native-nmap";
 const TextWrap = styled.View`
   width: 100%;
   padding: 16px;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   margin-bottom: 8px;
 `;

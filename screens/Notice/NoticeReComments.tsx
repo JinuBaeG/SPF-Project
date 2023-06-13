@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import styled from "styled-components/native";
-import { TouchableOpacity, UIManager } from "react-native";
+import { Alert, Dimensions, Platform, useColorScheme } from "react-native";
 import { dateTime } from "../../components/shared/sharedFunction";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import {
@@ -14,6 +14,8 @@ import ScreenLayout from "../../components/ScreenLayout";
 import ReCommentComp from "../../components/notice/ReCommentComp";
 import NoticeReComment from "./NoticeReComment";
 import EditComment from "../../components/noticeComments/EditComment";
+import { Ionicons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
 
 interface ICommentCompProps {
   id: number;
@@ -62,20 +64,24 @@ const DELETE_NOTICE_COMMENT_MUTATION = gql`
   }
 `;
 
-const CommentContainer = styled.View`
+const CommentContainer = styled.ScrollView`
+  flex: 1;
   background-color: ${(props) => props.theme.mainBgColor};
-  justify-content: flex-start;
-  padding: 8px 0 0;
 `;
 
 const CommentText = styled.Text`
-  margin-left: 48px;
+  padding: 16px;
   color: ${(props) => props.theme.textColor};
 `;
 
 const Header = styled.View`
-  width: 100%;
-  padding: 12px;
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -86,11 +92,7 @@ const UserAvatar = styled.Image`
   height: 28px;
   border-radius: 50px;
 `;
-
-const UserInfo = styled.View`
-  align-items: flex-start;
-  justify-content: flex-start;
-`;
+const UserInfoWrap = styled.View``;
 
 const Username = styled.Text`
   color: ${(props) => props.theme.textColor};
@@ -104,34 +106,49 @@ const Info = styled.View`
 `;
 
 const UserLocation = styled.Text`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
-  font-weight: 600;
 `;
 
 const UpdateTime = styled.Text`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
-  font-weight: 600;
 `;
 
 const Dotted = styled.View`
   width: 2px;
   height: 2px;
-  background-color: ${(props) => props.theme.grayColor};
+  background-color: ${(props) => props.theme.grayInactColor};
   margin: 0px 4px;
   border-radius: 1px;
 `;
 
 const ActionWrapper = styled.View`
-  margin: 8px 0 0 48px;
+  padding: 12px 16px;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+`;
+
+const ActionRight = styled.View`
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Actions = styled.TouchableOpacity`
   margin-right: 8px;
+`;
+
+const Action = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  margin-right: 12px;
+`;
+
+const ActionText = styled.Text`
+  font-size: 16px;
+  color: ${(props) => props.theme.grayInactColor};
+  margin-left: 4px;
 `;
 
 const CommentEdit = styled.Text`
@@ -146,7 +163,43 @@ const CommentDelete = styled.Text`
   font-weight: 500;
 `;
 
+const FeedMenuWrap = styled.View`
+  position: relative;
+`;
+
+const FeedMenu = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+`;
+const FeedMenuText = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const MenuList = styled.View`
+  flex: 0.15;
+  background-color: ${(props) => props.theme.whiteColor};
+  align-items: center;
+  justify-content: center;
+`;
+
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayLineColor};
+`;
+
 export default function NoticeReComments({ navigation, route }: any) {
+  const [open, setOpen] = useState(false);
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get(
+          "REAL_WINDOW_HEIGHT"
+        );
+
+  const toggleModal = () => setOpen(!open);
   // 댓글 내용 가져오기
   const { data: commentData, refetch: commentRefetch } = useQuery(
     NOTICE_COMMENT_QUERY,
@@ -181,9 +234,13 @@ export default function NoticeReComments({ navigation, route }: any) {
   const deleteToggle = (cache: any, result: any) => {
     const {
       data: {
-        deleteNoticeComment: { ok },
+        deleteNoticeComment: { ok, error },
       },
     } = result;
+
+    if (error) {
+      Alert.alert(error);
+    }
 
     if (ok) {
       const noticeCommentId = `NoticeComment:${reCommentData?.seeNoticeReComments.id}`;
@@ -198,6 +255,8 @@ export default function NoticeReComments({ navigation, route }: any) {
           },
         },
       });
+
+      navigation.goBack();
     }
   };
 
@@ -218,8 +277,8 @@ export default function NoticeReComments({ navigation, route }: any) {
 
   const goToProfile = () => {
     navigation.navigate("Profile", {
-      username: route.params.user.username,
-      id: route.params.user.id,
+      username: commentData?.seeNoticeComment?.user.username,
+      id: commentData?.seeNoticeComment?.user.id,
     });
   };
 
@@ -231,32 +290,78 @@ export default function NoticeReComments({ navigation, route }: any) {
     return <ReCommentComp {...reComment} refresh={refresh} />;
   };
 
+  const isDark = useColorScheme() === "dark";
+
   const ListHeader = () => {
     return (
       <CommentContainer>
         <Header>
-          <TouchableOpacity onPress={() => goToProfile()}>
+          <UserInfo onPress={() => goToProfile()}>
             <UserAvatar
               resizeMode="cover"
               source={
                 commentData?.seeNoticeComment?.user.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: commentData?.seeNoticeComment?.user.avatar }
               }
             />
-          </TouchableOpacity>
-          <UserInfo>
-            <TouchableOpacity onPress={() => goToProfile()}>
+            <UserInfoWrap>
               <Username>
                 {commentData?.seeNoticeComment?.user.username}
               </Username>
-            </TouchableOpacity>
-            <Info>
-              <UserLocation>임시</UserLocation>
-              <Dotted />
-              <UpdateTime>{dateTime(getDate)}</UpdateTime>
-            </Info>
+              <Info>
+                <UpdateTime>{dateTime(getDate)}</UpdateTime>
+              </Info>
+            </UserInfoWrap>
           </UserInfo>
+          <FeedMenuWrap>
+            <FeedMenu
+              onPress={() => {
+                toggleModal();
+              }}
+            >
+              <Ionicons
+                name="ellipsis-horizontal"
+                size={16}
+                color={isDark ? "white" : "black"}
+              />
+            </FeedMenu>
+            <Modal
+              isVisible={open}
+              deviceHeight={deviceHeight}
+              deviceWidth={deviceWidth}
+            >
+              <MenuList>
+                {commentData?.seeComment?.isMine ? (
+                  <FeedMenu
+                    style={{ margin: 5 }}
+                    onPress={() => {
+                      toggleModal();
+                      onDelete();
+                    }}
+                  >
+                    <FeedMenuText style={{ color: "red" }}>
+                      삭제하기
+                    </FeedMenuText>
+                  </FeedMenu>
+                ) : null}
+                <FeedMenu
+                  style={{ margin: 5 }}
+                  onPress={() => {
+                    toggleModal();
+                    setCommentEdit(true);
+                  }}
+                >
+                  <FeedMenuText>수정하기</FeedMenuText>
+                </FeedMenu>
+                <FeedMenu style={{ margin: 5 }} onPress={toggleModal}>
+                  <FeedMenuText>닫기</FeedMenuText>
+                </FeedMenu>
+              </MenuList>
+            </Modal>
+          </FeedMenuWrap>
         </Header>
         {commentEdit !== true ? (
           <CommentText>{commentData?.seeNoticeComment?.payload}</CommentText>
@@ -267,23 +372,21 @@ export default function NoticeReComments({ navigation, route }: any) {
             refresh={refresh}
           />
         )}
-
+        <BoardLine />
         <ActionWrapper>
-          {commentData?.seeNoticeComment?.isMine && commentEdit !== true ? (
-            <Actions onPress={() => setCommentEdit(true)}>
-              <CommentEdit>수정하기</CommentEdit>
-            </Actions>
-          ) : null}
-          {commentData?.seeNoticeComment?.isMine ? (
-            <Actions
-              onPress={() => {
-                onDelete();
-              }}
-            >
-              <CommentDelete>삭제하기</CommentDelete>
-            </Actions>
-          ) : null}
+          <Action>
+            <Ionicons
+              name="chatbubble-outline"
+              color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+              style={{ marginBottom: 2 }}
+              size={16}
+            />
+            <ActionText>
+              답글 {commentData?.seeComment?.reCommentCount}
+            </ActionText>
+          </Action>
         </ActionWrapper>
+        <BoardLine />
         <NoticeReComment
           id={commentData?.seeNoticeComment?.id}
           boardReCommentCount={
@@ -291,6 +394,7 @@ export default function NoticeReComments({ navigation, route }: any) {
           }
           refresh={refresh}
         />
+        <BoardLine />
       </CommentContainer>
     );
   };

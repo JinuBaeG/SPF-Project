@@ -3,8 +3,7 @@ import styled from "styled-components/native";
 import axios from "axios";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
-import { resultKeyNameFromField } from "@apollo/client/utilities";
-import { colors } from "../../color";
+import { X_NCP_APIGW_API_KEY_ID, X_NCP_APIGW_API_KEY } from "@env";
 
 interface ILocation {
   latitude: number;
@@ -27,10 +26,10 @@ const SearchBoxContainer = styled.View`
 
 const SearchBox = styled.TextInput`
   width: 90%;
-  padding: 8px;
+  padding: 16px;
   background: ${(props) => props.theme.whiteColor};
   color: ${(props) => props.theme.greenActColor};
-  font-size: 12px;
+  font-size: 16px;
   border-radius: 8px;
 `;
 
@@ -46,8 +45,8 @@ const ResultsBoxContainer = styled.View`
 
 const ResultsBoxTextWrap = styled.TouchableOpacity`
   width: 100%;
-  padding: 8px;
-  background: ${(props) => props.theme.mainBgColor};
+  padding: 16px;
+  background: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   overflow: hidden;
 `;
@@ -59,19 +58,19 @@ const ResultsBoxPostWrap = styled.View`
 `;
 
 const ResultsBoxAreaname = styled.Text`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   color: ${(props) => props.theme.greenActColor};
   margin-right: 4px;
 `;
 
 const ResultsBoxPostcode = styled.Text`
-  font-size: 12px;
+  font-size: 16px;
   color: ${(props) => props.theme.blackColor};
 `;
 
 const ResultsBoxText = styled.Text`
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 4px;
   color: ${(props) => props.theme.blackColor};
 `;
@@ -108,6 +107,7 @@ export default function ActiveArea({ navigation, route }: any) {
   }, []);
 
   const getAddress = async (location: any, search: string) => {
+    console.log(search);
     setResults([]);
     const response: any = await axios.get(
       "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode",
@@ -117,8 +117,8 @@ export default function ActiveArea({ navigation, route }: any) {
           coordinate: `${location.longitude},${location.latitude}`,
         },
         headers: {
-          "X-NCP-APIGW-API-KEY-ID": "ve0v5h0oeb",
-          "X-NCP-APIGW-API-KEY": "gfmsxgE7BLlbZ8lMFXdGTz8BY4uIdpq559qbZZ9X",
+          "X-NCP-APIGW-API-KEY-ID": `${X_NCP_APIGW_API_KEY_ID}`,
+          "X-NCP-APIGW-API-KEY": `${X_NCP_APIGW_API_KEY}`,
         },
       }
     );

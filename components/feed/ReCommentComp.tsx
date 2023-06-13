@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import styled from "styled-components/native";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, useColorScheme } from "react-native";
 import { dateTime } from "../shared/sharedFunction";
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
@@ -11,7 +11,7 @@ import EditReComment from "../noticeComments/EditReComment";
 
 interface ICommentCompProps {
   id: number;
-  noticeComment: {
+  comment: {
     id: number;
   };
   user: {
@@ -30,18 +30,9 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
   "Comments"
 >;
 
-const DELETE_NOTICE_RECOMMENT_MUTATION = gql`
-  mutation deleteBoardReComment($id: Int!) {
-    deleteBoardReComment(id: $id) {
-      ok
-      error
-    }
-  }
-`;
-
-const EDIT_NOTICE_RECOMMENT_MUTATION = gql`
-  mutation editBoardReComment($id: Int!, $payload: String!) {
-    editBoardReComment(id: $id, payload: $payload) {
+const DELETE_RECOMMENT_MUTATION = gql`
+  mutation deleteReComment($id: Int!) {
+    deleteReComment(id: $id) {
       ok
       error
     }
@@ -96,7 +87,7 @@ const UserLocation = styled.Text`
 `;
 
 const UpdateTime = styled.Text`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
   font-weight: 600;
 `;
@@ -133,13 +124,13 @@ const ReComment = styled.Text`
 `;
 
 const CommentEdit = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
   font-weight: 500;
 `;
 
 const CommentDelete = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
   font-weight: 500;
 `;
@@ -147,7 +138,7 @@ const CommentDelete = styled.Text`
 export default function ReCommentComp({
   id,
   user,
-  noticeComment,
+  comment,
   payload,
   isMine,
   createdAt,
@@ -157,17 +148,17 @@ export default function ReCommentComp({
   const deleteToggle = (cache: any, result: any) => {
     const {
       data: {
-        deleteNoticeReComment: { ok },
+        deleteReComment: { ok },
       },
     } = result;
 
     if (ok) {
-      const boardReCommentId = `NoticeReComment:${id}`;
-      const boardCommentId = `NoticeComment:${noticeComment.id}`;
+      const ReCommentId = `ReComment:${id}`;
+      const CommentId = `Comment:${comment.id}`;
       // 삭제된 댓글 캐시에서 삭제
-      cache.evict({ id: boardReCommentId });
+      cache.evict({ id: ReCommentId });
       cache.modify({
-        id: boardCommentId,
+        id: CommentId,
         fields: {
           boardReCommentCount(prev: number) {
             return prev - 1;
@@ -178,15 +169,12 @@ export default function ReCommentComp({
     }
   };
 
-  const [deleteNoticeReCommentMutation] = useMutation(
-    DELETE_NOTICE_RECOMMENT_MUTATION,
-    {
-      update: deleteToggle,
-    }
-  );
+  const [deleteReCommentMutation] = useMutation(DELETE_RECOMMENT_MUTATION, {
+    update: deleteToggle,
+  });
 
   const onDelete = () => {
-    deleteNoticeReCommentMutation({
+    deleteReCommentMutation({
       variables: {
         id,
       },
@@ -201,6 +189,7 @@ export default function ReCommentComp({
       id: user.id,
     });
   };
+  const isDark = useColorScheme() === "dark";
 
   const getDate = new Date(parseInt(createdAt));
 
@@ -214,7 +203,9 @@ export default function ReCommentComp({
             resizeMode="cover"
             source={
               user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
+                ? isDark
+                  ? require(`../../assets/emptyAvatar_white.png`)
+                  : require(`../../assets/emptyAvatar.png`)
                 : { uri: user.avatar }
             }
           />
@@ -227,8 +218,6 @@ export default function ReCommentComp({
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <Info>
-            <UserLocation>임시</UserLocation>
-            <Dotted />
             <UpdateTime>{dateTime(getDate)}</UpdateTime>
           </Info>
         </UserInfo>

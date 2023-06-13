@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { View, Text, useColorScheme } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "styled-components/native";
 import { cache, isLoggedInVar, logUserOut } from "../../apollo";
 import useMe from "../../hooks/useMe";
@@ -8,6 +7,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import MyProfileCount from "../../components/Profile/MyProfieCount";
 import ProfileMenu from "../../components/Profile/ProfileMenu";
 import { useReactiveVar } from "@apollo/client";
+import { useIsFocused } from "@react-navigation/native";
 
 // Header Style
 const MyPageTitleWrap = styled.View`
@@ -28,9 +28,9 @@ const EditBtn = styled.TouchableOpacity``;
 
 // In Container Style
 // Container Top
-const ProfileContainer = styled.SafeAreaView`
+const ProfileContainer = styled.ScrollView`
   flex: 1;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.grayBackground};
 `;
 
 const ProfilePrivacyInfo = styled.View`
@@ -40,7 +40,7 @@ const ProfilePrivacyInfo = styled.View`
   width: 100%;
   padding: 16px;
   background-color: ${(props) => props.theme.mainBgColor};
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 const ProfileImageNameWrap = styled.View`
@@ -58,6 +58,7 @@ const ProfileName = styled.Text`
   padding: 16px;
   font-size: 16px;
   font-weight: 600;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const ProfileBtnWrap = styled.View``;
@@ -93,7 +94,7 @@ const MyFeedText = styled.Text`
 // Container Top
 // Container GTF
 const GTFContainer = styled.View`
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 const GTFCounterWrap = styled.View`
   flex-direction: row;
@@ -104,18 +105,39 @@ const GTFCounterWrap = styled.View`
 `;
 
 // Container Main
-const MainContainer = styled.View`
-  margin-bottom: 8px;
+const Wrapper = styled.View`
+  padding: 16px;
+  background-color: ${(props) => props.theme.mainBgColor};
+  margin-bottom: 4px;
 `;
+
+const TitleContainer = styled.View`
+  padding: 8px 0;
+`;
+
+const TitleLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayColor};
+`;
+
+const Title = styled.Text`
+  font-size: 20px;
+  font-weight: 600;
+  color: ${(props) => props.theme.textColor};
+`;
+const MainContainer = styled.View``;
 
 const BoardLine = styled.View`
   width: 100%;
   height: 1px;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 // Container Bottom
-const BottomContainer = styled.View``;
+const BottomContainer = styled.View`
+  margin-bottom: 4px;
+`;
 
 export default function MyProfile({ navigation }: any) {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -133,17 +155,21 @@ export default function MyProfile({ navigation }: any) {
         );
       },
       headerRight: () => {
-        return (
-          <EditWrap>
-            <EditBtn>
-              <MaterialCommunityIcons
-                name="cog-outline"
-                size={24}
-                color={isDark ? "d2dae2" : "1e272e"}
-              />
-            </EditBtn>
-          </EditWrap>
-        );
+        if (isLoggedIn) {
+          return (
+            <EditWrap>
+              <EditBtn onPress={() => navigation.navigate("EditProfile")}>
+                <MaterialCommunityIcons
+                  name="cog-outline"
+                  size={24}
+                  color={isDark ? "white" : "#000000"}
+                />
+              </EditBtn>
+            </EditWrap>
+          );
+        } else {
+          return <></>;
+        }
       },
     });
   }, []);
@@ -156,7 +182,9 @@ export default function MyProfile({ navigation }: any) {
             <ProfileImage
               source={
                 data?.me?.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: data?.me?.avatar }
               }
             />
@@ -179,8 +207,11 @@ export default function MyProfile({ navigation }: any) {
               <LogoutBtn
                 onPress={() => {
                   cache.gc();
-                  cache.evict({ id: `User:${data?.me?.username}` });
+                  cache.evict({ id: `ROOT_QUERY` });
                   logUserOut();
+                  navigation.reset({
+                    routes: [{ name: "Tabs" }],
+                  });
                 }}
               >
                 <LogoutText>로그아웃</LogoutText>
@@ -197,6 +228,7 @@ export default function MyProfile({ navigation }: any) {
           )}
         </ProfileBtnWrap>
       </ProfilePrivacyInfo>
+      {/*
       <GTFContainer>
         <GTFCounterWrap>
           <MyProfileCount name={"내 그룹"} count={data?.me?.groupCount} />
@@ -204,32 +236,64 @@ export default function MyProfile({ navigation }: any) {
           <MyProfileCount name={"내 시설 예약"} count={0} />
         </GTFCounterWrap>
       </GTFContainer>
-      <MainContainer>
-        <ProfileMenu
-          title={"튜터 신청"}
-          disc={"튜터가 되어보아요."}
-          navi={"AddTutor"}
-        />
+       */}
+      <Wrapper>
+        <BottomContainer>
+          <ProfileMenu
+            title={"차단 목록 관리"}
+            navi={"BlockUsers"}
+            params={{ id: data?.me?.id }}
+          />
+          <ProfileMenu title={"공지사항"} navi={"AdminNotice"} />
+          <ProfileMenu title={"FAQ"} navi={"AdminFaq"} />
+          <ProfileMenu
+            title={"내 신고내역"}
+            disc={"내가 신고한 내역을 확인합니다."}
+            navi={"MyReport"}
+            params={{ id: data?.me?.id }}
+          />
+        </BottomContainer>
+      </Wrapper>
+      <Wrapper>
+        <TitleContainer>
+          <Title>튜터 관리</Title>
+        </TitleContainer>
         <BoardLine />
-      </MainContainer>
-      <BottomContainer>
-        <ProfileMenu title={"공지사항"} navi={"AdminNotice"} />
+        <MainContainer>
+          <ProfileMenu
+            title={"튜터 신청"}
+            disc={"튜터가 되어보세요."}
+            navi={"RequestAddTutor"}
+          />
+          <ProfileMenu title={"튜터 신청 확인"} navi={"CheckMyAddTutor"} />
+          <ProfileMenu
+            title={"내 문의"}
+            disc={"내가 문의한 내역을 확인합니다."}
+            navi={"TutorMyInquiry"}
+            params={{ id: data?.me?.id }}
+          />
+          <ProfileMenu
+            title={"문의확인"}
+            disc={"나에게 온 문의를 확인합니다."}
+            navi={"TutorInquiry"}
+            params={{ id: data?.me?.tutor.id }}
+          />
+        </MainContainer>
+      </Wrapper>
+
+      <Wrapper>
+        <TitleContainer>
+          <Title>약관</Title>
+        </TitleContainer>
         <BoardLine />
-        <ProfileMenu title={"FAQ"} navi={"AdminFaq"} />
-        <BoardLine />
-        <ProfileMenu
-          title={"문의확인"}
-          disc={"나의 튜터에 온 문의를 확인합니다."}
-          navi={""}
-        />
-        <BoardLine />
-        <ProfileMenu
-          title={"내 문의"}
-          disc={"내가 문의한 내역을 확인합니다."}
-          navi={""}
-        />
-        <BoardLine />
-      </BottomContainer>
+        <BottomContainer>
+          <ProfileMenu title={"이용약관"} navi={"UseTerms"} />
+
+          <ProfileMenu title={"개인정보처리방침"} navi={"Privacy"} />
+
+          <ProfileMenu title={"위치기반서비스 이용약관"} navi={"GPSTerms"} />
+        </BottomContainer>
+      </Wrapper>
     </ProfileContainer>
   );
 }

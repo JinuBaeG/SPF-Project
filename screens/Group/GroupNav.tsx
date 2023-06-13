@@ -25,12 +25,13 @@ const GroupBottomContainer = styled.View`
   flex: 0.7;
   width: 100%;
   background-color: ${(props) => props.theme.mainBgColor};
-  margin-top: 8px;
+  margin-top: 1px;
 `;
 
 export default function GroupNav({ navigation, route }: any) {
   const isDark = useColorScheme() === "dark";
   const id = parseInt(route.params.id);
+
   const [refreshing, setRefreshing] = useState(false);
   const {
     data,
@@ -68,9 +69,9 @@ export default function GroupNav({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: isDark ? "#1e272e" : "#ffffff",
+              backgroundColor: isDark ? "#000000" : "#ffffff",
             },
-            tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
+            tabBarActiveTintColor: isDark ? "#ffffff" : "#000000",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },
@@ -81,26 +82,28 @@ export default function GroupNav({ navigation, route }: any) {
             options={{
               title: "게시판",
               tabBarActiveTintColor: "#01aa73",
-              tabBarInactiveTintColor: "rgba(136, 136, 136, 0.4)",
+              tabBarInactiveTintColor: isDark ? "#ffffff" : "#000000",
             }}
             initialParams={{ data: data?.seeGroup }}
             component={GroupBoard}
           />
+          {/*}
           <Tab.Screen
             name="GroupCalendar"
             options={{
               title: "캘린더",
               tabBarActiveTintColor: "#01aa73",
-              tabBarInactiveTintColor: "rgba(136, 136, 136, 0.4)",
+              tabBarInactiveTintColor: "ffffff",
             }}
             component={GroupCalendar}
           />
+          {*/}
           <Tab.Screen
             name="GroupInfo"
             options={{
               title: "정보",
               tabBarActiveTintColor: "#01aa73",
-              tabBarInactiveTintColor: "rgba(136, 136, 136, 0.4)",
+              tabBarInactiveTintColor: "ffffff",
             }}
             initialParams={{ data: data?.seeGroup }}
             component={GroupInfo}

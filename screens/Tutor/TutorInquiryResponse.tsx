@@ -90,7 +90,7 @@ export default function TutorInquiryResponse({ navigation, route }: any) {
     const {
       data: { responseInquiry },
     } = result;
-    console.log(responseInquiry);
+
     if (responseInquiry.id) {
       cache.evict({ id: "TutorInquiry:" + `${responseInquiry.id}` });
       cache.modify({

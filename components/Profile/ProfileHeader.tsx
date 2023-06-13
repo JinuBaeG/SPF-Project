@@ -1,4 +1,15 @@
+import { gql, useMutation } from "@apollo/client";
+import { useColorScheme } from "react-native";
 import styled from "styled-components/native";
+
+const TOGGLE_BLOCK_MUTATION = gql`
+  mutation blockUser($id: Int!) {
+    blockUser(id: $id) {
+      ok
+      error
+    }
+  }
+`;
 
 const GroupHeaderContainer = styled.View`
   flex: 0.5;
@@ -11,7 +22,7 @@ const GroupHeaderWrap = styled.View`
   height: 140px;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.theme.blackColor};
+  background-color: ${(props) => props.theme.mainBgColor};
   position: relative;
 `;
 
@@ -97,7 +108,7 @@ const GroupHeaderButtonWrap = styled.View``;
 
 const GroupHeaderButton = styled.TouchableOpacity`
   padding: 4px;
-  background-color: ${(props) => props.theme.greenActColor};
+  background-color: #ff5555;
   border-radius: 8px;
   margin-bottom: 4px;
 `;
@@ -125,22 +136,66 @@ export default function ProfileHeader({
   refresh,
   profileData,
 }: any) {
+  const isDark = useColorScheme() === "dark";
+
+  // 사용자 차단
+  const blockCompleted = (data: any) => {
+    const {
+      blockUser: { ok, error },
+    } = data;
+
+    if (ok) {
+      navigation.reset({ routes: [{ name: "Tabs" }] });
+    }
+  };
+  const [blockUserMutation] = useMutation(TOGGLE_BLOCK_MUTATION, {
+    onCompleted: blockCompleted,
+  });
+
+  const toggleBlock = (id: any) => {
+    blockUserMutation({
+      variables: {
+        id: parseInt(id),
+      },
+    });
+  };
+  console.log(profileData?.isMe);
   return (
     <GroupHeaderContainer>
       <GroupHeaderWrap>
-        <GroupHeaderImage source={{ uri: profileData.avatar }} />
+        <GroupHeaderImage
+          resizeMode="cover"
+          source={
+            profileData?.avatar === null || profileData?.avatar === undefined
+              ? isDark
+                ? require(`../../assets/emptyAvatar_white.png`)
+                : require(`../../assets/emptyAvatar.png`)
+              : { uri: profileData?.avatar }
+          }
+        />
       </GroupHeaderWrap>
       <GroupHeaderInfoContainer>
         <GroupHeaderInfoWrap>
           <GroupHeaderInfoTitleWrap>
-            <GroupHeaderTitle>{profileData.username}</GroupHeaderTitle>
+            <GroupHeaderTitle>{profileData?.username}</GroupHeaderTitle>
           </GroupHeaderInfoTitleWrap>
           <GroupHeaderActiveArea>
-            {profileData.activeArea}
+            {profileData?.activeArea}
           </GroupHeaderActiveArea>
-          <GroupHeaderDisc>{profileData.discription}</GroupHeaderDisc>
+          <GroupHeaderDisc>{profileData?.discription}</GroupHeaderDisc>
           <GroupHeaderTagWrap></GroupHeaderTagWrap>
         </GroupHeaderInfoWrap>
+        {!profileData?.isMe ? (
+          <GroupHeaderButtonWrap>
+            <GroupHeaderButton
+              onPress={() => {
+                toggleBlock(profileData?.id);
+              }}
+            >
+              <GroupHeaderButtonText>차단하기</GroupHeaderButtonText>
+            </GroupHeaderButton>
+          </GroupHeaderButtonWrap>
+        ) : null}
       </GroupHeaderInfoContainer>
     </GroupHeaderContainer>
   );

@@ -2,7 +2,13 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  useColorScheme,
+} from "react-native";
 import styled from "styled-components/native";
 import CommentComp from "../../components/feed/CommentComp";
 import ScreenLayout from "../../components/ScreenLayout";
@@ -24,22 +30,7 @@ const CREATE_COMMENT_MUTATION = gql`
 `;
 
 const InputContainer = styled.View`
-  padding: 16px;
-  background-color: ${(props) => props.theme.greenActColor};
-`;
-
-const CommentCount = styled.View``;
-
-const CountWrap = styled.View`
-  margin-bottom: 8px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CountText = styled.Text`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${(props) => props.theme.whiteColor};
+  background-color: ${(props) => props.theme.mainBgColor};
 `;
 
 const MessageWrap = styled.View`
@@ -50,18 +41,18 @@ const MessageWrap = styled.View`
 const MessageInput = styled.TextInput`
   align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
-  padding: 8px 12px;
+  padding: 16px;
   color: ${(props) => props.theme.textColor};
-  border-radius: 4px;
-  border: 2px solid ${(props) => props.theme.grayColor};
   margin-right: 8px;
 `;
 
 const SendButton = styled.TouchableOpacity``;
 
 export default function Comments({ id, commentCount, refresh }: any) {
+  const deviceWidth = Dimensions.get("window").width;
   const photoId = parseInt(id);
   const commentsRef: React.MutableRefObject<null> = useRef(null);
+  const isDark = useColorScheme() === "dark";
 
   const onFocusNext = (nextRef: RefObject<HTMLInputElement>): void => {
     nextRef?.current?.focus();
@@ -150,22 +141,10 @@ export default function Comments({ id, commentCount, refresh }: any) {
 
   return (
     <InputContainer>
-      <CommentCount>
-        <CountWrap>
-          <Ionicons
-            name="chatbubble"
-            color={"#ffffff"}
-            style={{ marginRight: 2 }}
-            size={24}
-          />
-          <CountText>댓글 </CountText>
-          <CountText>{commentCount}</CountText>
-        </CountWrap>
-      </CommentCount>
       <MessageWrap>
         <MessageInput
           ref={commentsRef}
-          placeholderTextColor="rgba(0,0,0,0.5)"
+          placeholderTextColor="rgba(136, 136, 136, 0.4)"
           placeholder="내용을 입력해주세요."
           returnKeyLabel="Done"
           returnKeyType="done"
@@ -173,7 +152,7 @@ export default function Comments({ id, commentCount, refresh }: any) {
           onSubmitEditing={handleSubmit(onValid)}
           onChangeText={(text) => setValue("payload", text)}
           value={watch("payload")}
-          style={{ width: 320, height: 80 }}
+          style={{ width: deviceWidth - 40, height: 80 }}
         />
         <SendButton
           onPress={handleSubmit(onValid)}
@@ -182,7 +161,11 @@ export default function Comments({ id, commentCount, refresh }: any) {
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload")) ? "rgba(255, 255, 255, 1)" : "white"
+              !Boolean(watch("payload"))
+                ? "rgba(136, 136, 136, 0.4)"
+                : isDark
+                ? "white"
+                : "black"
             }
             size={20}
           />

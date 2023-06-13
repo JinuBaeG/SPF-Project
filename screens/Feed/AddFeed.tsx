@@ -71,12 +71,18 @@ const CaptionContainer = styled.View`
 `;
 
 const Caption = styled.TextInput`
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   font-size: ${(props) => props.theme.size16};
   color: black;
   padding: 12px;
   border-radius: 8px;
 `;
+
+const AlertText = styled.Text`
+  color: red;
+  margin: 4px 0;
+`;
+
 // Styled-Component END
 export default function AddFeed({ route, navigation }: any) {
   // 최상위 화면명
@@ -115,9 +121,17 @@ export default function AddFeed({ route, navigation }: any) {
   const HeaderRightLoading = () => (
     <ActivityIndicator size="small" color="white" style={{ marginRight: 10 }} />
   );
-  const { register, handleSubmit, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting, errors },
+  } = useForm();
   useEffect(() => {
-    register("caption");
+    register("caption", {
+      required: "내용을 입력하세요.",
+      minLength: { value: 2, message: "최소 두 글자 이상을 작성하세요." },
+    });
     register("files");
     register("sportsEvent");
     register("feedCategory");
@@ -150,11 +164,13 @@ export default function AddFeed({ route, navigation }: any) {
   return (
     <DissmissKeyboard>
       <Container>
+        {/*
         <FeedPublicComp
           setValue={setValue}
           id={undefined}
           publicLevel={undefined}
         />
+        */}
         <FeedCategoryComp setValue={setValue} id={undefined} name={undefined} />
         <FeedSportsComp
           setValue={setValue}
@@ -163,6 +179,7 @@ export default function AddFeed({ route, navigation }: any) {
         />
         <FeedImageComp setValue={setValue} />
         <CaptionContainer>
+          {errors.caption && <AlertText>{errors.caption.message}</AlertText>}
           <Caption
             placeholder="내용"
             placeholderTextColor="rgba(0,0,0,0.2)"

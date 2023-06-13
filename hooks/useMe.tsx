@@ -8,18 +8,30 @@ const ME_QUERY = gql`
       id
       username
       avatar
-      totalFollowing
-      totalFollowers
       groupCount
       tutorCount
+      tutor {
+        id
+      }
+      group {
+        id
+      }
+      blockedBy {
+        id
+        blockedBy {
+          id
+        }
+      }
     }
   }
 `;
 
 export default function useMe() {
   const hasToken = useReactiveVar(isLoggedInVar);
+
   const { data } = useQuery(ME_QUERY, {
     skip: !hasToken,
+    fetchPolicy: "cache-and-network",
   });
 
   useEffect(() => {

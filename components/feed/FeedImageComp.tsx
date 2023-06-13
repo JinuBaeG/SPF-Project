@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 const TextWrap = styled.View`
   width: 100%;
   padding: 16px;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   margin-bottom: 8px;
 `;
@@ -34,7 +34,7 @@ const TextInput = styled.TextInput`
 `;
 
 const Upload = styled.TouchableOpacity`
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 8px;

@@ -36,7 +36,7 @@ export default function MyProfileCount({ name, count }: any) {
     <MyCounter>
       <MyCountName>{name}</MyCountName>
       <MyCountBtn>
-        <MyCount>{count}</MyCount>
+        <MyCount>{count > 0 ? count : 0}</MyCount>
         <GTFUnitText>개</GTFUnitText>
       </MyCountBtn>
     </MyCounter>

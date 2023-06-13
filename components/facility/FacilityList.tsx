@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
+import { useColorScheme } from "react-native";
 
 type FacilityCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -13,6 +14,7 @@ type FacilityCompNavigationProps = NativeStackNavigationProp<
 const FacilityListContainer = styled.TouchableOpacity`
   flex-direction: row;
   background-color: ${(props) => props.theme.mainBgColor};
+  padding: 16px;
 `;
 
 const FacilityListImage = styled.Image`
@@ -35,7 +37,7 @@ const FacilityListTitleWrap = styled.View`
 `;
 
 const FacilityListTitle = styled.Text`
-  color: ${(props) => props.theme.blackColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 16px;
   font-weight: 600;
   margin-right: 8px;
@@ -47,7 +49,7 @@ const FacilityListEventWrap = styled.View`
 `;
 
 const FacilityListEvent = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
   font-weight: 300;
 `;
@@ -68,32 +70,34 @@ const FacilityListDisc = styled.Text`
 
 export default function FacilityList({
   id,
-  facilityname,
-  facilityEvent,
-  areaAddress,
+  name,
+  facilitySports,
+  activeArea,
   discription,
   facilityTag,
-  photoUrl,
+  facilityImage,
 }: any) {
   const navigation = useNavigation<FacilityCompNavigationProps>();
+  const isDark = useColorScheme() === "dark";
+
   return (
     <FacilityListContainer
       onPress={() => navigation.navigate("FacilityDetail", { id })}
     >
-      <FacilityListImage source={{ uri: photoUrl }} />
+      <FacilityListImage source={{ uri: facilityImage[0].imagePath }} />
       <FacilityListInfoWrap>
         <FacilityListTitleWrap>
-          <FacilityListTitle>{facilityname}</FacilityListTitle>
-          {facilityEvent.map((event: any, index: number) => (
-            <FacilityListEventWrap key={index}>
-              <FacilityListEvent>{event.sportsEvent}</FacilityListEvent>
-              {facilityEvent.length - 1 === index ? null : (
+          <FacilityListTitle>{name}</FacilityListTitle>
+          {facilitySports.map((item: any, index: number) => (
+            <FacilityListEventWrap key={item.id}>
+              <FacilityListEvent>{item.name}</FacilityListEvent>
+              {facilitySports.length - 1 === index ? null : (
                 <FacilityListPoint />
               )}
             </FacilityListEventWrap>
           ))}
         </FacilityListTitleWrap>
-        <FacilityListDisc>{areaAddress}</FacilityListDisc>
+        <FacilityListDisc>{activeArea}</FacilityListDisc>
         <FacilityListDisc>{discription}</FacilityListDisc>
       </FacilityListInfoWrap>
     </FacilityListContainer>

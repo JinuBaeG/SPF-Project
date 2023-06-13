@@ -1,11 +1,12 @@
 import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 
-const EDIT_BOARD_COMMENT_MUTATION = gql`
-  mutation editBoardComment($id: Int!, $payload: String!) {
-    editBoardComment(id: $id, payload: $payload) {
+const EDIT_COMMENT_MUTATION = gql`
+  mutation editComment($id: Int!, $payload: String!) {
+    editComment(id: $id, payload: $payload) {
       ok
       error
     }
@@ -13,22 +14,21 @@ const EDIT_BOARD_COMMENT_MUTATION = gql`
 `;
 
 const MessageWrap = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin: 8px 0 0 48px;
+  align-items: flex-end;
 `;
 
 const MessageInput = styled.TextInput`
   align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
-  padding: 8px 12px;
+  padding: 16px;
   color: ${(props) => props.theme.textColor};
   border-radius: 4px;
-  border: 2px solid ${(props) => props.theme.greenActColor};
-  margin-right: 8px;
+  border: 1px solid ${(props) => props.theme.greenActColor};
 `;
 
 const ButtonWrap = styled.View`
+  padding: 8px;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 `;
@@ -47,7 +47,7 @@ const EditButton = styled.TouchableOpacity`
   padding: 8px;
   border-radius: 4px;
   background-color: ${(props) => props.theme.greenActColor};
-  margin-bottom: 8px;
+  margin-right: 4px;
 `;
 
 const EditCancelButton = styled.TouchableOpacity`
@@ -63,21 +63,21 @@ export default function EditComment({
   setCommentEdit,
   refresh,
 }: any) {
+  const deviceWidth = Dimensions.get("window").width;
   const { register, handleSubmit, setValue, getValues, watch } = useForm();
-  const editBoardCommentUpdate = (cache: any, result: any) => {
+  const editCommentUpdate = (cache: any, result: any) => {
     const { editPayload } = getValues();
     setValue("payload", "");
     const {
       data: {
-        editBoardComment: { ok, id },
+        editComment: { ok, id },
       },
     } = result;
 
     if (ok) {
       // 게시글에 새로 작성되어 캐시에 저장된 댓글을 업데이트
-      console.log(payload);
       cache.modify({
-        id: `BoardComment:${id}`,
+        id: `Comment:${id}`,
         fields: {
           payload() {
             return payload;
@@ -86,20 +86,23 @@ export default function EditComment({
       });
 
       setCommentEdit(false);
+      refresh();
     }
   };
 
-  const [editBoardCommentMutation, { loading: editCommentloading }] =
-    useMutation(EDIT_BOARD_COMMENT_MUTATION, {
-      update: editBoardCommentUpdate,
-    });
+  const [editCommentMutation, { loading: editCommentloading }] = useMutation(
+    EDIT_COMMENT_MUTATION,
+    {
+      update: editCommentUpdate,
+    }
+  );
   const onValidEdit = (data: any) => {
     const { editPayload: payload } = data;
 
     if (editCommentloading) {
       return;
     }
-    editBoardCommentMutation({
+    editCommentMutation({
       variables: {
         id,
         payload,
@@ -126,7 +129,7 @@ export default function EditComment({
         onSubmitEditing={handleSubmit(onValidEdit)}
         onChangeText={(text) => setValue("editPayload", text)}
         value={watch("editPayload")}
-        style={{ width: 280, height: 80 }}
+        style={{ width: deviceWidth, height: 80 }}
       ></MessageInput>
 
       <ButtonWrap>

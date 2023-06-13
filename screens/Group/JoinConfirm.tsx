@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, useColorScheme } from "react-native";
 import styled from "styled-components/native";
 import ScreenLayout from "../../components/ScreenLayout";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,8 +23,18 @@ const JOIN_GROUP_QUERY = gql`
 `;
 
 const JOIN_DENIED_MUTATION = gql`
-  mutation joinDenied($id: Int!, $groupId: Int!) {
-    joinDenied(id: $id, groupId: $groupId) {
+  mutation joinDenied(
+    $id: Int!
+    $userId: Int!
+    $groupId: Int!
+    $username: String
+  ) {
+    joinDenied(
+      id: $id
+      userId: $userId
+      groupId: $groupId
+      username: $username
+    ) {
       ok
       error
     }
@@ -32,8 +42,18 @@ const JOIN_DENIED_MUTATION = gql`
 `;
 
 const JOIN_ACCESS_MUTATION = gql`
-  mutation joinAccess($id: Int!, $groupId: Int!) {
-    joinAccess(id: $id, groupId: $groupId) {
+  mutation joinAccess(
+    $id: Int!
+    $userId: Int!
+    $groupId: Int!
+    $username: String
+  ) {
+    joinAccess(
+      id: $id
+      userId: $userId
+      groupId: $groupId
+      username: $username
+    ) {
       ok
       error
     }
@@ -65,7 +85,7 @@ const Avatar = styled.Image`
 
 const Username = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.blackColor};
+  color: ${(props) => props.theme.textColor};
   font-weight: 600;
 `;
 
@@ -105,14 +125,16 @@ export default function JoinConfirm({ navigation, route }: any) {
     variables: {
       groupId: route.params.id,
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const refresh = async () => {
     setRefreshing(true);
     await refetch();
-    route.params.refresh;
     setRefreshing(false);
   };
+
+  const isDark = useColorScheme() === "dark";
 
   const renderItem = ({ item: join }: any) => {
     return (
@@ -122,7 +144,16 @@ export default function JoinConfirm({ navigation, route }: any) {
             goToProfile({ username: join.user.username, id: join.user.id })
           }
         >
-          <Avatar source={{ uri: join.user.avatar }} />
+          <Avatar
+            resizeMode="cover"
+            source={
+              join.user.avatar === null
+                ? isDark
+                  ? require(`../../assets/emptyAvatar_white.png`)
+                  : require(`../../assets/emptyAvatar.png`)
+                : { uri: join.user.avatar }
+            }
+          />
           <Username>{join.user.username}</Username>
         </UserWrap>
         <ButtonWrap>
@@ -130,6 +161,8 @@ export default function JoinConfirm({ navigation, route }: any) {
             onPressIn={() =>
               pressAccess({
                 id: join.id,
+                userId: join.user.id,
+                username: join.user.username,
                 groupId: join.group.id,
               })
             }
@@ -141,6 +174,8 @@ export default function JoinConfirm({ navigation, route }: any) {
             onPressIn={() =>
               pressDenied({
                 id: join.id,
+                userId: join.user.id,
+                username: join.user.username,
                 groupId: join.group.id,
               })
             }
@@ -158,6 +193,8 @@ export default function JoinConfirm({ navigation, route }: any) {
   useEffect(() => {
     refresh();
     register("id");
+    register("userId");
+    register("username");
     register("groupId");
   }, [register]);
 
@@ -166,16 +203,20 @@ export default function JoinConfirm({ navigation, route }: any) {
     { onCompleted: refresh }
   );
 
-  const pressDenied = ({ id, groupId }: any) => {
-    setValue("id", id);
+  const pressDenied = ({ id, userId, groupId, username }: any) => {
+    setValue("id", parseInt(id));
+    setValue("userId", parseInt(userId));
+    setValue("username", username);
     setValue("groupId", groupId);
   };
 
-  const onDenied = async ({ id, groupId }: any) => {
+  const onDenied = async ({ id, userId, groupId, username }: any) => {
     joinDeniedMutation({
       variables: {
         id,
+        userId,
         groupId,
+        username,
       },
     });
   };
@@ -185,16 +226,20 @@ export default function JoinConfirm({ navigation, route }: any) {
     { onCompleted: refresh }
   );
 
-  const pressAccess = ({ id, groupId }: any) => {
-    setValue("id", id);
+  const pressAccess = ({ id, userId, groupId, username }: any) => {
+    setValue("id", parseInt(id));
+    setValue("userId", parseInt(userId));
+    setValue("username", username);
     setValue("groupId", groupId);
   };
 
-  const onAccess = async ({ id, groupId }: any) => {
+  const onAccess = async ({ id, userId, groupId, username }: any) => {
     joinAccessMutation({
       variables: {
         id,
+        userId,
         groupId,
+        username,
       },
     });
   };

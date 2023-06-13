@@ -14,6 +14,8 @@ import { RootStackParamList } from "../../shared.types";
 import { gql, useMutation, useReactiveVar } from "@apollo/client";
 import Swiper from "react-native-swiper";
 import { isLoggedInVar } from "../../apollo";
+import ContentsMenu from "../ContentsMenu";
+import { dateTime } from "../shared/sharedFunction";
 
 type PhotoCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -28,17 +30,16 @@ interface IPhotoCompProps {
     username: string;
   };
   caption: string;
+  sportsEvent: string;
   feedUpload: {
     map: any;
     id: number;
     fileUrl: string;
     length: number;
   };
-  feedCategoryList: {
-    id: number;
-    name: string;
-  }[];
+  feedCategory: string;
   isLiked: boolean;
+  isMine: boolean;
   likes: number;
   commentCount: number;
   comments: {
@@ -52,6 +53,8 @@ interface IPhotoCompProps {
     isMine: boolean;
     createdAt: string;
   };
+  refresh: any;
+  createdAt: string;
 }
 
 interface toggleLike_toggleLike {
@@ -78,10 +81,15 @@ const TOGGLE_LIKE_MUTATION = gql`
 
 const Container = styled.View`
   background-color: ${(props) => props.theme.mainBgColor};
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
-const Header = styled.TouchableOpacity`
-  padding: 12px;
+const Header = styled.View`
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -91,15 +99,31 @@ const UserAvatar = styled.Image`
   height: 28px;
   border-radius: 50px;
 `;
+
+const NameWrap = styled.View``;
+const NameWrapBottom = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 const Username = styled.Text`
   color: ${(props) => props.theme.textColor};
   font-weight: 600;
 `;
+
+const SportsName = styled.Text`
+  font-size: 12px;
+  color: ${(props) => props.theme.grayColor};
+`;
+
+const CreateDate = styled.Text`
+  font-size: 12px;
+  color: ${(props) => props.theme.grayColor};
+`;
+
 const File = styled.Image``;
 const Actions = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-right: 4px;
 `;
 const Action = styled.TouchableOpacity`
   flex-direction: row;
@@ -114,7 +138,7 @@ const ActionText = styled.Text`
 `;
 const Caption = styled.View`
   flex-direction: row;
-  padding: 4px 16px 16px;
+  padding: 4px;
 `;
 const CaptionText = styled.Text`
   margin-left: 10px;
@@ -122,7 +146,7 @@ const CaptionText = styled.Text`
 `;
 const Category = styled.View`
   flex-direction: row;
-  padding: 16px 16px 4px;
+  padding: 4px;
 `;
 const CategoryText = styled.Text`
   margin-left: 10px;
@@ -131,27 +155,31 @@ const CategoryText = styled.Text`
 const Likes = styled.Text`
   color: ${(props) => props.theme.grayInactColor};
   margin: 8px 4px;
-  font-weight: 600;
 `;
 
 const CommentNumber = styled.Text`
   color: ${(props) => props.theme.grayInactColor};
   margin: 8px 4px;
-  font-weight: 600;
 `;
 
 const ExtraContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px;
 `;
 
 const NumberContainer = styled.View`
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 8px;
+`;
+
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 export default function PhotoComp({
@@ -159,11 +187,15 @@ export default function PhotoComp({
   user,
   caption,
   feedUpload,
-  feedCategoryList,
+  feedCategory,
   isLiked,
   likes,
+  isMine,
   commentCount,
   comments,
+  sportsEvent,
+  refresh,
+  createdAt,
 }: IPhotoCompProps) {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const navigation = useNavigation<PhotoCompNavigationProps>();
@@ -173,9 +205,10 @@ export default function PhotoComp({
   const updateToggleLike = (cache: any, result: any) => {
     const {
       data: {
-        toggleLike: { ok },
+        toggleLike: { ok, error },
       },
     } = result;
+
     if (ok) {
       const photoId = `Photo:${id}`;
       cache.modify({
@@ -204,33 +237,68 @@ export default function PhotoComp({
     }
   );
   const goToProfile = () => {
-    navigation.navigate("Profile", {
-      username: user.username,
-      id: user.id,
-    });
+    if (isLoggedIn) {
+      navigation.navigate("Profile", {
+        username: user.username,
+        id: user.id,
+      });
+    } else {
+      navigation.navigate("LoggedOutNav");
+    }
   };
   const isDark = useColorScheme() === "dark";
+
+  const getDate = new Date(parseInt(createdAt));
+
   return (
     <Container>
-      <Header onPress={goToProfile}>
-        <UserAvatar
-          resizeMode="cover"
-          source={
-            user.avatar === null
-              ? require(`../../assets/emptyAvatar.png`)
-              : { uri: user.avatar }
-          }
+      <Header>
+        <UserInfo onPress={goToProfile}>
+          <UserAvatar
+            resizeMode="cover"
+            source={
+              user.avatar === null
+                ? isDark
+                  ? require(`../../assets/emptyAvatar_white.png`)
+                  : require(`../../assets/emptyAvatar.png`)
+                : { uri: user.avatar }
+            }
+          />
+          <NameWrap>
+            <Username>{user.username}</Username>
+            <NameWrapBottom>
+              <SportsName>{sportsEvent}</SportsName>
+              <Ionicons
+                name="ellipse"
+                size={4}
+                color={isDark ? "white" : "black"}
+                style={{ marginHorizontal: 4 }}
+              />
+              <CreateDate>{dateTime(getDate)}</CreateDate>
+            </NameWrapBottom>
+          </NameWrap>
+        </UserInfo>
+        <ContentsMenu
+          id={id}
+          userId={user.id}
+          isMine={isMine}
+          screen="Feed"
+          refresh={refresh}
         />
-        <Username>{user.username}</Username>
       </Header>
       <TouchableOpacity
+        style={{ position: "relative", zIndex: 1 }}
         onPress={() => {
-          navigation.navigate("PhotoDetail", { id: id });
+          if (isLoggedIn) {
+            navigation.navigate("PhotoDetail", { id: id });
+          } else {
+            navigation.navigate("LoggedOutNav");
+          }
         }}
       >
-        {feedCategoryList !== null ? (
+        {feedCategory !== null ? (
           <Category>
-            <CategoryText>{feedCategoryList[0].name}</CategoryText>
+            <CategoryText>{feedCategory}</CategoryText>
           </Category>
         ) : null}
         <Caption>
@@ -257,11 +325,13 @@ export default function PhotoComp({
               marginBottom: 30,
               width: "100%",
               height: height / 3,
+              zIndex: 1,
             }}
             paginationStyle={{
               position: "absolute",
               bottom: 0,
             }}
+            style={{ position: "relative", zIndex: 1 }}
           >
             {feedUpload.map((file: any, index: any) => (
               <File
@@ -269,6 +339,7 @@ export default function PhotoComp({
                 style={{
                   width,
                   height: imageHeight,
+                  zIndex: 1,
                 }}
                 source={{ uri: file.imagePath }}
                 key={index}
@@ -277,21 +348,36 @@ export default function PhotoComp({
           </Swiper>
         </>
       ) : null}
-
-      <NumberContainer>
-        <Likes>좋아요 {likes}</Likes>
-        <CommentNumber>댓글 {commentCount}</CommentNumber>
-      </NumberContainer>
+      <TouchableOpacity
+        style={{ position: "relative", zIndex: 1 }}
+        onPress={() => {
+          if (isLoggedIn) {
+            navigation.navigate("PhotoDetail", { id: id });
+          } else {
+            navigation.navigate("LoggedOutNav");
+          }
+        }}
+      >
+        <NumberContainer>
+          <Likes>좋아요 {likes}</Likes>
+          <CommentNumber>댓글 {commentCount}</CommentNumber>
+        </NumberContainer>
+      </TouchableOpacity>
+      <BoardLine />
       <ExtraContainer>
         <Actions>
           <Action
             onPress={() => {
-              navigation.navigate("PhotoDetail", { id: id });
+              if (isLoggedIn) {
+                navigation.navigate("PhotoDetail", { id: id });
+              } else {
+                navigation.navigate("LoggedOutNav");
+              }
             }}
           >
             <Ionicons
               name="chatbubble-outline"
-              color={isDark ? "#ffffff" : "#1e272e"}
+              color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
               style={{ marginBottom: 2 }}
               size={16}
             />
@@ -299,13 +385,23 @@ export default function PhotoComp({
           </Action>
           <Action
             onPress={() => {
-              toggleLikeMutation();
+              if (isLoggedIn) {
+                toggleLikeMutation();
+              } else {
+                navigation.navigate("LoggedOutNav");
+              }
             }}
           >
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
-              color={isLiked ? "tomato" : isDark ? "#ffffff" : "#1e272e"}
-              size={20}
+              color={
+                isLiked
+                  ? "tomato"
+                  : isDark
+                  ? "#ffffff"
+                  : "rgba(136, 136, 136, 0.4)"
+              }
+              size={18}
             />
             <ActionText>좋아요</ActionText>
           </Action>

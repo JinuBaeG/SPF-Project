@@ -11,6 +11,8 @@ import { GroupActInfoComp } from "../../components/group/GroupActInfoComp";
 import { GroupSportsComp } from "../../components/group/GroupSportsComp";
 import { GroupTagComp } from "../../components/group/GroupTagComp";
 import { GroupAreaComp } from "../../components/group/GroupAreaComp";
+import { GROUP_FRAGMENT_NATIVE } from "../../fragments";
+import { error } from "console";
 
 const CREATE_GROUP_MUTATION = gql`
   mutation createGroup(
@@ -55,10 +57,10 @@ const CREATE_GROUP_MUTATION = gql`
       groupInfo: $groupInfo
       groupTag: $groupTag
     ) {
-      ok
-      error
+      ...GroupFragmentNative
     }
   }
+  ${GROUP_FRAGMENT_NATIVE}
 `;
 
 const Container = styled.ScrollView`
@@ -71,7 +73,7 @@ const Container = styled.ScrollView`
 const TextWrap = styled.View`
   width: 100%;
   padding: 16px;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   margin-bottom: 8px;
 `;
@@ -85,7 +87,7 @@ const TextLabel = styled.Text`
 
 const TextInput = styled.TextInput`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.blackColor};
 `;
 
 const UploadText = styled.Text`
@@ -95,7 +97,7 @@ const UploadText = styled.Text`
 `;
 
 const HeaderRightText = styled.Text`
-  color: ${colors.blue};
+  color: ${(props) => props.theme.greenActColor};
   font-size: 16px;
   font-weight: 600;
   margin-right: 16px;
@@ -122,27 +124,44 @@ const ImportantData = styled.Text`
   color: red;
 `;
 
+const AlertText = styled.Text`
+  color: red;
+  margin: 4px 0;
+`;
+
 export default function AddGroup({ navigation, route }: any) {
   // 그룹 등록 화면 기본 - 시작
   const me: any = useMe();
-  const onCompleted = (data: any) => {
+  const updateGroups = (cache: any, result: any) => {
     const {
-      createGroup: { ok, error },
-    } = data;
+      data: { createGroup },
+    } = result;
 
-    if (ok) {
+    if (createGroup.id) {
+      cache.modify({
+        id: "ROOT_QUERY",
+        fields: {
+          seeMyGroup(prev: any) {
+            return [createGroup, ...prev];
+          },
+          seeGroups(prev: any) {
+            return [createGroup, ...prev];
+          },
+        },
+      });
       navigation.navigate("Tabs");
-    }
-
-    if (error) {
-      alert(error);
     }
   };
   const [CreateGroupMutation, { loading: addLoading, data }] = useMutation(
     CREATE_GROUP_MUTATION,
-    { onCompleted }
+    { update: updateGroups }
   );
-  const { register, handleSubmit, setValue, getValues } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { isDirty, errors, isSubmitting },
+  } = useForm();
   const onValid = async ({
     name,
     discription,
@@ -190,7 +209,7 @@ export default function AddGroup({ navigation, route }: any) {
   };
   const HeaderRight = () => {
     return (
-      <TouchableOpacity onPress={handleSubmit(onValid)}>
+      <TouchableOpacity onPress={handleSubmit(onValid)} disabled={isSubmitting}>
         <HeaderRightText>완료</HeaderRightText>
       </TouchableOpacity>
     );
@@ -210,7 +229,6 @@ export default function AddGroup({ navigation, route }: any) {
 
   useEffect(() => {
     register("userId");
-    register("name");
     register("discription");
     register("sidoName");
     register("gusiName");
@@ -224,9 +242,8 @@ export default function AddGroup({ navigation, route }: any) {
     register("addrRoad");
     register("areaLatitude");
     register("areaLongitude");
-    register("sportsEvent");
+    register("sportsEvent", { required: "종목은 필수 입력입니다." });
     register("file");
-    register("maxMember");
     register("groupInfo");
     register("groupTag");
     register("gropuPresident");
@@ -239,11 +256,20 @@ export default function AddGroup({ navigation, route }: any) {
           그룹명<ImportantData>*</ImportantData>
         </TextLabel>
         <TextInput
+          {...register("name", {
+            required: "그룹명은 필수 입력입니다.",
+            minLength: {
+              value: 2,
+              message: "그룹명은 두 글자 이상 작성하세요.",
+            },
+          })}
           placeholder="그룹명"
           placeholderTextColor="rgba(0,0,0,0.2)"
           onChangeText={(text) => setValue("name", text)}
           maxLength={20}
+          aria-invalid={!isDirty ? undefined : errors.name ? true : false}
         />
+        {errors.name && <AlertText>{errors.name.message}</AlertText>}
       </TextWrap>
       <TextWrap>
         <TextLabel>그룹소개</TextLabel>
@@ -259,17 +285,29 @@ export default function AddGroup({ navigation, route }: any) {
         id={undefined}
         sportsEvent={undefined}
       />
+      {errors.sportsEvent && (
+        <AlertText>{errors.sportsEvent.message}</AlertText>
+      )}
       <GroupImageComp setValue={setValue} />
       <TextWrap>
         <TextLabel>
           최대 인원 수<ImportantData>*</ImportantData>
         </TextLabel>
         <TextInput
+          {...register("maxMember", {
+            required: "최대 인원수를 입력해주세요.",
+            minLength: {
+              value: 1,
+              message: "최대 인원수는 최소 1명이상 입니다.",
+            },
+          })}
           placeholder="최대 인원 수"
           placeholderTextColor="rgba(0,0,0,0.2)"
           onChangeText={(text) => setValue("maxMember", text)}
           maxLength={3}
+          aria-invalid={!isDirty ? undefined : errors.maxMember ? true : false}
         />
+        {errors.maxMember && <AlertText>{errors.maxMember.message}</AlertText>}
       </TextWrap>
       <GroupTagComp setValue={setValue} id={undefined} groupTag={undefined} />
       <GroupActInfoComp

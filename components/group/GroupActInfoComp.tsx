@@ -14,7 +14,7 @@ interface GroupInfoProps {
 const TextWrap = styled.View`
   width: 100%;
   padding: 16px;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   margin-bottom: 8px;
 `;
@@ -28,7 +28,7 @@ const TextLabel = styled.Text`
 
 const TextInput = styled.TextInput`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.blackColor};
 `;
 
 const UploadText = styled.Text`

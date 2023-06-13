@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, useColorScheme } from "react-native";
 import useMe from "../../hooks/useMe";
 
 const TutorHeaderContainer = styled.View`
@@ -126,10 +126,19 @@ const TutorHeaderEditButtonText = styled.Text`
 `;
 
 export default function TutorHeader({ navigation, route, tutorData }: any) {
+  const isDark = useColorScheme() === "dark";
   return (
     <TutorHeaderContainer>
       <TutorHeaderWrap>
-        <TutorHeaderImage source={{ uri: tutorData.tutorImage?.imagePath }} />
+        <TutorHeaderImage
+          source={
+            tutorData.tutorImage?.imagePath !== undefined
+              ? { uri: tutorData.tutorImage?.imagePath }
+              : isDark
+              ? require("../../assets/emptyAvatar_white.png")
+              : require("../../assets/emptyAvatar.png")
+          }
+        />
       </TutorHeaderWrap>
       <TutorHeaderInfoContainer>
         <TutorHeaderInfoWrap>
@@ -147,12 +156,13 @@ export default function TutorHeader({ navigation, route, tutorData }: any) {
         </TutorHeaderInfoWrap>
         {tutorData.isTutor ? (
           <TutorHeaderButtonWrap>
+            {/* 
             <TutorHeaderButton onPress={() => {}}>
               <TutorHeaderButtonText>정보수정</TutorHeaderButtonText>
-            </TutorHeaderButton>
+        </TutorHeaderButton> */}
             <TutorHeaderEditButton
               onPress={() => {
-                navigation.navigate("SeeInquiry", { id: tutorData.id });
+                navigation.navigate("TutorInquiry", { id: tutorData.id });
               }}
             >
               <TutorHeaderEditButtonText>문의보기</TutorHeaderEditButtonText>

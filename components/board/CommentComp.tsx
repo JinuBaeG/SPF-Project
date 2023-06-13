@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import styled from "styled-components/native";
-import { TouchableOpacity, View, Text } from "react-native";
+import { TouchableOpacity, View, Text, Alert } from "react-native";
 import { dateTime } from "../shared/sharedFunction";
 import { gql, useMutation } from "@apollo/client";
 import { Ionicons } from "@expo/vector-icons";
@@ -46,7 +46,7 @@ const CommentContainer = styled.View`
 `;
 
 const CommentText = styled.Text`
-  margin-left: 48px;
+  margin-left: 50px;
   color: ${(props) => props.theme.textColor};
 `;
 
@@ -81,27 +81,25 @@ const Info = styled.View`
 `;
 
 const UserLocation = styled.Text`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
-  font-weight: 600;
 `;
 
 const UpdateTime = styled.Text`
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayInactColor};
   font-size: 12px;
-  font-weight: 600;
 `;
 
 const Dotted = styled.View`
   width: 2px;
   height: 2px;
-  background-color: ${(props) => props.theme.grayColor};
+  background-color: ${(props) => props.theme.grayInactColor};
   margin: 0px 4px;
   border-radius: 1px;
 `;
 
 const ActionWrapper = styled.View`
-  margin: 8px 0 0 48px;
+  margin: 8px 0 0 50px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -109,12 +107,6 @@ const ActionWrapper = styled.View`
 
 const Actions = styled.TouchableOpacity`
   margin-right: 8px;
-`;
-
-const Likes = styled.Text`
-  color: ${(props) => props.theme.grayColor};
-  font-size: 12px;
-  font-weight: 500;
 `;
 
 const ReComment = styled.Text`
@@ -136,7 +128,7 @@ const CommentDelete = styled.Text`
 `;
 
 const ReCommentWrap = styled.View`
-  margin: 16px 0 0 48px;
+  margin: 16px 0 0 50px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -160,9 +152,13 @@ export default function CommentComp({
   const deleteToggle = (cache: any, result: any) => {
     const {
       data: {
-        deleteBoardComment: { ok },
+        deleteBoardComment: { ok, error },
       },
     } = result;
+
+    if (error) {
+      Alert.alert(error);
+    }
 
     if (ok) {
       const boardCommentId = `BoardComment:${id}`;
@@ -224,8 +220,6 @@ export default function CommentComp({
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <Info>
-            <UserLocation>임시</UserLocation>
-            <Dotted />
             <UpdateTime>{dateTime(getDate)}</UpdateTime>
           </Info>
         </UserInfo>
@@ -274,7 +268,7 @@ export default function CommentComp({
               });
             }}
           >
-            <ReComment style={{ color: "#0095f6" }}>
+            <ReComment style={{ color: "#01aa73" }}>
               답글 {boardReCommentCount} 개
             </ReComment>
           </Actions>

@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import {
@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
   useColorScheme,
+  View,
 } from "react-native";
 import styled from "styled-components/native";
 import { RootStackParamList } from "../../shared.types";
@@ -19,6 +20,10 @@ import CommentComp from "../../components/feed/CommentComp";
 import Comments from "./Comments";
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 import ScreenLayout from "../../components/ScreenLayout";
+import ContentsMenu from "../../components/ContentsMenu";
+import { dateTime } from "../../components/shared/sharedFunction";
+import useMe from "../../hooks/useMe";
+import { isLoggedInVar } from "../../apollo";
 
 type PhotoCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -94,8 +99,14 @@ const Container = styled.ScrollView`
   width: 100%;
 `;
 
-const Header = styled.TouchableOpacity`
-  padding: 12px;
+const Header = styled.View`
+  padding: 16px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const UserInfo = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
 `;
@@ -119,9 +130,14 @@ const BoardInfo = styled.View`
   align-items: center;
 `;
 
+const SportsName = styled.Text`
+  font-size: 12px;
+  color: ${(props) => props.theme.grayColor};
+`;
+
 const CreateDate = styled.Text`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayColor};
   margin-right: 8px;
 `;
 
@@ -147,7 +163,7 @@ const ActionText = styled.Text`
 
 const Caption = styled.View`
   flex-direction: row;
-  padding: 4px 16px 16px;
+  padding: 4px 4px 16px;
 `;
 
 const CaptionText = styled.Text`
@@ -157,7 +173,7 @@ const CaptionText = styled.Text`
 
 const Category = styled.View`
   flex-direction: row;
-  padding: 16px 16px 4px;
+  padding: 4px;
 `;
 
 const CategoryText = styled.Text`
@@ -165,30 +181,17 @@ const CategoryText = styled.Text`
   color: ${(props) => props.theme.greenActColor};
 `;
 
-const Likes = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
-`;
-
-const CommentNumber = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
-  margin: 8px 4px;
-  font-weight: 600;
-`;
-
 const ExtraContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 12px 16px;
 `;
 
-const NumberContainer = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 16px;
+const BoardLine = styled.View`
+  width: 100%;
+  height: 1px;
+  background-color: ${(props) => props.theme.grayLineColor};
 `;
 
 export default function PhotoDetail({ navigation, route }: any) {
@@ -275,33 +278,46 @@ export default function PhotoDetail({ navigation, route }: any) {
   const ListHeader = () => {
     const getDate = new Date(parseInt(feedData?.seePhoto?.createdAt));
 
-    let date = getDate.getDate();
-    let month = getDate.getMonth() + 1;
-    let year = getDate.getFullYear();
+    const isDark = useColorScheme() === "dark";
 
     return (
       <Container>
-        <Header onPress={goToProfile}>
-          <UserAvatar
-            resizeMode="cover"
-            source={
-              feedData?.seePhoto?.user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
-                : { uri: feedData?.seePhoto?.user.avatar }
-            }
+        <Header>
+          <UserInfo onPress={goToProfile}>
+            <UserAvatar
+              resizeMode="cover"
+              source={
+                feedData?.seePhoto?.user.avatar === null
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
+                  : { uri: feedData?.seePhoto?.user.avatar }
+              }
+            />
+            <UserInfoWrap>
+              <Username>{feedData?.seePhoto?.user.username}</Username>
+              <BoardInfo>
+                <SportsName>{feedData?.seePhoto?.sportsEvent}</SportsName>
+                <Ionicons
+                  name="ellipse"
+                  size={4}
+                  color={"rgba(136, 136, 136, 0.4)"}
+                  style={{ marginHorizontal: 4 }}
+                />
+                <CreateDate>{dateTime(getDate)}</CreateDate>
+              </BoardInfo>
+            </UserInfoWrap>
+          </UserInfo>
+          <ContentsMenu
+            id={feedData?.seePhoto?.id}
+            userId={feedData?.seePhoto?.user.id}
+            isMine={feedData?.seePhoto?.isMine}
+            screen="FeedDetail"
           />
-          <UserInfoWrap>
-            <Username>{feedData?.seePhoto?.user.username}</Username>
-            <BoardInfo>
-              <CreateDate>{year + "." + month + "." + date}</CreateDate>
-            </BoardInfo>
-          </UserInfoWrap>
         </Header>
-        {feedData?.seePhoto?.feedCategoryList !== null ? (
+        {feedData?.seePhoto?.feedCategory !== null ? (
           <Category>
-            <CategoryText>
-              {feedData?.seePhoto?.feedCategoryList[0].name}
-            </CategoryText>
+            <CategoryText>{feedData?.seePhoto?.feedCategory}</CategoryText>
           </Category>
         ) : null}
         <Caption>
@@ -341,8 +357,18 @@ export default function PhotoDetail({ navigation, route }: any) {
             </Swiper>
           </>
         ) : null}
+        <BoardLine />
         <ExtraContainer>
           <Actions>
+            <Action>
+              <Ionicons
+                name="chatbubble-outline"
+                color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+                style={{ marginBottom: 2 }}
+                size={16}
+              />
+              <ActionText>댓글 {feedData?.seePhoto?.commentCount}</ActionText>
+            </Action>
             <Action onPress={() => toggleLikeMutation()}>
               <Ionicons
                 name={feedData?.seePhoto?.isLiked ? "heart" : "heart-outline"}
@@ -351,17 +377,19 @@ export default function PhotoDetail({ navigation, route }: any) {
                     ? "tomato"
                     : "rgba(136, 136, 136, 0.4)"
                 }
-                size={20}
+                size={18}
               />
               <ActionText>좋아요</ActionText>
             </Action>
           </Actions>
         </ExtraContainer>
+        <BoardLine />
         <Comments
           id={feedData?.seePhoto?.id}
           commentCount={feedData?.seePhoto?.commentCount}
           refresh={refresh}
         />
+        <BoardLine />
       </Container>
     );
   };

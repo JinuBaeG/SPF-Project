@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import styled from "styled-components/native";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, useColorScheme } from "react-native";
 import { dateTime } from "../shared/sharedFunction";
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
@@ -33,15 +33,6 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 const DELETE_BOARD_RECOMMENT_MUTATION = gql`
   mutation deleteBoardReComment($id: Int!) {
     deleteBoardReComment(id: $id) {
-      ok
-      error
-    }
-  }
-`;
-
-const EDIT_BOARD_RECOMMENT_MUTATION = gql`
-  mutation editBoardReComment($id: Int!, $payload: String!) {
-    editBoardReComment(id: $id, payload: $payload) {
       ok
       error
     }
@@ -162,7 +153,7 @@ export default function ReCommentComp({
     } = result;
 
     if (ok) {
-      const boardReCommentId = `BoardReComment:${id}`;
+      const boardReCommentId = `ReBoardComment:${id}`;
       const boardCommentId = `BoardComment:${boardComment.id}`;
       // 삭제된 댓글 캐시에서 삭제
       cache.evict({ id: boardReCommentId });
@@ -205,6 +196,7 @@ export default function ReCommentComp({
   const getDate = new Date(parseInt(createdAt));
 
   const [commentEdit, setCommentEdit] = useState(false);
+  const isDark = useColorScheme() === "dark";
 
   return (
     <CommentContainer>
@@ -214,7 +206,9 @@ export default function ReCommentComp({
             resizeMode="cover"
             source={
               user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
+                ? isDark
+                  ? require(`../../assets/emptyAvatar_white.png`)
+                  : require(`../../assets/emptyAvatar.png`)
                 : { uri: user.avatar }
             }
           />

@@ -1,15 +1,28 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import { BOARD_FRAGMENT_NATIVE } from "../../fragments";
+import { isLoggedInVar } from "../../apollo";
+import useMe from "../../hooks/useMe";
+import { Alert, Dimensions } from "react-native";
 
 const SEE_BOARDS_QUERY = gql`
-  query seeBoards($id: Int, $sortation: String, $offset: Int) {
-    seeBoards(id: $id, sortation: $sortation, offset: $offset) {
+  query seeBoards(
+    $id: Int
+    $sortation: String
+    $offset: Int
+    $blockUsers: [BlockUsers]
+  ) {
+    seeBoards(
+      id: $id
+      sortation: $sortation
+      offset: $offset
+      blockUsers: $blockUsers
+    ) {
       ...BoardFragmentNative
     }
   }
@@ -22,7 +35,6 @@ type BoardNavigationProps = NativeStackNavigationProp<
 >;
 
 const BoardContainer = styled.SafeAreaView`
-  padding: 16px;
   width: 100%;
   height: 274px;
   background-color: ${(props) => props.theme.mainBgColor};
@@ -78,16 +90,15 @@ const EmptyText = styled.Text`
 const CreateGroupBtn = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.greenActColor};
   color: ${(props) => props.theme.textColor};
-  font-size: 16px;
-  margin-top: 40px;
+  margin-top: 20px;
   border-radius: 8px;
+  padding: 4px;
 `;
 
 const CreateGroupText = styled.Text`
   color: ${(props) => props.theme.whiteColor};
-  font-size: 20px;
   font-weight: 600;
-  padding: 16px;
+  padding: 4px;
 `;
 
 const ListContainer = styled.View``;
@@ -104,10 +115,10 @@ const BoardPoint = styled.View`
   padding: 0 4px;
 `;
 
-const BoardTitle = styled.Text`
-  width: 282px;
-  padding: 0 4px;
-  font-size: 12px;
+const BoardTitle = styled.Text<{ deviceWidth: number }>`
+  width: ${(props) => props.deviceWidth}px;
+  padding: 0 8px;
+  font-size: 16px;
   font-weight: 600;
   color: ${(props) => props.theme.textColor};
 `;
@@ -121,6 +132,30 @@ const BoardDate = styled.Text`
 
 export default function Board({ data, sortation }: any) {
   const navigation = useNavigation<BoardNavigationProps>();
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const deviceWidth = Dimensions.get("window").width - 90;
+  const [blockUsers, setBlockUsers] = useState<any>([]);
+
+  const me = useMe();
+
+  const setBlockUserList = () => {
+    if (isLoggedIn) {
+      const blockUserList = me?.data.me.blockedBy;
+      setBlockUsers([]);
+
+      if (blockUserList !== undefined && blockUserList !== null) {
+        blockUserList.map((item: any) => {
+          let blockUserId = { blockId: item.blockedBy.id };
+          setBlockUsers([blockUserId, ...blockUsers]);
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    setBlockUserList();
+  }, [me?.data?.me?.blockedBy]);
+
   const {
     data: boardData,
     loading: boardLoading,
@@ -130,6 +165,7 @@ export default function Board({ data, sortation }: any) {
       id: data.id,
       sortation,
       offset: 0,
+      blockUsers,
     },
     fetchPolicy: "cache-and-network",
   });
@@ -151,10 +187,20 @@ export default function Board({ data, sortation }: any) {
         <Title>게시판</Title>
         <DiscBtn
           onPress={() => {
-            navigation.navigate("BoardList", {
-              id: boardData?.seeBoards?.group?.id,
-              sortation,
-            });
+            if (data.isJoin) {
+              navigation.navigate("BoardList", {
+                id: data.id,
+                isJoin: data.isJoin,
+                sortation,
+              });
+            } else if (sortation === "facility") {
+              navigation.navigate("BoardList", {
+                id: data.id,
+                sortation,
+              });
+            } else {
+              Alert.alert("그룹 또는 튜터 가입 후 사용할 수 있습니다.");
+            }
           }}
         >
           <Disc>더보기 </Disc>
@@ -188,10 +234,11 @@ export default function Board({ data, sortation }: any) {
                   });
                 }}
               >
-                <BoardPoint>
-                  <Ionicons name="caret-forward" size={16} color="#01aa73" />
-                </BoardPoint>
-                <BoardTitle numberOfLines={1} ellipsizeMode="tail">
+                <BoardTitle
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  deviceWidth={deviceWidth}
+                >
                   {item.title}
                 </BoardTitle>
                 <BoardDate>{year + "-" + month + "-" + date}</BoardDate>
@@ -204,13 +251,15 @@ export default function Board({ data, sortation }: any) {
         <EmptyContainer>
           <EmptyText>게시글이 없네요!</EmptyText>
           <EmptyText>게시글을 작성해보세요!</EmptyText>
-          <CreateGroupBtn
-            onPress={() => {
-              navigation.navigate("AddBoard", { id: data.id, sortation });
-            }}
-          >
-            <CreateGroupText>글 남기기</CreateGroupText>
-          </CreateGroupBtn>
+          {data.isJoin ? (
+            <CreateGroupBtn
+              onPress={() => {
+                navigation.navigate("AddBoard", { id: data.id, sortation });
+              }}
+            >
+              <CreateGroupText>글 남기기</CreateGroupText>
+            </CreateGroupBtn>
+          ) : null}
         </EmptyContainer>
       )}
     </BoardContainer>

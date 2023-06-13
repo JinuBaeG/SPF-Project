@@ -4,7 +4,12 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
 import useMe from "../../hooks/useMe";
 import { Ionicons } from "@expo/vector-icons";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  useColorScheme,
+} from "react-native";
 import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -19,22 +24,7 @@ const CREATE_NOTICE_COMMENT_MUTATION = gql`
 `;
 
 const InputContainer = styled.View`
-  padding: 16px;
-  background-color: ${(props) => props.theme.greenActColor};
-`;
-
-const CommentCount = styled.View``;
-
-const CountWrap = styled.View`
-  margin-bottom: 8px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const CountText = styled.Text`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${(props) => props.theme.whiteColor};
+  background-color: ${(props) => props.theme.mainBgColor};
 `;
 
 const MessageWrap = styled.View`
@@ -45,10 +35,8 @@ const MessageWrap = styled.View`
 const MessageInput = styled.TextInput`
   align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
-  padding: 8px 12px;
+  padding: 16px;
   color: ${(props) => props.theme.textColor};
-  border-radius: 4px;
-  border: 2px solid ${(props) => props.theme.grayColor};
   margin-right: 8px;
 `;
 
@@ -59,6 +47,8 @@ export default function NoticeComments({
   noticeCommentCount,
   refresh,
 }: any) {
+  const deviceWidth = Dimensions.get("window").width;
+  const isDark = useColorScheme() === "dark";
   const noticeCommentsRef: React.MutableRefObject<null> = useRef(null);
 
   const onFocusNext = (nextRef: RefObject<HTMLInputElement>): void => {
@@ -108,10 +98,10 @@ export default function NoticeComments({
       cache.modify({
         id: `Notice:${id}`,
         fields: {
-          boardComments(prev: any) {
+          noticeComments(prev: any) {
             return [...prev, newCacheNoticeComment];
           },
-          boardCommentCount(prev: number) {
+          noticeCommentCount(prev: number) {
             return prev + 1;
           },
         },
@@ -147,22 +137,10 @@ export default function NoticeComments({
 
   return (
     <InputContainer>
-      <CommentCount>
-        <CountWrap>
-          <Ionicons
-            name="chatbubble"
-            color={"#ffffff"}
-            style={{ marginRight: 2 }}
-            size={24}
-          />
-          <CountText>댓글 </CountText>
-          <CountText>{noticeCommentCount}</CountText>
-        </CountWrap>
-      </CommentCount>
       <MessageWrap>
         <MessageInput
           ref={noticeCommentsRef}
-          placeholderTextColor="rgba(0,0,0,0.5)"
+          placeholderTextColor="rgba(136, 136, 136, 0.4)"
           placeholder="내용을 입력해주세요."
           returnKeyLabel="Done"
           returnKeyType="done"
@@ -170,7 +148,7 @@ export default function NoticeComments({
           onSubmitEditing={handleSubmit(onValid)}
           onChangeText={(text) => setValue("payload", text)}
           value={watch("payload")}
-          style={{ width: 320, height: 80 }}
+          style={{ width: deviceWidth - 40, height: 80 }}
         />
         <SendButton
           onPress={handleSubmit(onValid)}
@@ -179,7 +157,11 @@ export default function NoticeComments({
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload")) ? "rgba(255, 255, 255, 1)" : "white"
+              !Boolean(watch("payload"))
+                ? "rgba(136, 136, 136, 0.4)"
+                : isDark
+                ? "white"
+                : "black"
             }
             size={20}
           />

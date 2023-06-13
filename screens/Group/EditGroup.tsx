@@ -13,6 +13,7 @@ import { GroupTagComp } from "../../components/group/GroupTagComp";
 import { GroupAreaComp } from "../../components/group/GroupAreaComp";
 import ScreenLayout from "../../components/ScreenLayout";
 import { GroupPresidentComp } from "../../components/group/GroupPresidentComp";
+import ScreenLayoutSec from "../../components/ScreenLayoutSec";
 
 const EDIT_GROUP_MUTATION = gql`
   mutation editGroup(
@@ -77,7 +78,7 @@ const Container = styled.ScrollView`
 const TextWrap = styled.View`
   width: 100%;
   padding: 16px;
-  background-color: ${(props) => props.theme.mainBgColor};
+  background-color: ${(props) => props.theme.whiteColor};
   border-radius: 8px;
   margin-bottom: 8px;
 `;
@@ -91,7 +92,7 @@ const TextLabel = styled.Text`
 
 const TextInput = styled.TextInput`
   font-size: 12px;
-  color: ${(props) => props.theme.textColor};
+  color: ${(props) => props.theme.grayColor};
 `;
 
 const Upload = styled.TouchableOpacity`
@@ -108,7 +109,7 @@ const UploadText = styled.Text`
 `;
 
 const HeaderRightText = styled.Text`
-  color: ${colors.blue};
+  color: ${(props) => props.theme.greenActColor};
   font-size: 16px;
   font-weight: 600;
   margin-right: 16px;
@@ -135,6 +136,11 @@ const ImportantData = styled.Text`
   color: red;
 `;
 
+const AlertText = styled.Text`
+  color: red;
+  margin: 4px 0;
+`;
+
 export default function EditGroup({ navigation, route }: any) {
   const groupData = route.params.groupData;
   const [groupLoading, setGroupLoading] = useState(true);
@@ -155,7 +161,13 @@ export default function EditGroup({ navigation, route }: any) {
     EDIT_GROUP_MUTATION,
     { onCompleted }
   );
-  const { register, handleSubmit, setValue, getValues } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors, isSubmitting },
+  } = useForm();
   const onValid = async ({
     id,
     name,
@@ -208,7 +220,7 @@ export default function EditGroup({ navigation, route }: any) {
 
   const HeaderRight = () => {
     return (
-      <TouchableOpacity onPress={handleSubmit(onValid)}>
+      <TouchableOpacity onPress={handleSubmit(onValid)} disabled={isSubmitting}>
         <HeaderRightText>완료</HeaderRightText>
       </TouchableOpacity>
     );
@@ -228,7 +240,13 @@ export default function EditGroup({ navigation, route }: any) {
 
   useEffect(() => {
     register("id");
-    register("name");
+    register("name", {
+      required: "그룹명은 필수 입력입니다.",
+      minLength: {
+        value: 2,
+        message: "그룹명은 두 글자 이상 작성하세요.",
+      },
+    });
     register("discription");
     register("sidoName");
     register("gusiName");
@@ -242,9 +260,15 @@ export default function EditGroup({ navigation, route }: any) {
     register("addrRoad");
     register("areaLatitude");
     register("areaLongitude");
-    register("sportsEvent");
+    register("sportsEvent", { required: "종목은 필수 입력입니다." });
     register("file");
-    register("maxMember");
+    register("maxMember", {
+      required: "최대 인원수를 입력해주세요.",
+      minLength: {
+        value: 1,
+        message: "최대 인원수는 최소 1명이상 입니다.",
+      },
+    });
     register("groupInfo");
     register("groupTag");
     register("groupPresident");
@@ -278,8 +302,9 @@ export default function EditGroup({ navigation, route }: any) {
   // 자주 찾는 시설 - 시작
   // 자주 찾는 시설 - 끝
   return (
-    <ScreenLayout loading={groupLoading}>
+    <ScreenLayoutSec loading={groupLoading}>
       <Container>
+        {errors?.name && <AlertText>{errors?.name?.message}</AlertText>}
         <TextWrap>
           <TextLabel>
             그룹명<ImportantData>*</ImportantData>
@@ -316,11 +341,17 @@ export default function EditGroup({ navigation, route }: any) {
           sportsEvent={getValues("sportsEvent")}
           id={getValues("id")}
         />
+        {errors?.sportsEvent && (
+          <AlertText>{errors?.sportsEvent?.message}</AlertText>
+        )}
         <GroupImageComp
           setValue={setValue}
           imagePath={getValues("file")}
           id={getValues("id")}
         />
+        {errors?.maxMember && (
+          <AlertText>{errors?.maxMember?.message}</AlertText>
+        )}
         <TextWrap>
           <TextLabel>
             최대 인원 수<ImportantData>*</ImportantData>
@@ -375,6 +406,6 @@ export default function EditGroup({ navigation, route }: any) {
         </TextWrap>
         <MarginBottom />
       </Container>
-    </ScreenLayout>
+    </ScreenLayoutSec>
   );
 }

@@ -93,7 +93,6 @@ export default function TutorInquiryDetail({ navigation, route }: any) {
     fetchPolicy: "cache-and-network",
   });
 
-  console.log(data?.seeInquiry);
   const user = useUser(inquiry.userId);
 
   useEffect(() => {
