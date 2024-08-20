@@ -15,7 +15,7 @@ export interface IUserRowsProps {
   username: string;
   isFollowing: boolean;
   isMe: boolean;
-  id: number;
+  id: string;
 }
 
 const Column = styled.TouchableOpacity`

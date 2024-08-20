@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
-import { useColorScheme } from "react-native";
+import { useColorScheme, useWindowDimensions } from "react-native";
 
 type FacilityCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -49,7 +49,7 @@ const FacilityListEventWrap = styled.View`
 `;
 
 const FacilityListEvent = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
@@ -57,15 +57,31 @@ const FacilityListEvent = styled.Text`
 const FacilityListPoint = styled.View`
   width: 1px;
   height: 1px;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.textColor};
   margin: 4px;
 `;
 
 const FacilityListDisc = styled.Text`
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
   margin: 4px 0;
+`;
+
+const FacilityTag = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
+
+const FacilityTagName = styled.Text`
+  color: ${(props) => props.theme.textColor};
+  font-size: 12px;
+  font-weight: 300;
+  border: 1px solid #ccc;
+  padding: 4px;
+  border-radius: 4px;
+  margin-right: 4px;
+  margin-bottom: 4px;
 `;
 
 export default function FacilityList({
@@ -79,6 +95,7 @@ export default function FacilityList({
 }: any) {
   const navigation = useNavigation<FacilityCompNavigationProps>();
   const isDark = useColorScheme() === "dark";
+  const { width, height } = useWindowDimensions();
 
   return (
     <FacilityListContainer
@@ -98,7 +115,14 @@ export default function FacilityList({
           ))}
         </FacilityListTitleWrap>
         <FacilityListDisc>{activeArea}</FacilityListDisc>
-        <FacilityListDisc>{discription}</FacilityListDisc>
+        <FacilityListDisc style={{ width: width - 148 }}>
+          {discription}
+        </FacilityListDisc>
+        <FacilityTag style={{ width: width - 148 }}>
+          {facilityTag.map((item: any) => {
+            return <FacilityTagName key={item.id}>{item.name}</FacilityTagName>;
+          })}
+        </FacilityTag>
       </FacilityListInfoWrap>
     </FacilityListContainer>
   );

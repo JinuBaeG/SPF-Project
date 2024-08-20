@@ -1,13 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import { LOCAL_URL, OPER_URL } from "@env";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, useColorScheme } from "react-native";
 import styled from "styled-components/native";
 
-const PHONE_CHECK = gql`
-  mutation checkPhone($phoneNumber: String) {
-    checkPhone(phoneNumber: $phoneNumber) {
+const EMAIL_CHECK = gql`
+  mutation checkEmail($email: String) {
+    checkEmail(email: $email) {
       ok
       error
     }
@@ -34,10 +34,9 @@ const InputDesc = styled.Text`
   color: ${(props) => props.theme.textColor};
 `;
 
-const InputPhoneNumber = styled.TextInput<{ isDark: boolean }>`
+const InputPhoneNumber = styled.TextInput`
   padding: 8px;
-  background-color: ${(props) =>
-    props.isDark ? props.theme.whiteColor : props.theme.blackColor};
+  background-color: ${(props) => props.theme.blackColor};
   border-radius: 8px;
   margin: 8px 0;
 `;
@@ -66,8 +65,9 @@ const PhoneCheckText = styled.Text`
 `;
 
 export default function FindAccount({ navigation, route: { params } }: any) {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [phoneNumberEditable, setPhoneNumberEditable] = useState(true);
+  const emailRef: React.MutableRefObject<any> = useRef(null);
+  const [email, setEmail] = useState("");
+  const [emailEditable, setEmailEditable] = useState(true);
   const [certified, setCertified] = useState(false);
   const [activeCertified, setActiveCertified] = useState(true);
   const [certifiedNumber, setCertifiedNumber] = useState("");
@@ -79,18 +79,18 @@ export default function FindAccount({ navigation, route: { params } }: any) {
   const makeCertifedNumber = () => {
     const url =
       process.env.NODE_ENV === "development"
-        ? `${LOCAL_URL}:4000/api/certified`
-        : `${OPER_URL}:4000/api/certified`;
+        ? `${LOCAL_URL}:4000/api/mailCertified`
+        : `${OPER_URL}:4000/api/mailCertified`;
     const response: any = axios({
       method: "GET",
       url: url,
       params: {
-        number: `${phoneNumber}`,
+        email: `${email}`,
       },
     })
       .then((res) => {
         setMakedCertifiedNumber(res.data.crtNumber);
-        setPhoneNumberEditable(false);
+        setEmailEditable(false);
         setActiveCertified(true);
         setCertified(true);
       })
@@ -99,22 +99,14 @@ export default function FindAccount({ navigation, route: { params } }: any) {
       });
   };
 
-  const checkPhoneNumberLength = () => {
-    if (phoneNumber.length === 11) {
-      setActiveCertified(!activeCertified);
-    } else {
-      setActiveCertified(true);
-    }
-  };
-
-  const onCheckPhoneCompleted = (data: any) => {
+  const onCheckEmailCompleted = (data: any) => {
     const {
-      checkPhone: { ok, error },
+      checkEmail: { ok, error },
     } = data;
 
     if (ok) {
       Alert.alert(
-        "가입되지 않은 번호입니다. ",
+        "가입되지 않은 이메일입니다. ",
         "로그인 초기화면으로 돌아갑니다.",
         [
           {
@@ -126,31 +118,35 @@ export default function FindAccount({ navigation, route: { params } }: any) {
         ]
       );
     } else {
-      navigation.navigate("ChangePassword", {
-        phoneNumber,
-        previousScreen: params.previousScreen,
-      });
+      makeCertifedNumber();
+      Alert.alert(
+        "해당 메일로 인증번호를 발송하였습니다.",
+        "받으신 인증번호를 입력해주세요."
+      );
     }
   };
 
-  const [checkPhoneMutation, { loading: checkPhoneLoading }] = useMutation(
-    PHONE_CHECK,
+  const [checkEmailMutation, { loading: checkPhoneLoading }] = useMutation(
+    EMAIL_CHECK,
     {
-      onCompleted: onCheckPhoneCompleted,
+      onCompleted: onCheckEmailCompleted,
     }
   );
 
-  const checkJoinPhoneNumber = () => {
-    checkPhoneMutation({
+  const checkJoinEmail = () => {
+    checkEmailMutation({
       variables: {
-        phoneNumber,
+        email,
       },
     });
   };
 
   const checkCertifedNumber = () => {
     if (makedCertifiedNumber === certifiedNumber) {
-      checkJoinPhoneNumber();
+      navigation.navigate("ChangePassword", {
+        email,
+        previousScreen: params.previousScreen,
+      });
     } else {
       Alert.alert("올바르지 않은 인증번호 입니다.");
       setCertifiedComplete(false);
@@ -158,9 +154,17 @@ export default function FindAccount({ navigation, route: { params } }: any) {
     }
   };
 
-  useEffect(() => {
-    checkPhoneNumberLength();
-  }, [phoneNumber]);
+  const checkEmailValid = () => {
+    let regEx = new RegExp(
+      "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
+    );
+
+    let check = regEx.test(email);
+
+    if (check) {
+      setActiveCertified(!activeCertified);
+    }
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -172,27 +176,28 @@ export default function FindAccount({ navigation, route: { params } }: any) {
     <Container>
       <InputContainer>
         <InputTitle>{params.infoText}</InputTitle>
-        <InputDesc>휴대전화번호는 안전하게 보관되어 있습니다.</InputDesc>
         <InputPhoneNumber
-          keyboardType="number-pad"
-          placeholder="휴대폰번호"
-          placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
-          returnKeyType="join"
-          isDark={isDark}
-          maxLength={11}
+          ref={emailRef}
+          keyboardType="email-address"
+          placeholder="메일주소"
+          placeholderTextColor={"#888888"}
+          returnKeyType="done"
           onChangeText={(text: string) => {
-            setPhoneNumber(text);
+            setEmail(text);
           }}
-          editable={phoneNumberEditable}
+          onBlur={() => {
+            checkEmailValid();
+          }}
+          editable={emailEditable}
         />
         <PhoneCheckBtn
           onPress={() => {
-            makeCertifedNumber();
+            checkJoinEmail();
             setCertified(!certified);
             setActiveCertified(true);
           }}
-          disabled={activeCertified}
-          certified={activeCertified}
+          disabled={false}
+          certified={false}
         >
           <PhoneCheckText>인증번호발송</PhoneCheckText>
         </PhoneCheckBtn>
@@ -201,11 +206,8 @@ export default function FindAccount({ navigation, route: { params } }: any) {
             <InputPhoneNumber
               keyboardType="number-pad"
               placeholder="인증번호입력"
-              placeholderTextColor={
-                isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"
-              }
+              placeholderTextColor={"#888888"}
               returnKeyType="join"
-              isDark={isDark}
               onChangeText={(text: string) => {
                 setCertifiedNumber(text);
               }}

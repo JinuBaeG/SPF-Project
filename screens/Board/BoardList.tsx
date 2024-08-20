@@ -12,7 +12,7 @@ import { isLoggedInVar } from "../../apollo";
 
 const SEE_BOARDS_QUERY = gql`
   query seeBoards(
-    $id: Int
+    $id: String
     $sortation: String
     $offset: Int
     $blockUsers: [BlockUsers]

@@ -1,6 +1,6 @@
 <resources>
-  <string name="app_name">playinus</string>
+  <string name="app_name">체육마을</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
-  <string name="kakao_app_key">c04ec021f301f3eed44735b3c4c130e6</string>
+  <string name="kakao_app_key">1179aea28d7a5ff760c2d0e5377d7b70</string>
 </resources>

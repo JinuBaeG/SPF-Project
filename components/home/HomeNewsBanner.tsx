@@ -4,7 +4,7 @@ import ScreenLayout from "../ScreenLayout";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
-import { useWindowDimensions } from "react-native";
+import { Image, useWindowDimensions } from "react-native";
 import { useEffect, useState } from "react";
 
 type BannerCompNavigationProps = NativeStackNavigationProp<
@@ -56,7 +56,7 @@ const ContestText = styled.Text`
 export default function HomeNewsBanner({ setNewsBannerLoading }: any) {
   const navigation = useNavigation<BannerCompNavigationProps>();
   const { width, height } = useWindowDimensions();
-  const [imageHeight, setImageHeight] = useState(height / 8);
+  const [imageHeight, setImageHeight] = useState(0);
   const { data, loading: newLoading } = useQuery(SEE_BANNERS_QUERY, {
     variables: {
       offset: 3,
@@ -72,6 +72,9 @@ export default function HomeNewsBanner({ setNewsBannerLoading }: any) {
         <ContestTitle>대회정보 모아보기</ContestTitle>
         {data?.seeNewsBanner !== undefined && data?.seeNewBanner !== null ? (
           data?.seeNewsBanner?.map((item: any) => {
+            Image.getSize(item.bannerImagePath, (w, h) => {
+              setImageHeight(h * (width / w));
+            });
             return (
               <ContestBannerWrap key={item.id}>
                 <ContetsBtn

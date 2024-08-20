@@ -23,9 +23,9 @@ type PhotoCompNavigationProps = NativeStackNavigationProp<
 >;
 
 interface IPhotoCompProps {
-  id: number;
+  id: string;
   user: {
-    id: number;
+    id: string;
     avatar: string;
     username: string;
   };
@@ -33,7 +33,7 @@ interface IPhotoCompProps {
   sportsEvent: string;
   feedUpload: {
     map: any;
-    id: number;
+    id: string;
     fileUrl: string;
     length: number;
   };
@@ -43,9 +43,9 @@ interface IPhotoCompProps {
   likes: number;
   commentCount: number;
   comments: {
-    id: number;
+    id: string;
     user: {
-      id: number;
+      id: string;
       username: string;
       avatar: string;
     };
@@ -67,11 +67,11 @@ interface toggleLike {
 }
 
 interface toggleLikeVariables {
-  id: number;
+  id: string;
 }
 
 const TOGGLE_LIKE_MUTATION = gql`
-  mutation toggleLike($id: Int!) {
+  mutation toggleLike($id: String!) {
     toggleLike(id: $id) {
       ok
       error
@@ -258,9 +258,7 @@ export default function PhotoComp({
             resizeMode="cover"
             source={
               user.avatar === null
-                ? isDark
-                  ? require(`../../assets/emptyAvatar_white.png`)
-                  : require(`../../assets/emptyAvatar.png`)
+                ? require(`../../assets/emptyAvatar.png`)
                 : { uri: user.avatar }
             }
           />
@@ -271,7 +269,7 @@ export default function PhotoComp({
               <Ionicons
                 name="ellipse"
                 size={4}
-                color={isDark ? "white" : "black"}
+                color={"black"}
                 style={{ marginHorizontal: 4 }}
               />
               <CreateDate>{dateTime(getDate)}</CreateDate>
@@ -324,7 +322,7 @@ export default function PhotoComp({
               paddingBottom: 20,
               marginBottom: 30,
               width: "100%",
-              height: height / 3,
+              height: imageHeight,
               zIndex: 1,
             }}
             paginationStyle={{
@@ -333,18 +331,23 @@ export default function PhotoComp({
             }}
             style={{ position: "relative", zIndex: 1 }}
           >
-            {feedUpload.map((file: any, index: any) => (
-              <File
-                resizeMode="cover"
-                style={{
-                  width,
-                  height: imageHeight,
-                  zIndex: 1,
-                }}
-                source={{ uri: file.imagePath }}
-                key={index}
-              />
-            ))}
+            {feedUpload.map((file: any, index: any) => {
+              Image.getSize(file.imagePath, (w, h) => {
+                setImageHeight(h * (width / w));
+              });
+              return (
+                <File
+                  resizeMode="cover"
+                  style={{
+                    width,
+                    height: imageHeight,
+                    zIndex: 1,
+                  }}
+                  source={{ uri: file.imagePath }}
+                  key={index}
+                />
+              );
+            })}
           </Swiper>
         </>
       ) : null}
@@ -377,7 +380,7 @@ export default function PhotoComp({
           >
             <Ionicons
               name="chatbubble-outline"
-              color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+              color={"rgba(136, 136, 136, 0.5)"}
               style={{ marginBottom: 2 }}
               size={16}
             />
@@ -394,13 +397,7 @@ export default function PhotoComp({
           >
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
-              color={
-                isLiked
-                  ? "tomato"
-                  : isDark
-                  ? "#ffffff"
-                  : "rgba(136, 136, 136, 0.4)"
-              }
+              color={isLiked ? "tomato" : "rgba(136, 136, 136, 0.4)"}
               size={18}
             />
             <ActionText>좋아요</ActionText>

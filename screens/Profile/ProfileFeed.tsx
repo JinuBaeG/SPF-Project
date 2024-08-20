@@ -12,7 +12,7 @@ import Category from "../../components/Category";
 import SharedWriteButton from "../../components/shared/SharedWriteButton";
 
 const USER_FEED_QUERY = gql`
-  query seeUserFeed($offset: Int!, $id: Int) {
+  query seeUserFeed($offset: Int!, $id: String) {
     seeUserFeed(offset: $offset, id: $id) {
       ...PhotoFragmentNative
       user {

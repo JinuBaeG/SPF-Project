@@ -31,7 +31,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_BOARD_COMMENT_MUTATION = gql`
-  mutation deleteBoardComment($id: Int!) {
+  mutation deleteBoardComment($id: String!) {
     deleteBoardComment(id: $id) {
       ok
       error

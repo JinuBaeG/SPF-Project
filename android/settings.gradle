@@ -1,4 +1,4 @@
-rootProject.name = 'playinus'
+rootProject.name = 'cheyookmaeul'
 
 apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
 useExpoModules()
@@ -13,8 +13,11 @@ includeBuild(new File(["node", "--print", "require.resolve('react-native-gradle-
 //project(':react-native-restart').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-restart/android')
 
 if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true") {
+  include ':react-native-version-check'
+  project(':react-native-version-check').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-version-check/android')
   include(":ReactAndroid")
   project(":ReactAndroid").projectDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../ReactAndroid");
   include(":ReactAndroid:hermes-engine")
   project(":ReactAndroid:hermes-engine").projectDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../ReactAndroid/hermes-engine");
+
 }

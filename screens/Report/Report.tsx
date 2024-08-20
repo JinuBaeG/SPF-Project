@@ -8,9 +8,9 @@ import { colors } from "../../color";
 
 const CREATE_REPORT_MUTATION = gql`
   mutation createReport(
-    $photoId: Int
-    $boardId: Int
-    $noticeId: Int
+    $photoId: String
+    $boardId: String
+    $noticeId: String
     $reportDiscription: String
     $reportSortation: String
   ) {

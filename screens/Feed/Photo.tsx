@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { RefreshControl } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native";
 import PhotoComp from "../../components/feed/PhotoComp";
 import ScreenLayout from "../../components/ScreenLayout";
 import {
@@ -10,7 +10,7 @@ import {
 } from "../../fragments";
 
 const SEE_PHOTO = gql`
-  query seePhoto($id: Int!) {
+  query seePhoto($id: String!) {
     seePhoto(id: $id) {
       ...PhotoFragmentNative
       user {

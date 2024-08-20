@@ -16,12 +16,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
 
 interface ICommentCompProps {
-  id: number;
+  id: string;
   notice: {
-    id: number;
+    id: string;
   };
   user: {
-    id: number;
+    id: string;
     username: string;
     avatar: string;
   };
@@ -37,7 +37,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_NOTICE_COMMENT_MUTATION = gql`
-  mutation deleteNoticeComment($id: Int!) {
+  mutation deleteNoticeComment($id: String!) {
     deleteNoticeComment(id: $id) {
       ok
       error
@@ -217,9 +217,7 @@ export default function CommentComp({
             resizeMode="cover"
             source={
               user.avatar === null
-                ? isDark
-                  ? require(`../../assets/emptyAvatar_white.png`)
-                  : require(`../../assets/emptyAvatar.png`)
+                ? require(`../../assets/emptyAvatar.png`)
                 : { uri: user.avatar }
             }
           />

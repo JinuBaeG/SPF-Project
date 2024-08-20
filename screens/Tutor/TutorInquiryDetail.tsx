@@ -10,7 +10,7 @@ import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
 import useUser from "../../hooks/useUser";
 
 const SEE_INQUIRY_QUERY = gql`
-  query seeInquiry($id: Int) {
+  query seeInquiry($id: String) {
     seeInquiry(id: $id) {
       ...TutorInquiryFragmentNative
     }

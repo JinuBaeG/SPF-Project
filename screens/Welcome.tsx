@@ -1,9 +1,11 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import {
   Alert,
+  Dimensions,
   Platform,
   TouchableOpacity,
   useColorScheme,
+  useWindowDimensions,
 } from "react-native";
 import styled from "styled-components/native";
 import { colors } from "../color";
@@ -16,12 +18,53 @@ import {
   onPressGoogleBtn,
   signInWithKakao,
 } from "../apollo";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import NaverLogin, {
   GetProfileResponse,
   NaverLoginResponse,
 } from "@react-native-seoul/naver-login";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import Modal from "react-native-modal";
+import RenderHTML from "react-native-render-html";
+import { Ionicons } from "@expo/vector-icons";
+
+const CREATE_NAVER_ACCOUNT_MUTATION = gql`
+  mutation naverAccount(
+    $phoneNumber: String!
+    $username: String!
+    $email: String!
+    $password: String!
+    $interlock: String
+    $uid: String
+    $privacyAccess: Boolean
+    $usetermAccess: Boolean
+  ) {
+    naverAccount(
+      phoneNumber: $phoneNumber
+      username: $username
+      email: $email
+      password: $password
+      interlock: $interlock
+      uid: $uid
+      privacyAccess: $privacyAccess
+      usetermAccess: $usetermAccess
+    ) {
+      ok
+      error
+    }
+  }
+`;
+
+const SEE_CONFIG_QUERY = gql`
+  query seeConfig {
+    seeConfig {
+      id
+      privacyTerms
+      gpsTerms
+      useTerms
+    }
+  }
+`;
 
 const LOG_IN_MUTATION = gql`
   mutation login($email: String!, $password: String!) {
@@ -53,14 +96,14 @@ const LOGIN_CHECK = gql`
 const iosKeys = {
   consumerKey: `${process.env.NAVER_LOGIN_API_KEY}`,
   consumerSecret: `${process.env.NAVER_LOGIN_API_SECRET_KEY}`,
-  appName: "플레이인어스",
-  serviceUrlScheme: "com.funnyground.playinus.reactnative", // only for iOS
+  appName: "체육마을",
+  serviceUrlScheme: "com.brandus.cheyookmaeul", // only for iOS
 };
 
 const androidKeys = {
   consumerKey: `${process.env.NAVER_LOGIN_API_KEY}`,
   consumerSecret: `${process.env.NAVER_LOGIN_API_SECRET_KEY}`,
-  appName: "플레이인어스",
+  appName: "체육마을",
 };
 
 const initials = Platform.OS === "ios" ? iosKeys : androidKeys;
@@ -92,26 +135,55 @@ const FindAccountText = styled.Text`
   text-algin: left;
 `;
 
+const AccessContainer = styled.View`
+  flex: 0.5;
+  background-color: ${(props) => props.theme.greenActColor};
+  border-radius: 8px;
+`;
+
+const AccessTextContainer = styled.View`
+  padding: 16px;
+  background-color: ${(props) => props.theme.greenActColor};
+`;
+
+const AccessTextTitle = styled.Text`
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: ${(props) => props.theme.whiteColor};
+`;
+
+const AccessTextContents = styled.ScrollView`
+  height: 25%;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: ${(props) => props.theme.whiteColor};
+`;
+
+const AccessButton = styled.TouchableOpacity`
+  margin-top: 8px;
+  flex-direction: row;
+`;
+
+const AccessButtonText = styled.Text`
+  color: ${(props) => props.theme.whiteColor};
+  font-weight: 600;
+  margin-left: 4px;
+`;
+
 export default function Welcome({ navigation, route }: any) {
   const goToCreateAccount = () => {
-    navigation.navigate("CreateAccount");
+    navigation.navigate("CreateAccount", { interlock: "일반" });
   };
   const goToLogin = () => {
     navigation.navigate("Login");
   };
   const goToFindAccount = () => {
     navigation.navigate("FindAccount", {
-      infoText: "계정을 찾기 위해 휴대전화번호를 입력해주세요.",
+      infoText: "계정을 찾기 위해 이메일 주소를 입력해주세요.",
       previousScreen: route.name,
     });
   };
-
-  const { register, handleSubmit, setValue, watch } = useForm({
-    defaultValues: {
-      password: route.params?.password,
-      email: route.params?.email,
-    },
-  });
 
   const passwordRef: React.MutableRefObject<null> = useRef(null);
 
@@ -130,20 +202,25 @@ export default function Welcome({ navigation, route }: any) {
     }
   };
 
-  const [loginMutation, { loading }] = useMutation(LOG_IN_MUTATION, {
-    onCompleted,
-  });
-
   const onLoginCheckCompleted = async (data: any) => {
     const {
-      loginCheck: { ok, uid, email, token, interlock },
+      loginCheck: { ok, uid, email, phoneNumber, token, interlock },
     } = data;
 
     if (ok) {
       await logUserIn(token);
       navigation.reset({ routes: [{ name: "Tabs" }] });
     } else {
-      navigation.navigate("CreateAccount", { uid, email, interlock });
+      if (interlock === "naver") {
+        toggleModal();
+      } else {
+        navigation.navigate("CreateAccount", {
+          uid,
+          email,
+          phoneNumber,
+          interlock,
+        });
+      }
     }
   };
 
@@ -151,20 +228,7 @@ export default function Welcome({ navigation, route }: any) {
     onCompleted: onLoginCheckCompleted,
   });
 
-  const onFocusNext = (nextRef: RefObject<HTMLInputElement>): void => {
-    nextRef?.current?.focus();
-  };
-
-  const onValid = (data: any) => {
-    if (!loading) {
-      loginMutation({
-        variables: {
-          ...data,
-        },
-      });
-    }
-  };
-
+  // 네이버 로그인 - 시작
   const [naverAuth, setNaverAuth] = useState(false);
   const [naverProfile, setNaverProfile] = useState(false);
 
@@ -181,7 +245,11 @@ export default function Welcome({ navigation, route }: any) {
 
     setSuccessResponse(successResponse);
     setFailureResponse(failureResponse);
-    setNaverAuth(!naverAuth);
+    if (successResponse) {
+      setNaverAuth(!naverAuth);
+    } else {
+      onNaverLogin();
+    }
   };
 
   const getNaverProfile = async () => {
@@ -191,41 +259,71 @@ export default function Welcome({ navigation, route }: any) {
     } catch (e) {
       setGetProfileRes(undefined);
     }
+
     setNaverProfile(!naverProfile);
   };
 
   useEffect(() => {
     if (naverAuth) {
-      getNaverProfile();
+      setTimeout(() => getNaverProfile(), 1000);
     }
   }, [naverAuth]);
 
   useEffect(() => {
     if (naverProfile) {
-      naverLogin();
+      const phoneNumber = getProfileRes?.response.mobile?.replace(/-/g, "");
+
+      setValue("username", getProfileRes?.response.name);
+      setValue("phoneNumber", phoneNumber);
+      setValue("password", phoneNumber);
+      setValue("email", getProfileRes?.response.email);
+      setValue("interlock", "naver");
+      setValue("uid", getProfileRes?.response.id);
+
+      if (getProfileRes) {
+        loginCheckMutation({
+          variables: {
+            email: getValues("email"),
+            phoneNumber: getValues("phoneNumber"),
+            uid: getValues("uid"),
+            interlock: "naver",
+          },
+        });
+      }
     }
   }, [naverProfile]);
 
-  const naverLogin = () => {
-    let email, uid, token;
-    email = getProfileRes?.response.email;
-    uid = getProfileRes?.response.id;
+  // 회원가입 완료 후 처리
+  const onCompletedNaverAccount = async (data: any) => {
+    const {
+      naverAccount: { ok, error },
+    } = data;
 
-    loginCheckMutation({
-      variables: {
-        email,
-        uid,
-        interlock: "naver",
-      },
-    });
+    if (ok) {
+      await logUserIn(error);
+      navigation.reset({ routes: [{ name: "Tabs" }] });
+    } else {
+      if (error) {
+        Alert.alert(error);
+      }
+    }
   };
 
+  // 회원가입 처리
+  const [createNaverAccountMutation, { loading: naverAccountLoading }] =
+    useMutation<any>(CREATE_NAVER_ACCOUNT_MUTATION, {
+      onCompleted: onCompletedNaverAccount,
+    });
+
+  // 네이버 로그인 - 끝
+
   const KakaoLogin = async () => {
-    const { email, uid, token }: any = await signInWithKakao();
+    const { email, uid, phoneNumber, token }: any = await signInWithKakao();
 
     loginCheckMutation({
       variables: {
         email,
+        phoneNumber,
         uid: uid.toString(),
         token,
         interlock: "kakao",
@@ -234,11 +332,12 @@ export default function Welcome({ navigation, route }: any) {
   };
 
   const GoogleLogin = async () => {
-    const { email, uid, token }: any = await onPressGoogleBtn();
+    const { email, uid, phoneNumber, token }: any = await onPressGoogleBtn();
 
     loginCheckMutation({
       variables: {
         email,
+        phoneNumber,
         uid: uid.toString(),
         token,
         interlock: "google",
@@ -247,11 +346,12 @@ export default function Welcome({ navigation, route }: any) {
   };
 
   const AppleLogin = async () => {
-    const { email, uid, token }: any = await onAppleButtonPress();
+    const { email, uid, phoneNumber, token }: any = await onAppleButtonPress();
 
     loginCheckMutation({
       variables: {
         email,
+        phoneNumber,
         uid,
         token,
         interlock: "apple",
@@ -260,20 +360,92 @@ export default function Welcome({ navigation, route }: any) {
   };
 
   useEffect(() => {
-    register("email", { required: true });
-    register("password", { required: true });
-  }, [register]);
-
-  useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "126129061327-ee1846j62rtbip9ocbc7acnmmimdk0tm.apps.googleusercontent.com",
+        "126129061327-2hmgnikf1mkifv3s9ad3fgfmn4ag3a92.apps.googleusercontent.com",
     });
   }, []);
 
   const isDark = useColorScheme() === "dark";
 
   const platform = Platform.OS;
+
+  const { data: termsData } = useQuery(SEE_CONFIG_QUERY, {
+    fetchPolicy: "cache-and-network",
+  });
+
+  const { width } = useWindowDimensions();
+  const useTermsContents = { html: termsData?.seeConfig.useTerms };
+  const privacyTermsContents = { html: termsData?.seeConfig.privacyTerms };
+
+  const [useTermsAccess, setUseTermsAccess] = useState(false);
+  const [privacyTermsAccess, setPrivacyTermsAccess] = useState(false);
+  const [allTermsAccess, setAllTermsAccess] = useState(false);
+
+  const useTermToggle = () => {
+    setUseTermsAccess(!useTermsAccess);
+    setValue("usetermAccess", !useTermsAccess);
+  };
+
+  const privacyTermToggle = () => {
+    setPrivacyTermsAccess(!privacyTermsAccess);
+    setValue("privacyAccess", !privacyTermsAccess);
+  };
+
+  const allTermToggle = () => {
+    setUseTermsAccess(!useTermsAccess);
+    setValue("usetermAccess", !useTermsAccess);
+    setPrivacyTermsAccess(!privacyTermsAccess);
+    setValue("privacyAccess", !privacyTermsAccess);
+    setAllTermsAccess(!allTermsAccess);
+  };
+
+  useEffect(() => {
+    if (useTermsAccess && privacyTermsAccess) {
+      setAllTermsAccess(true);
+    } else {
+      setAllTermsAccess(false);
+    }
+  }, [useTermsAccess, privacyTermsAccess]);
+
+  const deviceWidth = Dimensions.get("window").width;
+  const deviceHeight =
+    Platform.OS === "ios"
+      ? Dimensions.get("window").height
+      : require("react-native-extra-dimensions-android").get(
+          "REAL_WINDOW_HEIGHT"
+        );
+  const [visibleModal, setVisibleModal] = useState(false);
+
+  // 회원가입을 위한 기본 정보 입력 세팅
+  const { register, handleSubmit, setValue, watch, getValues } = useForm();
+
+  // 회원가입 절차 중 약관 모달창 토글
+  const toggleModal = () => setVisibleModal(!visibleModal);
+
+  // 회원가입 완료처리를 위한 호출
+  const onValidNaver = (data: any) => {
+    toggleModal();
+    if (!naverAccountLoading) {
+      createNaverAccountMutation({
+        variables: {
+          ...data,
+        },
+      });
+    }
+  };
+
+  // 회원가입 정보 폼 세팅
+  useEffect(() => {
+    register("phoneNumber");
+    register("username");
+    register("email");
+    register("password");
+    register("interlock");
+    register("uid");
+    register("privacyAccess");
+    register("usetermAccess");
+  }, [register]);
 
   return (
     <AuthLayout>
@@ -283,23 +455,22 @@ export default function Welcome({ navigation, route }: any) {
         disabled={false}
         text={"회원가입"}
       />
+
       <AuthButton
-        text={"네이버로 가입"}
-        loading={loading}
-        onPress={() => onNaverLogin()}
+        text={"네이버로 로그인"}
+        onPress={async () => await onNaverLogin()}
         style={{ width: "100%" }}
         separate={"naver"}
       />
+
       <AuthButton
-        text={"카카오로 가입"}
-        loading={loading}
+        text={"카카오로 로그인"}
         onPress={() => KakaoLogin()}
         separate={"kakao"}
       />
       {platform === "ios" ? (
         <AuthButton
-          text={"애플로 가입"}
-          loading={loading}
+          text={"애플로 로그인"}
           onPress={() => {
             AppleLogin();
           }}
@@ -308,8 +479,7 @@ export default function Welcome({ navigation, route }: any) {
       ) : null}
 
       <AuthButton
-        text={"구글로 가입"}
-        loading={loading}
+        text={"구글로 로그인"}
         onPress={() => GoogleLogin()}
         style={{ width: "100%" }}
         separate={"google"}
@@ -320,6 +490,74 @@ export default function Welcome({ navigation, route }: any) {
       <FindAccountBtn onPress={goToFindAccount}>
         <FindAccountText>계정 찾기</FindAccountText>
       </FindAccountBtn>
+      <AccessContainer>
+        <Modal
+          isVisible={visibleModal}
+          deviceHeight={deviceHeight}
+          deviceWidth={deviceWidth}
+          onBackdropPress={() => setVisibleModal(!visibleModal)}
+        >
+          <AccessTextContainer>
+            <AccessTextTitle>체육마을 이용약관</AccessTextTitle>
+            <AccessTextContents showsVerticalScrollIndicator={true}>
+              <RenderHTML contentWidth={width} source={useTermsContents} />
+            </AccessTextContents>
+            <AccessButton
+              onPress={() => {
+                useTermToggle();
+              }}
+            >
+              <Ionicons
+                name={useTermsAccess ? "checkbox-outline" : "square-outline"}
+                color={"white"}
+                size={16}
+              />
+              <AccessButtonText>
+                체육마을 이용약관 내용에 동의합니다.
+              </AccessButtonText>
+            </AccessButton>
+          </AccessTextContainer>
+          <AccessTextContainer>
+            <AccessTextTitle>개인정보처리방침 약관</AccessTextTitle>
+            <AccessTextContents showsVerticalScrollIndicator={true}>
+              <RenderHTML contentWidth={width} source={privacyTermsContents} />
+            </AccessTextContents>
+            <AccessButton
+              onPress={() => {
+                privacyTermToggle();
+              }}
+            >
+              <Ionicons
+                name={
+                  privacyTermsAccess ? "checkbox-outline" : "square-outline"
+                }
+                size={16}
+                color={"white"}
+              />
+              <AccessButtonText>
+                체육마을 개인정보처리방침 내용에 동의합니다.
+              </AccessButtonText>
+            </AccessButton>
+            <AccessButton
+              onPress={() => {
+                allTermToggle();
+              }}
+            >
+              <Ionicons
+                name={allTermsAccess ? "checkbox-outline" : "square-outline"}
+                size={16}
+                color={"white"}
+              />
+              <AccessButtonText>전체 내용에 동의합니다.</AccessButtonText>
+            </AccessButton>
+          </AccessTextContainer>
+          <AuthButton
+            onPress={handleSubmit(onValidNaver)}
+            text={"확인"}
+            disabled={!watch("privacyAccess") || !watch("usetermAccess")}
+          />
+        </Modal>
+      </AccessContainer>
     </AuthLayout>
   );
 }

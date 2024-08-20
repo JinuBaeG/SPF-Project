@@ -6,7 +6,7 @@ import InquiryList from "../../components/shared/InquiryList";
 import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
 
 const SEE_INQUIRIES_QUERY = gql`
-  query seeInquiries($id: Int, $offset: Int) {
+  query seeInquiries($id: String, $offset: Int) {
     seeInquiries(id: $id, offset: $offset) {
       ...TutorInquiryFragmentNative
     }

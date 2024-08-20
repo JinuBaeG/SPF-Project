@@ -11,9 +11,9 @@ import useUser from "../../hooks/useUser";
 
 const RESPONSE_INQUIRY_MUTATION = gql`
   mutation responseInquiry(
-    $id: Int
-    $tutorId: Int
-    $userId: Int
+    $id: String
+    $tutorId: String
+    $userId: String
     $title: String
     $discription: String
   ) {

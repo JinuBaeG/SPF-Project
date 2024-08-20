@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { isLoggedInVar, logUserOut } from "../apollo";
 
 const SEE_TUTOR_QUERY = gql`
-  query seeTutor($id: Int) {
+  query seeTutor($id: String) {
     seeTutor(id: $id) {
       id
       name

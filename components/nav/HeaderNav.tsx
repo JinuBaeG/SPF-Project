@@ -20,14 +20,14 @@ export default function HeaderNav({ navigation }: any) {
       >
         <Ionicons
           name="notifications-outline"
-          color={isDark ? "#ffffff" : "#1e272e"}
+          color={"#1e272e"}
           size={24}
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Messages")}>
         <Ionicons
           name="paper-plane"
-          color={isDark ? "#ffffff" : "#1e272e"}
+          color={"#1e272e"}
           size={24}
         />
       </TouchableOpacity>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 
 interface IAddress {
-  id: number | undefined;
+  id: string | undefined;
   navigation: any | undefined;
   route: any | undefined;
   setValue: Function;

@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { Alert } from "react-native";
 
 const SEESPORTSEVENT_QUERY = gql`
   query seeSportsEventMain($offset: Int) {
@@ -15,7 +16,7 @@ export default function useSportsEventMain(sportsEvent: any | undefined) {
     variables: {
       offset: 0,
     },
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "network-only",
   });
 
   const tagData: any = [];

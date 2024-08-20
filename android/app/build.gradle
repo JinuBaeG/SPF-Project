@@ -145,11 +145,11 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId 'com.funnyground.playinus.reactnative'
+        applicationId 'com.brandus.cheyookmaeul'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "0.2.0"
+        versionCode 6
+        versionName "0.2.1.1"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -351,6 +351,7 @@ dependencies {
     }
     implementation("com.naver.maps:map-sdk:3.14.0")
     //implementation project(':react-native-restart')
+    implementation project(':react-native-version-check')
 }
 
 if (isNewArchitectureEnabled()) {

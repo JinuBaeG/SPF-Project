@@ -134,8 +134,6 @@ export default function TutorHeader({ navigation, route, tutorData }: any) {
           source={
             tutorData.tutorImage?.imagePath !== undefined
               ? { uri: tutorData.tutorImage?.imagePath }
-              : isDark
-              ? require("../../assets/emptyAvatar_white.png")
               : require("../../assets/emptyAvatar.png")
           }
         />

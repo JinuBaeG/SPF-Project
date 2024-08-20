@@ -6,7 +6,7 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import useSportsEvent from "../../hooks/useSportsEvent";
 
 interface GroupSportsProps {
-  id: number | undefined;
+  id: string | undefined;
   sportsEvent: String | undefined;
   setValue: Function;
 }
@@ -80,7 +80,7 @@ export function TutorSportsComp({
     onSportsEventClose();
   };
 
-  const onSportsEventPress = (id: number | undefined) => {
+  const onSportsEventPress = (id: string | undefined) => {
     let temp = eventData.map((item: any) => {
       if (id === item.id) {
         return { ...item, isChecked: !item.isChecked };

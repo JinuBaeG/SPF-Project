@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
 import { isLoggedInVar } from "../../apollo";
 import { useReactiveVar } from "@apollo/client";
-import { useColorScheme } from "react-native";
+import { Image, useColorScheme, useWindowDimensions } from "react-native";
 
 type GroupCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -75,6 +75,22 @@ const GroupListDisc = styled.Text`
   margin: 8px 0;
 `;
 
+const GroupTag = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
+
+const GroupTagName = styled.Text`
+  color: ${(props) => props.theme.textColor};
+  font-size: 12px;
+  font-weight: 300;
+  border: 1px solid #ccc;
+  padding: 4px;
+  border-radius: 4px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+`;
+
 export default function GroupList({
   id,
   name,
@@ -100,8 +116,11 @@ export default function GroupList({
   const navigation = useNavigation<GroupCompNavigationProps>();
   const isLoggedIn = useReactiveVar(isLoggedInVar);
   const isDark = useColorScheme() === "dark";
+  const { width, height } = useWindowDimensions();
+
   return (
     <GroupListContainer
+      style={{ width }}
       onPress={() => {
         if (isLoggedIn) {
           navigation.navigate("GroupDetail", {
@@ -116,12 +135,10 @@ export default function GroupList({
         source={
           groupImage !== null
             ? { uri: groupImage.imagePath }
-            : isDark
-            ? require("../../assets/emptyGroup_white.png")
             : require("../../assets/emptyGroup.png")
         }
       />
-      <GroupListInfoWrap>
+      <GroupListInfoWrap style={{ width: width - 148 }}>
         <GroupListTitleWrap>
           <GroupListTitle>{name}</GroupListTitle>
           <GroupListEvent>{sportsEvent}</GroupListEvent>
@@ -130,7 +147,7 @@ export default function GroupList({
             <Ionicons
               name="people-outline"
               size={12}
-              color={isDark ? "white" : "black"}
+              color={"black"}
               style={{ marginHorizontal: 4 }}
             />
             <GroupListUserCount>
@@ -138,7 +155,14 @@ export default function GroupList({
             </GroupListUserCount>
           </GroupListMember>
         </GroupListTitleWrap>
-        <GroupListDisc>{discription}</GroupListDisc>
+        <GroupListDisc style={{ width: width - 148 }} numberOfLines={2}>
+          {discription}
+        </GroupListDisc>
+        <GroupTag style={{ width: width - 148 }}>
+          {groupTag.map((item: any) => {
+            return <GroupTagName key={item.id}>{item.name}</GroupTagName>;
+          })}
+        </GroupTag>
       </GroupListInfoWrap>
     </GroupListContainer>
   );

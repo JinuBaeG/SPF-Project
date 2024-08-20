@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>플레이인어스</string>
+	<string>체육마을</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2.0</string>
+	<string>0.2.1.1</string>
 	<key>CFBundleSignature</key>
-	<string>????</string>
+	<string>체육마을</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>kakaoc04ec021f301f3eed44735b3c4c130e6</string>
+				<string>kakao1179aea28d7a5ff760c2d0e5377d7b70</string>
 			</array>
 		</dict>
 		<dict>
@@ -35,7 +35,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.126129061327-2hmgnikf1mkifv3s9ad3fgfmn4ag3a92</string>
+				<string>com.googleusercontent.apps.126129061327-lkhvb2pcp71b7clc85bcgtdeon04kbhl</string>
 			</array>
 		</dict>
 		<dict>
@@ -43,21 +43,55 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.funnyground.playinus.reactnative</string>
+				<string>com.brandus.cheyookmaeul</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0.2.0</string>
+	<string>0.2.1</string>
 	<key>KAKAO_APP_KEY</key>
-	<string>c04ec021f301f3eed44735b3c4c130e6</string>
+	<string>1179aea28d7a5ff760c2d0e5377d7b70</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>kakaokompassauth</string>
-		<string>storykompassauth</string>
-		<string>kakaolink</string>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
+		<string>kftc-bankpay</string>
+		<string>ispmobile</string>
+		<string>itms-apps</string>
+		<string>hdcardappcardansimclick</string>
+		<string>smhyundaiansimclick</string>
+		<string>shinhan-sr-ansimclick</string>
+		<string>smshinhanansimclick</string>
+		<string>kb-acp</string>
+		<string>mpocket.online.ansimclick</string>
+		<string>ansimclickscard</string>
+		<string>ansimclickipcollect</string>
+		<string>vguardstart</string>
+		<string>samsungpay</string>
+		<string>scardcertiapp</string>
+		<string>lottesmartpay</string>
+		<string>lotteappcard</string>
+		<string>cloudpay</string>
+		<string>nhappcardansimclick</string>
+		<string>nonghyupcardansimclick</string>
+		<string>citispay</string>
+		<string>citicardappkr</string>
+		<string>citimobileapp</string>
+		<string>kakaotalk</string>
+		<string>payco</string>
+		<string>lpayapp</string>
+		<string>hanamopmoasign</string>
+		<string>wooripay</string>
+		<string>nhallonepayansimclick</string>
+		<string>hanawalletmembers</string>
+		<string>chaipayment</string>
+		<string>kb-auth</string>
+		<string>hyundaicardappcardid</string>
+		<string>com.wooricard.wcard</string>
+		<string>lmslpay</string>
+		<string>lguthepay-xpay</string>
+		<string>liivbank</string>
+		<string>supertoss</string>
+		<string>newsmartpib</string>
+		<string>ukbanksmartbanknonloginpay</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -73,32 +107,9 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>ec2-3-36-68-172.ap-northeast-2.compute.amazonaws.com</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your camera</string>
-	<key>NSExceptionDomains</key>
-	<dict>
-		<key>localhost</key>
-		<dict>
-			<key>NSExceptionAllowsInsecureHTTPLoads</key>
-			<true/>
-		</dict>
-	</dict>
+	<string>사용자의 프로필 및 게시글에 이미지 업로드를 위한 필수 권한입니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>사용자의 현재 위치를 기반으로 날씨나 장소정보를 제공하기 위해 필요한 권한입니다. (필수 권한)</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -106,13 +117,14 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>사용자의 현재 위치를 기반으로 날씨나 장소정보를 제공하기 위해 필요한 권한입니다. (필수 권한)</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
+	<string>사용자의 프로필 및 게시글에 이미지 업로드를 위한 필수 권한입니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to save photos.</string>
+	<string>사용자의 프로필 및 게시글에 이미지 업로드를 위한 필수 권한입니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your photos.</string>
+	<string>사용자의 프로필 및 게시글에 이미지 업로드를 위한 필수 권한입니다.</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Roboto-Bold.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
@@ -128,6 +140,11 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>

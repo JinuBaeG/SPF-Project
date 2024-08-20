@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../shared.types";
-import { useColorScheme } from "react-native";
+import { useColorScheme, useWindowDimensions } from "react-native";
 
 type TutorCompNavigationProps = NativeStackNavigationProp<
   RootStackParamList,
@@ -22,7 +22,6 @@ const TutorListImage = styled.Image`
   width: 108px;
   height: 104px;
   border-radius: 8px;
-  border: 1px solid black;
 `;
 
 const TutorListInfoWrap = styled.View`
@@ -44,7 +43,7 @@ const TutorListTitle = styled.Text`
 `;
 
 const TutorListEvent = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
@@ -52,7 +51,7 @@ const TutorListEvent = styled.Text`
 const TutorListPoint = styled.View`
   width: 1px;
   height: 1px;
-  background-color: ${(props) => props.theme.grayInactColor};
+  background-color: ${(props) => props.theme.textColor};
   margin: 4px;
 `;
 
@@ -61,16 +60,32 @@ const TutorListMember = styled.View`
 `;
 
 const TutorListUserCount = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
 `;
 
 const TutorListDisc = styled.Text`
-  color: ${(props) => props.theme.grayInactColor};
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 300;
   margin: 8px 0;
+`;
+
+const TutorTag = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+`;
+
+const TutorTagName = styled.Text`
+  color: ${(props) => props.theme.textColor};
+  font-size: 12px;
+  font-weight: 300;
+  border: 1px solid #ccc;
+  padding: 4px;
+  border-radius: 4px;
+  margin-right: 4px;
+  margin-bottom: 4px;
 `;
 
 export default function TutorList({
@@ -97,6 +112,7 @@ export default function TutorList({
 }: any) {
   const navigation = useNavigation<TutorCompNavigationProps>();
   const isDark = useColorScheme() === "dark";
+  const { width, height } = useWindowDimensions();
 
   return (
     <TutorListContainer
@@ -106,8 +122,14 @@ export default function TutorList({
         })
       }
     >
-      <TutorListImage source={{ uri: tutorImage }} />
-      <TutorListInfoWrap>
+      <TutorListImage
+        source={
+          tutorImage !== null
+            ? { uri: tutorImage.imagePath }
+            : require("../../assets/emptyGroup.png")
+        }
+      />
+      <TutorListInfoWrap style={{ width: width - 148 }}>
         <TutorListTitleWrap>
           <TutorListTitle>{name}</TutorListTitle>
           {tutorSportsEvent.map((item: any, index: number) => {
@@ -134,7 +156,14 @@ export default function TutorList({
             </TutorListUserCount>
           </TutorListMember>
         </TutorListTitleWrap>
-        <TutorListDisc>{discription}</TutorListDisc>
+        <TutorListDisc style={{ width: width - 148 }}>
+          {discription}
+        </TutorListDisc>
+        <TutorTag style={{ width: width - 148 }}>
+          {tutorTag.map((item: any) => {
+            return <TutorTagName key={item.id}>{item.name}</TutorTagName>;
+          })}
+        </TutorTag>
       </TutorListInfoWrap>
     </TutorListContainer>
   );

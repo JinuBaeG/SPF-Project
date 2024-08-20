@@ -16,6 +16,7 @@ target 'playinus' do
   pod 'GoogleUtilities', :modular_headers => true
   pod 'NMapsMap', '3.10.1'
   pod 'naveridlogin-sdk-ios'
+  pod 'react-native-version-check', :path => '../node_modules/react-native-version-check'
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
 

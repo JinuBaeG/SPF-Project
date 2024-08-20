@@ -5,7 +5,7 @@ export default function VirtualizedView(props: any) {
   const isDark = useColorScheme() === "dark";
   return (
     <FlatList
-      style={{ backgroundColor: isDark ? "#000000" : "#FFFFFF" }}
+      style={{ backgroundColor: "#FFFFFF" }}
       data={[]}
       ListEmptyComponent={null}
       keyExtractor={() => "dummy"}

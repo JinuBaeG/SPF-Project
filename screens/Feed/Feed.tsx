@@ -1,6 +1,6 @@
 import { gql, useQuery, useReactiveVar } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, Image, useWindowDimensions } from "react-native";
 import PhotoComp from "../../components/feed/PhotoComp";
 import ScreenLayout from "../../components/ScreenLayout";
 import {
@@ -15,6 +15,7 @@ import HeaderFilter from "../../components/nav/HeaderFilter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useMe from "../../hooks/useMe";
 import { cache, isLoggedInVar } from "../../apollo";
+import styled from "styled-components/native";
 
 const FEED_QUERY = gql`
   query seeFeed($offset: Int!, $sportsEvent: String, $category: String) {
@@ -36,6 +37,8 @@ const FEED_QUERY = gql`
   ${PHOTO_FRAGMENT_NATIVE}
   ${COMMENT_FRAGMENT_NATIVE}
 `;
+
+const UnknownImage = styled.Image``;
 
 export default function Feed({ navigation }: any) {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -114,6 +117,9 @@ export default function Feed({ navigation }: any) {
         data={data?.seeFeed}
         keyExtractor={(photo) => "" + photo.id}
         renderItem={renderPhoto}
+        ListEmptyComponent={() => {
+          return <></>;
+        }}
       />
       <SharedWriteButton />
     </ScreenLayout>

@@ -14,7 +14,7 @@ import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
 const CREATE_BOARD_COMMENT_MUTATION = gql`
-  mutation createBoardComment($boardId: Int!, $payload: String!) {
+  mutation createBoardComment($boardId: String!, $payload: String!) {
     createBoardComment(boardId: $boardId, payload: $payload) {
       ok
       error
@@ -153,11 +153,7 @@ export default function BoardComments({ id, boardCommentCount, refresh }: any) {
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload"))
-                ? "rgba(136, 136, 136, 0.4)"
-                : isDark
-                ? "white"
-                : "black"
+              !Boolean(watch("payload")) ? "rgba(136, 136, 136, 0.4)" : "black"
             }
             size={20}
           />

@@ -10,12 +10,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
 
 interface ICommentCompProps {
-  id: number;
+  id: string;
   photo: {
-    id: number;
+    id: string;
   };
   user: {
-    id: number;
+    id: string;
     username: string;
     avatar: string;
   };
@@ -31,7 +31,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_COMMENT_MUTATION = gql`
-  mutation deleteComment($id: Int!) {
+  mutation deleteComment($id: String!) {
     deleteComment(id: $id) {
       ok
       error

@@ -13,7 +13,7 @@ import { Alert, Dimensions } from "react-native";
  *
  */
 const SEE_NOTICES_QUERY = gql`
-  query seeNotices($id: Int, $sortation: String) {
+  query seeNotices($id: String, $sortation: String) {
     seeNotices(id: $id, sortation: $sortation) {
       id
       user {

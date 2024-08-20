@@ -14,7 +14,7 @@ import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
 const CREATE_NOTICE_RECOMMENT_MUTATION = gql`
-  mutation createNoticeReComment($noticeCommentId: Int!, $payload: String!) {
+  mutation createNoticeReComment($noticeCommentId: String!, $payload: String!) {
     createNoticeReComment(
       noticeCommentId: $noticeCommentId
       payload: $payload
@@ -152,11 +152,7 @@ export default function NoticeReComment({
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload"))
-                ? "rgba(136, 136, 136, 0.4)"
-                : isDark
-                ? "white"
-                : "black"
+              !Boolean(watch("payload")) ? "rgba(136, 136, 136, 0.4)" : "black"
             }
             size={20}
           />

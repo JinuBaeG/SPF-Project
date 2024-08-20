@@ -13,7 +13,7 @@ type PhotoCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const UNBLOCK_MUTATION = gql`
-  mutation unBlock($id: Int) {
+  mutation unBlock($id: String) {
     unBlock(id: $id) {
       ok
     }
@@ -122,9 +122,7 @@ export default function BlockList(block: any) {
           resizeMode="cover"
           source={
             block.blockedBy.avatar === null
-              ? isDark
-                ? require(`../../assets/emptyAvatar_white.png`)
-                : require(`../../assets/emptyAvatar.png`)
+              ? require(`../../assets/emptyAvatar.png`)
               : { uri: block.blockedBy.avatar }
           }
         />

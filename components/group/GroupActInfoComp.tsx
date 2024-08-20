@@ -6,7 +6,7 @@ import ActiveInfoSheet from "react-native-raw-bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
 
 interface GroupInfoProps {
-  id: number | undefined;
+  id: string | undefined;
   groupInfo: any | undefined;
   setValue: Function;
 }

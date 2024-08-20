@@ -94,7 +94,7 @@ export default function Search({ navigation }: any) {
       <View
         style={{
           flex: 1,
-          backgroundColor: isDark ? "#1e272e" : "#ffffff",
+          backgroundColor: "#ffffff",
         }}
       >
         {loading ? (

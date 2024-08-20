@@ -9,7 +9,7 @@ import DissmissKeyboard from "../../components/DismissKeyboard";
 
 const ADD_BOARD_MUTATION = gql`
   mutation createBoard(
-    $id: Int
+    $id: String
     $title: String
     $discription: String
     $sortation: String

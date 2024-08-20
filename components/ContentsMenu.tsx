@@ -15,7 +15,7 @@ type PhotoCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_FEED_MUTATION = gql`
-  mutation deletePhoto($id: Int!) {
+  mutation deletePhoto($id: String!) {
     deletePhoto(id: $id) {
       ok
       error
@@ -24,7 +24,7 @@ const DELETE_FEED_MUTATION = gql`
 `;
 
 const DELETE_NOTICE_MUTATION = gql`
-  mutation deleteNotice($id: Int!) {
+  mutation deleteNotice($id: String!) {
     deleteNotice(id: $id) {
       ok
       error
@@ -243,11 +243,7 @@ export default function ContentsMenu({
           toggleModal();
         }}
       >
-        <Ionicons
-          name="ellipsis-horizontal"
-          size={16}
-          color={isDark ? "white" : "black"}
-        />
+        <Ionicons name="ellipsis-horizontal" size={16} color={"black"} />
       </FeedMenu>
       <Modal
         isVisible={open}

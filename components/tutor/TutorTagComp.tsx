@@ -6,7 +6,7 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import useTag from "../../hooks/useGroupTag";
 
 interface GroupTagProps {
-  id: number | undefined;
+  id: string | undefined;
   groupTag: any | undefined;
   setValue: Function;
 }

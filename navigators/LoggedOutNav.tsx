@@ -17,9 +17,9 @@ export default function LoggedOutNav() {
         headerBackTitleVisible: false,
         headerTitle: () => false,
         headerTransparent: true,
-        headerTintColor: isDark ? "#ffffff" : "#1e272e",
+        headerTintColor: "#1e272e",
         headerStyle: {
-          backgroundColor: isDark ? "#ffffff" : "#1e272e",
+          backgroundColor: "#1e272e",
         },
       }}
     >

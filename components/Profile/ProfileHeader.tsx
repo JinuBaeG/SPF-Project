@@ -3,7 +3,7 @@ import { useColorScheme } from "react-native";
 import styled from "styled-components/native";
 
 const TOGGLE_BLOCK_MUTATION = gql`
-  mutation blockUser($id: Int!) {
+  mutation blockUser($id: String!) {
     blockUser(id: $id) {
       ok
       error
@@ -159,7 +159,7 @@ export default function ProfileHeader({
       },
     });
   };
-  console.log(profileData?.isMe);
+
   return (
     <GroupHeaderContainer>
       <GroupHeaderWrap>
@@ -167,9 +167,7 @@ export default function ProfileHeader({
           resizeMode="cover"
           source={
             profileData?.avatar === null || profileData?.avatar === undefined
-              ? isDark
-                ? require(`../../assets/emptyAvatar_white.png`)
-                : require(`../../assets/emptyAvatar.png`)
+              ? require(`../../assets/emptyAvatar.png`)
               : { uri: profileData?.avatar }
           }
         />

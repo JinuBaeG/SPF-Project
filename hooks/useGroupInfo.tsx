@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { GROUPINFO_FRAGMENT_NATIVE } from "../fragments";
 
 const SEE_GROUPINFO_QUERY = gql`
-  query seeGroupInfo($id: Int!) {
+  query seeGroupInfo($id: String!) {
     seeGroupInfo(id: $id) {
       ...GroupInfoFragmentNative
     }
@@ -10,7 +10,7 @@ const SEE_GROUPINFO_QUERY = gql`
   ${GROUPINFO_FRAGMENT_NATIVE}
 `;
 
-export default function useGroupInfo(id: number) {
+export default function useGroupInfo(id: string) {
   const { data: groupInfoList } = useQuery(SEE_GROUPINFO_QUERY, {
     variables: {
       id,

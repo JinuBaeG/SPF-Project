@@ -15,7 +15,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ContentsMenu from "../../components/ContentsMenu";
 
 const SEE_NOTICE_QUERY = gql`
-  query seeNotice($id: Int) {
+  query seeNotice($id: String) {
     seeNotice(id: $id) {
       ...NoticeFragmentNative
     }
@@ -24,7 +24,7 @@ const SEE_NOTICE_QUERY = gql`
 `;
 
 const NOTICE_COMMENTS_QUERY = gql`
-  query seeNoticeComments($id: Int!, $offset: Int) {
+  query seeNoticeComments($id: String!, $offset: Int) {
     seeNoticeComments(id: $id, offset: $offset) {
       ...NoticeCommentFragmentNative
     }
@@ -33,7 +33,7 @@ const NOTICE_COMMENTS_QUERY = gql`
 `;
 
 const NOTICE_TOGGLE_LIKE_MUTATION = gql`
-  mutation noticeToggleLike($id: Int!) {
+  mutation noticeToggleLike($id: String!) {
     noticeToggleLike(id: $id) {
       ok
       error
@@ -239,9 +239,7 @@ export default function NoticeDetail({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 noticeData?.seeNotice?.user.avatar === null
-                  ? isDark
-                    ? require(`../../assets/emptyAvatar_white.png`)
-                    : require(`../../assets/emptyAvatar.png`)
+                  ? require(`../../assets/emptyAvatar.png`)
                   : { uri: noticeData?.seeNotice?.user.avatar }
               }
             />
@@ -270,7 +268,7 @@ export default function NoticeDetail({ navigation, route }: any) {
             <Action>
               <Ionicons
                 name="chatbubble-outline"
-                color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+                color={"rgba(136, 136, 136, 0.5)"}
                 style={{ marginBottom: 2 }}
                 size={16}
               />

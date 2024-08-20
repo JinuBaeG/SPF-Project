@@ -16,7 +16,7 @@ import ProfileInfo from "./ProfileInfo";
 import ProfileHeader from "../../components/Profile/ProfileHeader";
 
 const USER_INFO_QUERY = gql`
-  query seeProfile($id: Int!) {
+  query seeProfile($id: String!) {
     seeProfile(id: $id) {
       ...UserFragmentNative
       photos {
@@ -82,9 +82,9 @@ export default function Profile({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: isDark ? "#1e272e" : "#ffffff",
+              backgroundColor: "#ffffff",
             },
-            tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
+            tabBarActiveTintColor: "#1e272e",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },

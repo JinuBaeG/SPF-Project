@@ -14,7 +14,7 @@ import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
 const CREATE_RECOMMENT_MUTATION = gql`
-  mutation createReComment($commentId: Int!, $payload: String!) {
+  mutation createReComment($commentId: String!, $payload: String!) {
     createReComment(commentId: $commentId, payload: $payload) {
       ok
       error
@@ -145,11 +145,7 @@ export default function ReComment({ id, reCommentCount, refresh }: any) {
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload"))
-                ? "rgba(136, 136, 136, 0.4)"
-                : isDark
-                ? "white"
-                : "black"
+              !Boolean(watch("payload")) ? "rgba(136, 136, 136, 0.4)" : "black"
             }
             size={20}
           />

@@ -13,7 +13,7 @@ type BoardCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const SEE_BANNER_QUERY = gql`
-  query seeBanner($id: Int) {
+  query seeBanner($id: String) {
     seeBanner(id: $id) {
       title
       discription

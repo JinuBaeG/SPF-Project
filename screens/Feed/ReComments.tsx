@@ -25,12 +25,12 @@ import Modal from "react-native-modal";
 import { isLoggedInVar } from "../../apollo";
 
 interface ICommentCompProps {
-  id: number;
+  id: string;
   comment: {
-    id: number;
+    id: string;
   };
   user: {
-    id: number;
+    id: string;
     username: string;
     avatar: string;
   };
@@ -45,7 +45,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const SEE_COMMENT_QUERY = gql`
-  query seeComment($id: Int!) {
+  query seeComment($id: String!) {
     seeComment(id: $id) {
       ...CommentFragmentNative
     }
@@ -54,7 +54,7 @@ const SEE_COMMENT_QUERY = gql`
 `;
 
 const SEE_RECOMMENTS_QUERY = gql`
-  query seeReComments($id: Int!, $offset: Int) {
+  query seeReComments($id: String!, $offset: Int) {
     seeReComments(id: $id, offset: $offset) {
       ...ReCommentFragmentNative
     }
@@ -63,7 +63,7 @@ const SEE_RECOMMENTS_QUERY = gql`
 `;
 
 const DELETE_COMMENT_MUTATION = gql`
-  mutation deleteComment($id: Int!) {
+  mutation deleteComment($id: String!) {
     deleteComment(id: $id) {
       ok
       error
@@ -72,7 +72,7 @@ const DELETE_COMMENT_MUTATION = gql`
 `;
 
 const TOGGLE_BLOCK_MUTATION = gql`
-  mutation blockUser($id: Int!) {
+  mutation blockUser($id: String!) {
     blockUser(id: $id) {
       ok
       error
@@ -337,9 +337,7 @@ export default function ReComments({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 commentData?.seeComment?.user.avatar === null
-                  ? isDark
-                    ? require(`../../assets/emptyAvatar_white.png`)
-                    : require(`../../assets/emptyAvatar.png`)
+                  ? require(`../../assets/emptyAvatar.png`)
                   : { uri: commentData?.seeComment?.user.avatar }
               }
             />
@@ -357,11 +355,7 @@ export default function ReComments({ navigation, route }: any) {
                 toggleModal();
               }}
             >
-              <Ionicons
-                name="ellipsis-horizontal"
-                size={16}
-                color={isDark ? "white" : "black"}
-              />
+              <Ionicons name="ellipsis-horizontal" size={16} color={"black"} />
             </FeedMenu>
             <Modal
               isVisible={open}
@@ -439,7 +433,7 @@ export default function ReComments({ navigation, route }: any) {
           <Action>
             <Ionicons
               name="chatbubble-outline"
-              color={isDark ? "#ffffff" : "rgba(136, 136, 136, 0.5)"}
+              color={"rgba(136, 136, 136, 0.5)"}
               style={{ marginBottom: 2 }}
               size={16}
             />

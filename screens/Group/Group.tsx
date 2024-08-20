@@ -159,7 +159,7 @@ export default function Group({ navigation }: any) {
     data: myGroupData,
     loading: myGroupLoading,
     refetch: myGroupRefetch,
-    fetchMore: myGroyoFetchMore,
+    fetchMore: myGroupFetchMore,
   } = useQuery(MYGROUP_QUERY, {
     variables: {
       offset: 0,
@@ -221,31 +221,31 @@ export default function Group({ navigation }: any) {
         <MyGroupHeader>
           <MyGroupTitle>My그룹</MyGroupTitle>
         </MyGroupHeader>
-        {myGroupData?.seeMyGroup?.length > 0 ? (
-          <FlatList
-            horizontal
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-              return myGroyoFetchMore({
-                variables: {
-                  offset: myGroupData?.seeMyGroup?.length,
-                  sportsEvent,
-                },
-              });
-            }}
-            onRefresh={myGroupRefresh}
-            refreshing={myGroupRefreshing}
-            keyExtractor={(item) => item.id + ""}
-            data={myGroupData?.seeMyGroup}
-            renderItem={renderMyGroupList}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1, alignSelf: "center" }}
-          />
-        ) : (
-          <EmptyContainer>
-            <EmptyText>동호회나 PT그룹에서 함께 즐겨보세요!</EmptyText>
-          </EmptyContainer>
-        )}
+
+        <FlatList
+          horizontal
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            return myGroupFetchMore({
+              variables: {
+                offset: myGroupData?.seeMyGroup?.length,
+                sportsEvent,
+              },
+            });
+          }}
+          onRefresh={myGroupRefresh}
+          refreshing={myGroupRefreshing}
+          keyExtractor={(item) => item.id + ""}
+          data={myGroupData?.seeMyGroup}
+          renderItem={renderMyGroupList}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1, alignSelf: "center" }}
+          ListEmptyComponent={
+            <EmptyContainer>
+              <EmptyText>동호회나 PT그룹에서 함께 즐겨보세요!</EmptyText>
+            </EmptyContainer>
+          }
+        />
       </MyGroupWrap>
       <FilterSmallContainer>
         <FilterSmallTitle>우리동네 그룹</FilterSmallTitle>
@@ -276,65 +276,64 @@ export default function Group({ navigation }: any) {
           </CreateGroupSmallBtn>
         </FilterBtnContainer>
       </FilterSmallContainer>
-      {groupData?.seeGroups?.length > 0 ? (
-        <FlatList
-          style={{
-            flex: 1,
-          }}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            return groupFetchMore({
-              variables: {
-                offset: groupData?.seeGroups?.length,
-                sportsEvent,
-              },
-            });
-          }}
-          onRefresh={refresh}
-          refreshing={refreshing}
-          keyExtractor={(item) => item.id + ""}
-          data={groupData?.seeGroups}
-          renderItem={renderGroupList}
-        />
-      ) : (
-        <>
-          <EmptyContainer>
-            <EmptyBtn
-              onPress={() => {
-                refresh();
-              }}
-            >
-              <EmptyText>새로고침</EmptyText>
-            </EmptyBtn>
-            <EmptyText>우리 지역에 아직 그룹이 없네요!</EmptyText>
-            <EmptyText>그룹을 만들어 사람들을 초대해보세요!</EmptyText>
-            <CreateGroupBtn
-              onPress={() => {
-                if (isLoggedIn) {
-                  navigation.navigate("AddGroup", {
-                    sidoName: undefined,
-                    gusiName: undefined,
-                    dongEubMyunName: undefined,
-                    riName: undefined,
-                    roadName: undefined,
-                    buildingNumber: undefined,
-                    address: undefined,
-                    addrRoad: undefined,
-                    activeArea: undefined,
-                    areaLatitude: undefined,
-                    areaLongitude: undefined,
-                    zipcode: undefined,
-                  });
-                } else {
-                  navigation.navigate("LoggedOutNav");
-                }
-              }}
-            >
-              <CreateGroupText>그룹만들기</CreateGroupText>
-            </CreateGroupBtn>
-          </EmptyContainer>
-        </>
-      )}
+      <FlatList
+        style={{
+          flex: 1,
+        }}
+        onEndReachedThreshold={0}
+        onEndReached={() =>
+          groupFetchMore({
+            variables: {
+              offset: groupData?.seeGroups?.length,
+              sportsEvent,
+            },
+          })
+        }
+        onRefresh={refresh}
+        refreshing={refreshing}
+        keyExtractor={(item) => item.id + ""}
+        data={groupData?.seeGroups}
+        renderItem={renderGroupList}
+        ListEmptyComponent={
+          <>
+            <EmptyContainer>
+              <EmptyBtn
+                onPress={() => {
+                  refresh();
+                }}
+              >
+                <EmptyText>새로고침</EmptyText>
+              </EmptyBtn>
+              <EmptyText>우리 지역에 아직 그룹이 없네요!</EmptyText>
+              <EmptyText>그룹을 만들어 사람들을 초대해보세요!</EmptyText>
+              <CreateGroupBtn
+                onPress={() => {
+                  if (isLoggedIn) {
+                    navigation.navigate("AddGroup", {
+                      sidoName: undefined,
+                      gusiName: undefined,
+                      dongEubMyunName: undefined,
+                      riName: undefined,
+                      roadName: undefined,
+                      buildingNumber: undefined,
+                      address: undefined,
+                      addrRoad: undefined,
+                      activeArea: undefined,
+                      areaLatitude: undefined,
+                      areaLongitude: undefined,
+                      zipcode: undefined,
+                    });
+                  } else {
+                    navigation.navigate("LoggedOutNav");
+                  }
+                }}
+              >
+                <CreateGroupText>그룹만들기</CreateGroupText>
+              </CreateGroupBtn>
+            </EmptyContainer>
+          </>
+        }
+      />
     </ScreenLayout>
   );
 }

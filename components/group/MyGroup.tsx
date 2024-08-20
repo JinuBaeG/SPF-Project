@@ -65,8 +65,6 @@ export default function MyGroup({ id, name, groupImage }: any) {
           source={
             groupImage !== null
               ? { uri: groupImage.imagePath }
-              : isDark
-              ? require("../../assets/emptyGroup_white.png")
               : require("../../assets/emptyGroup.png")
           }
         />

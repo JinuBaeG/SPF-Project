@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.funnyground.playinus.reactnative">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.brandus.cheyookmaeul">
   <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
   <uses-permission android:name="android.permission.CAMERA"/>
   <uses-permission android:name="android.permission.INTERNET"/>
@@ -14,7 +14,7 @@
       <data android:scheme="https"/>
     </intent>
   </queries>
-  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true">
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:allowBackup="true" android:theme="@style/AppTheme" android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="46.0.0"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
@@ -30,7 +30,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.funnyground.playinus.reactnative"/>
+        <data android:scheme="com.brandus.cheyookmaeul"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>
@@ -44,7 +44,7 @@
 
           <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
           <data android:host="oauth"
-              android:scheme="kakaoc04ec021f301f3eed44735b3c4c130e6" />
+              android:scheme="kakao1179aea28d7a5ff760c2d0e5377d7b70" />
       </intent-filter>
     </activity>
   </application>

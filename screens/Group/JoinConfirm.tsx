@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
 
 const JOIN_GROUP_QUERY = gql`
-  query seeJoin($groupId: Int!) {
+  query seeJoin($groupId: String!) {
     seeJoin(groupId: $groupId) {
       id
       user {
@@ -24,9 +24,9 @@ const JOIN_GROUP_QUERY = gql`
 
 const JOIN_DENIED_MUTATION = gql`
   mutation joinDenied(
-    $id: Int!
-    $userId: Int!
-    $groupId: Int!
+    $id: String!
+    $userId: String!
+    $groupId: String!
     $username: String
   ) {
     joinDenied(
@@ -148,9 +148,7 @@ export default function JoinConfirm({ navigation, route }: any) {
             resizeMode="cover"
             source={
               join.user.avatar === null
-                ? isDark
-                  ? require(`../../assets/emptyAvatar_white.png`)
-                  : require(`../../assets/emptyAvatar.png`)
+                ? require(`../../assets/emptyAvatar.png`)
                 : { uri: join.user.avatar }
             }
           />

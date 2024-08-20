@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:126129061327:android:ed0085faec8075280d66ba",
+        "mobilesdk_app_id": "1:126129061327:android:0e40387bff527f6e0d66ba",
         "android_client_info": {
-          "package_name": "com.funnyground.playinus.reactnative"
+          "package_name": "com.brandus.cheyookmaeul"
         }
       },
       "oauth_client": [
         {
-          "client_id": "126129061327-udmf1sjmknh83h0ghss5in1asr4nadpp.apps.googleusercontent.com",
+          "client_id": "126129061327-ps5tt6dvilhlb1q78h4bvh4nmhac0btt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.funnyground.playinus.reactnative",
+            "package_name": "com.brandus.cheyookmaeul",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "126129061327-2hmgnikf1mkifv3s9ad3fgfmn4ag3a92.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.funnyground.playinus.reactnative"
+                "bundle_id": "com.brandus.cheyookmaeul"
               }
             }
           ]

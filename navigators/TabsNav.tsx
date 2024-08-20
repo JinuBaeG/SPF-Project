@@ -12,9 +12,10 @@ interface ITabsNavProps {
 
 const Tabs = createBottomTabNavigator();
 
-export default function TabsNav() {
+export default function TabsNav({ route }: any) {
   const { data } = useMe();
   const isDark = useColorScheme() === "dark";
+
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -22,10 +23,10 @@ export default function TabsNav() {
         headerShown: false,
         headerTransparent: true,
         tabBarStyle: {
-          backgroundColor: isDark ? "#000000" : "#ffffff",
+          backgroundColor: "#ffffff",
           borderTopColor: "rgba(255,255,255,0.5)",
         },
-        tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
+        tabBarActiveTintColor: "#1e272e",
       }}
     >
       <Tabs.Screen
@@ -35,6 +36,7 @@ export default function TabsNav() {
             <TabIcon iconName={"home"} color={color} focused={focused} />
           ),
           tabBarLabelStyle: { fontSize: 12 },
+          unmountOnBlur: true,
         }}
       >
         {() => <StackNavFactroy screenName="Home" />}
@@ -50,7 +52,7 @@ export default function TabsNav() {
       >
         {() => <StackNavFactroy screenName="Feed" />}
       </Tabs.Screen>
-
+      {/*
       <Tabs.Screen
         name="그룹"
         options={{
@@ -63,16 +65,18 @@ export default function TabsNav() {
         {() => <StackNavFactroy screenName="Group" />}
       </Tabs.Screen>
       <Tabs.Screen
-        name="시설/튜터"
+        name="시설튜터"
         options={{
+          title: "시설/튜터",
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"calendar"} color={color} focused={focused} />
           ),
           tabBarLabelStyle: { fontSize: 12 },
         }}
       >
-        {() => <StackNavFactroy screenName="Tutor" />}
+        {() => <StackNavFactroy screenName="TutorFacility" />}
       </Tabs.Screen>
+       */}
       <Tabs.Screen
         name="MyProfile"
         options={{
@@ -92,6 +96,7 @@ export default function TabsNav() {
             ) : (
               <TabIcon iconName={"person"} color={color} focused={focused} />
             ),
+          unmountOnBlur: true,
         }}
       >
         {() => <StackNavFactroy screenName="MyProfile" />}

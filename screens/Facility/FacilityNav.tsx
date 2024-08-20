@@ -12,7 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 import FacilityHeader from "../../components/facility/FacilityHeader";
 
 const FACILITY_INFO_QUERY = gql`
-  query seeFacility($id: Int!) {
+  query seeFacility($id: String!) {
     seeFacility(id: $id) {
       ...FacilityFragmentNative
     }
@@ -70,9 +70,9 @@ export default function FacilityNav({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: isDark ? "#1e272e" : "#ffffff",
+              backgroundColor: "#ffffff",
             },
-            tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
+            tabBarActiveTintColor: "#1e272e",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },
