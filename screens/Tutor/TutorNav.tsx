@@ -12,7 +12,7 @@ import TutorHeader from "../../components/tutor/TutorHeader";
 import { useIsFocused } from "@react-navigation/native";
 
 const TUTOR_INFO_QUERY = gql`
-  query seeTutor($id: String!) {
+  query seeTutor($id: Int!) {
     seeTutor(id: $id) {
       ...TutorFragmentNative
     }
@@ -69,9 +69,9 @@ export default function TutorNav({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: "#ffffff",
+              backgroundColor: isDark ? "#1e272e" : "#ffffff",
             },
-            tabBarActiveTintColor: "#1e272e",
+            tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },

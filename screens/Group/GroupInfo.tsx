@@ -61,16 +61,6 @@ const Username = styled.Text`
   font-weight: 600;
 `;
 
-const GroupTagName = styled.Text`
-  color: ${(props) => props.theme.textColor};
-  font-size: 12px;
-  font-weight: 300;
-  border: 1px solid #ccc;
-  padding: 4px;
-  border-radius: 4px;
-  margin-right: 4px;
-`;
-
 export default function GroupInfo({ navigation, route }: any) {
   const data = route.params.data;
   const goToProfile = ({ username, id }: any) => {
@@ -102,9 +92,7 @@ export default function GroupInfo({ navigation, route }: any) {
         </InfoWrap>
         <InfoWrap>
           <InfoLabel>태그</InfoLabel>
-          {data?.groupTag.map((item: any) => {
-            return <GroupTagName key={item.id}>{item.name}</GroupTagName>;
-          })}
+          <InfoText>없음</InfoText>
         </InfoWrap>
       </InfoContainer>
       <InfoContainer>
@@ -135,7 +123,9 @@ export default function GroupInfo({ navigation, route }: any) {
               <Avatar
                 source={
                   user.avatar === null
-                    ? require(`../../assets/emptyAvatar.png`)
+                    ? isDark
+                      ? require(`../../assets/emptyAvatar_white.png`)
+                      : require(`../../assets/emptyAvatar.png`)
                     : { uri: user.avatar }
                 }
               />

@@ -15,10 +15,10 @@ export default function UploadNav() {
     <Tab.Navigator
       tabBarPosition="bottom"
       screenOptions={{
-        tabBarStyle: { backgroundColor: "#ffffff" },
-        tabBarActiveTintColor: "#1e272e",
+        tabBarStyle: { backgroundColor: isDark ? "#1e272e" : "#ffffff" },
+        tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
         tabBarIndicatorStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: isDark ? "#1e272e" : "#ffffff",
           top: 0,
         },
       }}
@@ -27,13 +27,13 @@ export default function UploadNav() {
         {() => (
           <Stack.Navigator
             screenOptions={{
-              headerTintColor: "#1e272e",
+              headerTintColor: isDark ? "#ffffff" : "#1e272e",
               headerBackTitleVisible: false,
               headerBackImage: ({ tintColor }) => (
                 <Ionicons color={tintColor} name="close" size={28} />
               ),
               headerStyle: {
-                backgroundColor: "#ffffff",
+                backgroundColor: isDark ? "#1e272e" : "#ffffff",
                 shadowOpacity: 0.3,
               },
             }}

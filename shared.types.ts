@@ -1,29 +1,27 @@
-import { IMPData } from "iamport-react-native";
-
 export type RootStackParamList = {
   Tabs: any | undefined;
   Feed: { screenName: string };
   Search: { keyword: string };
   Notifications: undefined;
   Me: undefined;
-  Profile: { username: string; id: string };
+  Profile: { username: string; id: number };
   Photo: undefined;
-  Likes: { photoid: string };
-  Comments: { id: string };
+  Likes: { photoId: number };
+  Comments: { id: number };
   ReComments: any | undefined;
   Rooms: undefined;
-  Room: { id: string; talkingTo: string };
-  PhotoDetail: { id: string };
+  Room: { id: number; talkingTo: string };
+  PhotoDetail: { id: number };
   Upload: { screenName: string };
   SharedWriteButton: { screenName: string };
   AddFeed: { screenName: string };
-  Group: any | undefined;
+  Group: { screenName: string };
   AddGroup: { screenName: string };
-  Tutor: any | undefined;
+  Tutor: { screenName: string };
   AddTutor: { screenName: string };
   RequestAddTutor: { screenName: string };
   TutorGroup: any | undefined;
-  Facility: any | undefined;
+  Facility: { screenName: string };
   AddFacility: { screenName: string };
   GroupDetail: any | undefined;
   FacilityDetail: any | undefined;
@@ -52,26 +50,7 @@ export type RootStackParamList = {
   Report: any | undefined;
   MyReport: any | undefined;
   TabHome: any | undefined;
-  SportsSelectSearch: any | undefined;
-  Common: any | undefined;
-  Home: undefined;
-  Certification: CertificationParams | undefined;
-  CertificationTest: undefined;
-  CertificationResult: any;
-  Payment: PaymentParams | undefined;
-  PaymentTest: undefined;
-  PaymentResult: any;
 };
-
-export interface CertificationParams {
-  params: IMPData.CertificationData;
-  tierCode?: string;
-}
-
-export interface PaymentParams {
-  params: IMPData.PaymentData;
-  tierCode?: string;
-}
 
 export const SHOW_OPTION = [
   { id: 0, name: "전체공개", isChecked: true },

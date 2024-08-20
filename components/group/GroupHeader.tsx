@@ -2,15 +2,10 @@ import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  useColorScheme,
-} from "react-native";
+import { ActivityIndicator, Platform, useColorScheme } from "react-native";
 
 const JOIN_GROUP_MUTATION = gql`
-  mutation joinGroup($id: String!) {
+  mutation joinGroup($id: Int!) {
     joinGroup(id: $id) {
       ok
       error
@@ -19,7 +14,7 @@ const JOIN_GROUP_MUTATION = gql`
 `;
 
 const WITHDRAW_GROUP_MUTATION = gql`
-  mutation withdrawGroup($id: String!) {
+  mutation withdrawGroup($id: Int!) {
     withdrawGroup(id: $id) {
       ok
       error
@@ -45,7 +40,7 @@ const GroupHeaderImage = styled.Image`
   width: 80px;
   height: 80px;
   border-radius: 40px;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   position: absolute;
   top: 80px;
   background-color: ${(props) => props.theme.mainBgColor};
@@ -146,21 +141,6 @@ const GroupHeaderEditButtonText = styled.Text`
   color: ${(props) => props.theme.greenActColor};
 `;
 
-const GroupTag = styled.View`
-  flex-direction: row;
-  padding: 4px;
-`;
-
-const GroupTagName = styled.Text`
-  color: ${(props) => props.theme.textColor};
-  font-size: 12px;
-  font-weight: 300;
-  border: 1px solid #ccc;
-  padding: 4px;
-  border-radius: 4px;
-  margin-right: 4px;
-`;
-
 export default function GroupHeader({ navigation, refresh, groupData }: any) {
   const updateJoinGroup = (cache: any, result: any) => {
     const {
@@ -220,7 +200,7 @@ export default function GroupHeader({ navigation, refresh, groupData }: any) {
           source={
             groupData.groupImage !== null
               ? { uri: groupData.groupImage.imagePath }
-              : require("../../assets/emptyGroup.png")
+              : {}
           }
         />
       </GroupHeaderWrap>
@@ -243,11 +223,7 @@ export default function GroupHeader({ navigation, refresh, groupData }: any) {
           </GroupHeaderInfoTitleWrap>
           <GroupHeaderActiveArea>{groupData.activeArea}</GroupHeaderActiveArea>
           <GroupHeaderDisc>{groupData.discription}</GroupHeaderDisc>
-          <GroupHeaderTagWrap>
-            {groupData.groupTag.map((item: any) => {
-              return <GroupTagName key={item.id}>{item.name}</GroupTagName>;
-            })}
-          </GroupHeaderTagWrap>
+          <GroupHeaderTagWrap></GroupHeaderTagWrap>
         </GroupHeaderInfoWrap>
         {loading ? (
           <GroupHeaderButton>
@@ -276,11 +252,11 @@ export default function GroupHeader({ navigation, refresh, groupData }: any) {
           <GroupHeaderButton onPress={handleSubmit(onValid)}>
             <GroupHeaderButtonText>가입취소</GroupHeaderButtonText>
           </GroupHeaderButton>
-        ) : groupData.userCount < groupData.maxMember ? (
+        ) : (
           <GroupHeaderButton onPress={handleSubmit(onValid)}>
             <GroupHeaderButtonText>가입하기</GroupHeaderButtonText>
           </GroupHeaderButton>
-        ) : null}
+        )}
       </GroupHeaderInfoContainer>
     </GroupHeaderContainer>
   );

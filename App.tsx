@@ -1,5 +1,4 @@
-import { Alert, Linking } from "react-native";
-import VersionCheck from "react-native-version-check";
+import AppLoading from "expo-app-loading";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
@@ -21,8 +20,6 @@ import { AsyncStorageWrapper, CachePersistor } from "apollo3-cache-persist";
 import { ThemeProvider } from "styled-components/native";
 import { darkTheme, lightTheme } from "./styles";
 import * as Location from "expo-location";
-import { NativeBaseProvider } from "native-base";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 interface ILocation {
   latitude: number;
@@ -33,24 +30,6 @@ const STYLES = ["default", "dark-content", "light-content"] as const;
 const TRANSITIONS = ["fade", "slide", "none"] as const;
 
 export default function App() {
-  /*
-  VersionCheck.needUpdate().then(async (res) => {
-    if (res.isNeeded) {
-      Alert.alert(
-        "새로운 버젼이 업데이트 되었습니다.",
-        "스토어로 이동합니다.",
-        [
-          {
-            text: "업데이트",
-            onPress: () => {
-              Linking.openURL(res.storeUrl); // open store if update is needed.
-            },
-          },
-        ]
-      );
-    }
-  });
-  */
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -59,7 +38,7 @@ export default function App() {
   const [location, setLocation] = useState<ILocation | undefined>();
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
   const [ready, setReady] = useState(false);
-  /*
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -83,7 +62,7 @@ export default function App() {
       setReady(true);
     })();
   }, []);
-*/
+
   const preloadAssets = async () => {
     const fontsToLoad = [Ionicons.font];
     const fontPromises = fontsToLoad.map((font: any) => Font.loadAsync(font));
@@ -116,23 +95,20 @@ export default function App() {
   }, []);
 
   return (
-    <NativeBaseProvider>
-      <SafeAreaProvider>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={lightTheme}>
-            <NavigationContainer>
-              <StatusBar
-                animated={true}
-                backgroundColor="#01aa73"
-                barStyle={isDark ? "dark-content" : "default"}
-                showHideTransition={"fade"}
-                hidden={false}
-              />
-              <LoggedInNav />
-            </NavigationContainer>
-          </ThemeProvider>
-        </ApolloProvider>
-      </SafeAreaProvider>
-    </NativeBaseProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <NavigationContainer>
+          <SafeAreaView />
+          <StatusBar
+            animated={true}
+            backgroundColor="#01aa73"
+            barStyle={isDark ? "dark-content" : "default"}
+            showHideTransition={"fade"}
+            hidden={false}
+          />
+          <LoggedInNav />
+        </NavigationContainer>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 }

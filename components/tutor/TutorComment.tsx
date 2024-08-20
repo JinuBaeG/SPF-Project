@@ -6,7 +6,7 @@ import useTutor from "../../hooks/useTutor";
 import useUser from "../../hooks/useUser";
 
 const TOGGLE_OK_MUTATION = gql`
-  mutation toggleOk($id: String!) {
+  mutation toggleOk($id: Int!) {
     toggleOk(id: $id) {
       ok
       error

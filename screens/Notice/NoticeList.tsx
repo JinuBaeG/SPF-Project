@@ -9,7 +9,7 @@ import NoticeComp from "../../components/notice/NoticeComp";
 import { useIsFocused } from "@react-navigation/native";
 
 const SEE_NOTICES_QUERY = gql`
-  query seeNotices($id: String, $sortation: String, $offset: Int) {
+  query seeNotices($id: Int, $sortation: String, $offset: Int) {
     seeNotices(id: $id, sortation: $sortation, offset: $offset) {
       ...NoticeFragmentNative
     }

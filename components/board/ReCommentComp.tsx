@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import EditReComment from "../boardComments/EditReComment";
 
 interface ICommentCompProps {
-  id: string;
+  id: number;
   boardComment: {
-    id: string;
+    id: number;
   };
   user: {
-    id: string;
+    id: number;
     username: string;
     avatar: string;
   };
@@ -31,7 +31,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_BOARD_RECOMMENT_MUTATION = gql`
-  mutation deleteBoardReComment($id: String!) {
+  mutation deleteBoardReComment($id: Int!) {
     deleteBoardReComment(id: $id) {
       ok
       error
@@ -206,7 +206,9 @@ export default function ReCommentComp({
             resizeMode="cover"
             source={
               user.avatar === null
-                ? require(`../../assets/emptyAvatar.png`)
+                ? isDark
+                  ? require(`../../assets/emptyAvatar_white.png`)
+                  : require(`../../assets/emptyAvatar.png`)
                 : { uri: user.avatar }
             }
           />

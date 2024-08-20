@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "체육마을",
-    "slug": "체육마을",
+    "name": "playinus",
+    "slug": "playinus",
     "platforms": ["ios", "android"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,7 @@
     "ios": {
       "supportsTablet": true,
       "userInterfaceStyle": "automatic",
-      "bundleIdentifier": "com.brandus.cheyookmaeul",
+      "bundleIdentifier": "com.funnyground.playinus.reactnative",
       "buildNumber": "1.0.0",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos.",
@@ -28,7 +28,7 @@
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
-      "package": "com.brandus.cheyookmaeul",
+      "package": "com.funnyground.playinus.reactnative",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -49,8 +49,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "$(PRODUCT_NAME)에서 사진첩 열람 권한을 요청합니다.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME)에서 사진첩 저장 권한을 요청합니다.",
+          "photosPermission": "$(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
       ],

@@ -9,7 +9,7 @@ import DissmissKeyboard from "../../components/DismissKeyboard";
 import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
 
 const UPLOAD_INQUIRY_MUTATION = gql`
-  mutation addInquiry($tutorId: String, $title: String, $discription: String) {
+  mutation addInquiry($tutorId: Int, $title: String, $discription: String) {
     addInquiry(tutorId: $tutorId, title: $title, discription: $discription) {
       ...TutorInquiryFragmentNative
     }

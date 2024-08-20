@@ -31,11 +31,11 @@ interface toggleLike {
 }
 
 interface toggleLikeVariables {
-  id: string;
+  id: number;
 }
 
 const NOTICE_TOGGLE_LIKE_MUTATION = gql`
-  mutation noticeToggleLike($id: String!) {
+  mutation noticeToggleLike($id: Int!) {
     noticeToggleLike(id: $id) {
       ok
       error

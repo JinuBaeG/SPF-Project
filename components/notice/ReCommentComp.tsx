@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import EditReComment from "../noticeComments/EditReComment";
 
 interface ICommentCompProps {
-  id: string;
+  id: number;
   noticeComment: {
-    id: string;
+    id: number;
   };
   user: {
-    id: string;
+    id: number;
     username: string;
     avatar: string;
   };
@@ -31,7 +31,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const DELETE_NOTICE_RECOMMENT_MUTATION = gql`
-  mutation deleteNoticeReComment($id: String!) {
+  mutation deleteNoticeReComment($id: Int!) {
     deleteNoticeReComment(id: $id) {
       ok
       error

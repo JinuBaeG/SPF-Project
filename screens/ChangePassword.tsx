@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const FIND_ACCOUNT_FROM_PHONENUMBER = gql`
-  query findAccountFromEmail($email: String) {
-    findAccountFromEmail(email: $email) {
+  query findAccountFromPhoneNumber($phoneNumber: String) {
+    findAccountFromPhoneNumber(phoneNumber: $phoneNumber) {
       ...UserFragmentNative
       googleConnect
       kakaoConnect
@@ -19,7 +19,7 @@ const FIND_ACCOUNT_FROM_PHONENUMBER = gql`
 `;
 
 const CHNAGE_PASSWORD_MUTATION = gql`
-  mutation changePassword($id: String!, $password: String!) {
+  mutation changePassword($id: Int!, $password: String!) {
     changePassword(id: $id, password: $password) {
       ok
       error
@@ -56,7 +56,7 @@ const PasswordInputContainer = styled.View`
   margin-top: 8px;
 `;
 
-const PasswordInput = styled.TextInput`
+const PasswordInput = styled.TextInput<{ isDark: Boolean }>`
   padding: 8px;
   border-radius: 8px;
   background-color: ${(props) => props.theme.whiteColor};
@@ -73,11 +73,11 @@ const PasswordChangeBtn = styled.TouchableOpacity<{ pwComplete: Boolean }>`
 `;
 
 export default function ChangePassword({ navigation, route }: any) {
-  const email = route.params.email;
+  const phoneNumber = route.params.phoneNumber;
   const isDark = useColorScheme() === "dark";
   const { data } = useQuery(FIND_ACCOUNT_FROM_PHONENUMBER, {
     variables: {
-      email,
+      phoneNumber,
     },
   });
 
@@ -125,7 +125,7 @@ export default function ChangePassword({ navigation, route }: any) {
   const onValid = ({ id, password }: any) => {
     changePasswordMutation({
       variables: {
-        id,
+        id: parseInt(id),
         password,
       },
     });
@@ -147,13 +147,13 @@ export default function ChangePassword({ navigation, route }: any) {
   }, [register]);
 
   useEffect(() => {
-    setValue("id", data?.findAccountFromEmail?.id);
+    setValue("id", data?.findAccountFromPhoneNumber?.id);
   }, [data]);
 
   return (
     <Container>
       <UserContainer>
-        <UserName>{data?.findAccountFromEmail?.username}</UserName>
+        <UserName>{data?.findAccountFromPhoneNumber?.username}</UserName>
         <DefaultText>님 안녕하세요!</DefaultText>
       </UserContainer>
       <DefaultText>아래에 변경하실 비밀번호를 입력해주세요!</DefaultText>
@@ -161,15 +161,17 @@ export default function ChangePassword({ navigation, route }: any) {
         <PasswordInput
           secureTextEntry={true}
           placeholder="비밀번호"
-          placeholderTextColor={"#888888"}
+          placeholderTextColor={isDark ? "rgba(0, 0, 0, 0.8)" : "#888888"}
           returnKeyType="done"
+          isDark={isDark}
           onChangeText={(text: string) => setPassword(text)}
         />
         <PasswordInput
           secureTextEntry={true}
           placeholder="비밀번호 확인"
-          placeholderTextColor={"#888888"}
+          placeholderTextColor={isDark ? "rgba(0, 0, 0, 0.8)" : "#888888"}
           returnKeyType="done"
+          isDark={isDark}
           onChangeText={(text: string) => setCheckPassword(text)}
         />
         <PasswordChangeBtn

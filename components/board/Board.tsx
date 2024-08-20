@@ -11,8 +11,18 @@ import useMe from "../../hooks/useMe";
 import { Alert, Dimensions } from "react-native";
 
 const SEE_BOARDS_QUERY = gql`
-  query seeBoards($id: String, $sortation: String, $offset: Int) {
-    seeBoards(id: $id, sortation: $sortation, offset: $offset) {
+  query seeBoards(
+    $id: Int
+    $sortation: String
+    $offset: Int
+    $blockUsers: [BlockUsers]
+  ) {
+    seeBoards(
+      id: $id
+      sortation: $sortation
+      offset: $offset
+      blockUsers: $blockUsers
+    ) {
       ...BoardFragmentNative
     }
   }

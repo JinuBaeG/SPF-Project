@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components/native";
 
 const EDIT_NOTICE_COMMENT_MUTATION = gql`
-  mutation editNoticeComment($id: String!, $payload: String!) {
+  mutation editNoticeComment($id: Int!, $payload: String!) {
     editNoticeComment(id: $id, payload: $payload) {
       ok
       error

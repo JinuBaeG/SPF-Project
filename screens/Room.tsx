@@ -1,6 +1,6 @@
 import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import ScreenLayout from "../components/ScreenLayout";
 import styled from "styled-components/native";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { cache } from "../apollo";
 
 const ROOM_UPDATES = gql`
-  subscription roomUpdates($id: String!) {
+  subscription roomUpdates($id: Int!) {
     roomUpdates(id: $id) {
       id
       payload

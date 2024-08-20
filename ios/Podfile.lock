@@ -122,8 +122,6 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (2.3.0)
-  - iamport-react-native (2.0.5):
-    - React-Core
   - kakao-login (5.2.6):
     - KakaoSDKAuth (= 2.11.1)
     - KakaoSDKCommon (= 2.11.1)
@@ -372,10 +370,6 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-slider (4.2.3):
     - React-Core
-  - react-native-version-check (3.4.7):
-    - React-Core
-  - react-native-webview (12.4.0):
-    - React-Core
   - React-perflogger (0.69.6)
   - React-RCTActionSheet (0.69.6):
     - React-Core/RCTActionSheetHeaders (= 0.69.6)
@@ -457,7 +451,7 @@ PODS:
     - RNFBApp
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.9.0):
+  - RNGestureHandler (2.10.1):
     - React-Core
   - RNGoogleSignin (8.2.2):
     - GoogleSignIn (~> 6.2)
@@ -529,7 +523,6 @@ DEPENDENCIES:
   - FirebaseCore
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleUtilities
-  - iamport-react-native (from `../node_modules/iamport-react-native`)
   - "kakao-login (from `../node_modules/@react-native-seoul/kakao-login`)"
   - naveridlogin-sdk-ios
   - NMapsMap (= 3.10.1)
@@ -555,8 +548,6 @@ DEPENDENCIES:
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
-  - react-native-version-check (from `../node_modules/react-native-version-check`)
-  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -655,8 +646,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  iamport-react-native:
-    :path: "../node_modules/iamport-react-native"
   kakao-login:
     :path: "../node_modules/@react-native-seoul/kakao-login"
   RCT-Folly:
@@ -701,10 +690,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
-  react-native-version-check:
-    :path: "../node_modules/react-native-version-check"
-  react-native-webview:
-    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -795,7 +780,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 9aa0ad5a7bc171f8bae016300bfcfa3fb8425749
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
-  iamport-react-native: 6722e47e9e44f3ec62f41fd22272b0b58abcf5b7
   kakao-login: 2fbe3c549915276a44f7777036ee316e720f4738
   KakaoSDKAuth: bb2dfa7be30daa8403c9cfc8001aa6fde7a5b779
   KakaoSDKCommon: 555e1bb46595b842ded01cf7888cc17bbae4e113
@@ -824,8 +808,6 @@ SPEC CHECKSUMS:
   react-native-restart: 8af4579c94638f38bd9074ec477ebf087de87dc5
   react-native-safe-area-context: 2f4cee1dc8828f67fcc33cc865a9093dfedab446
   react-native-slider: 21b31fef108120e11a0f0bc023c2e72a5cdabb83
-  react-native-version-check: e067839655745e0de4f088c5dc921c52051d658a
-  react-native-webview: ef5b71dcb9fe9ca6ceb67268d57ecfebe13a7232
   React-perflogger: 1fb1ad5333b43a5137afd7608695f7a42c5efd27
   React-RCTActionSheet: a435bd67689433575a1e5d7614b021d2c17f0726
   React-RCTAnimation: d097c5ed2d00735958508617555abd85183b94e2
@@ -844,7 +826,7 @@ SPEC CHECKSUMS:
   RNFBApp: 0d8bf86673bbad0524d1ceac3944d71ccf48a0e4
   RNFBAuth: a8f774e0dd28c1b0f4c3ab8a52333276b34fd3a4
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
+  RNGestureHandler: 42ec7c28dd02d540ed6c9159c57a98ff016492dc
   RNGoogleSignin: 78e473696c7f0f7d6f579f8d96286f963903ca01
   RNNaverLogin: 01ca478665ea024e4ddaa02be38396845fcac0b6
   RNReanimated: c6f8f70e96dd6ca21b65aef9b3e4efe4965db905
@@ -854,6 +836,6 @@ SPEC CHECKSUMS:
   TLPhotoPicker: f486e8499e1c3f464d0e886697635e25a72a52b8
   Yoga: 75bf4b0131cfb46a659cd0c13309b79a6fcff66d
 
-PODFILE CHECKSUM: 3d3b36b0be51b67e52d70164974e994ec3dcce3f
+PODFILE CHECKSUM: b5d487ec388a624bd7b42f37a3098306c60a9f82
 
 COCOAPODS: 1.12.0

@@ -14,7 +14,7 @@ import { cache } from "../../apollo";
 import { useIsFocused } from "@react-navigation/native";
 
 const CREATE_NOTICE_COMMENT_MUTATION = gql`
-  mutation createNoticeComment($noticeId: String!, $payload: String!) {
+  mutation createNoticeComment($noticeId: Int!, $payload: String!) {
     createNoticeComment(noticeId: $noticeId, payload: $payload) {
       ok
       error
@@ -157,7 +157,11 @@ export default function NoticeComments({
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload")) ? "rgba(136, 136, 136, 0.4)" : "black"
+              !Boolean(watch("payload"))
+                ? "rgba(136, 136, 136, 0.4)"
+                : isDark
+                ? "white"
+                : "black"
             }
             size={20}
           />

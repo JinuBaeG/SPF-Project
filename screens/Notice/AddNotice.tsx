@@ -10,7 +10,7 @@ import { TUTOR_INQUIRY_FRAGMENT_NATIVE } from "../../fragments";
 
 const ADD_NOTICE_MUTATION = gql`
   mutation createNotice(
-    $id: String
+    $id: Int
     $title: String
     $discription: String
     $sortation: String

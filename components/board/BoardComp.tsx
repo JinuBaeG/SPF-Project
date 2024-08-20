@@ -35,7 +35,7 @@ interface toggleLikeVariables {
 }
 
 const BOARD_TOGGLE_LIKE_MUTATION = gql`
-  mutation boardToggleLike($id: String!) {
+  mutation boardToggleLike($id: Int!) {
     boardToggleLike(id: $id) {
       ok
       error

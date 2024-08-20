@@ -12,10 +12,10 @@ export default function MessagesNav() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerTintColor: "#1e272e",
+        headerTintColor: isDark ? "#ffffff" : "#1e272e",
         headerBackTitleVisible: false,
         headerStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: isDark ? "#1e272e" : "#ffffff",
         },
       }}
     >

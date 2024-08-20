@@ -11,7 +11,7 @@ import {
 } from "../../fragments";
 
 const SEE_REPORT_DETAIL_QUERY = gql`
-  query seeReportDetail($id: String) {
+  query seeReportDetail($id: Int) {
     seeReportDetail(id: $id) {
       id
       photo {

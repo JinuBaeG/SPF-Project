@@ -20,7 +20,7 @@ import {
 import { seeFeed_seeFeed_comments } from "../../__generated__/seeFeed";
 
 const CREATE_COMMENT_MUTATION = gql`
-  mutation createComment($photoId: String!, $payload: String!) {
+  mutation createComment($photoId: Int!, $payload: String!) {
     createComment(photoId: $photoId, payload: $payload) {
       ok
       error
@@ -161,7 +161,11 @@ export default function Comments({ id, commentCount, refresh }: any) {
           <Ionicons
             name="send"
             color={
-              !Boolean(watch("payload")) ? "rgba(136, 136, 136, 0.4)" : "black"
+              !Boolean(watch("payload"))
+                ? "rgba(136, 136, 136, 0.4)"
+                : isDark
+                ? "white"
+                : "black"
             }
             size={20}
           />

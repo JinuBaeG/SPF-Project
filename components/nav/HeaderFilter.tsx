@@ -45,7 +45,11 @@ export default function HeaderFilter({ navigation }: any) {
       </TouchableOpacity>
       {route.name !== "TabHome" ? (
         <>
-          <Ionicons name="chevron-forward" color={"black"} size={20} />
+          <Ionicons
+            name="chevron-forward"
+            color={isDark ? "white" : "black"}
+            size={20}
+          />
 
           <TouchableOpacity
             onPress={() =>

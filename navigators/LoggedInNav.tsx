@@ -36,13 +36,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "알림",
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         component={Notifications}
@@ -61,13 +61,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "피드추가",
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         component={AddFeed}
@@ -81,12 +81,12 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         getComponent={() => require("../screens/Profile/Profile").default}
@@ -100,13 +100,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "그룹 만들기",
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         component={AddGroup}
@@ -121,13 +121,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "가입 신청 확인",
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         component={JoinConfirm}
@@ -141,13 +141,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "그룹 정보 수정",
-          headerTintColor: "#000000",
+          headerTintColor: isDark ? "#ffffff" : "#000000",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#000000" : "#ffffff",
           },
         }}
         component={EditGroup}
@@ -161,13 +161,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "활동 지역 설정",
-          headerTintColor: "#1e272e",
+          headerTintColor: isDark ? "#ffffff" : "#1e272e",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#1e272e" : "#ffffff",
           },
         }}
         component={ActiveArea}
@@ -182,13 +182,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "튜터 신청하기",
-          headerTintColor: "#1e272e",
+          headerTintColor: isDark ? "#ffffff" : "#1e272e",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#1e272e" : "#ffffff",
           },
         }}
         initialParams={{
@@ -216,13 +216,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "시설 신청하기",
-          headerTintColor: "#1e272e",
+          headerTintColor: isDark ? "#ffffff" : "#1e272e",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#1e272e" : "#ffffff",
           },
         }}
         initialParams={{
@@ -250,12 +250,12 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
-          headerTintColor: "#1e272e",
+          headerTintColor: isDark ? "#ffffff" : "#1e272e",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#1e272e" : "#ffffff",
           },
         }}
         component={AddInquiry}
@@ -269,13 +269,13 @@ export default function LoggedInNav() {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           ),
           title: "로그인",
-          headerTintColor: "#1e272e",
+          headerTintColor: isDark ? "#ffffff" : "#1e272e",
           headerStyle: {
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#1e272e" : "#ffffff",
           },
         }}
         component={LoggedOutNav}

@@ -13,7 +13,7 @@ import ScreenLayoutSec from "../../components/ScreenLayoutSec";
 import DeleteUser from "./DeleteUser";
 
 const SEE_MYPROFILE_QUERY = gql`
-  query seeProfile($id: String!) {
+  query seeProfile($id: Int!) {
     seeProfile(id: $id) {
       ...UserFullFragmentNative
     }
@@ -23,7 +23,7 @@ const SEE_MYPROFILE_QUERY = gql`
 
 const EDIT_PROFILE_MUTATION = gql`
   mutation editProfile(
-    $id: String!
+    $id: Int!
     $username: String
     $avatar: Upload
     $gender: String
@@ -110,13 +110,13 @@ const Upload = styled.TouchableOpacity`
 
 export default function EditProfile({ navigation, route }: any) {
   // 그룹 등록 화면 기본 - 시작
-  const me = useMe();
+  const me: any = useMe();
 
   const { data: myProfileData, loading: profileLoading } = useQuery(
     SEE_MYPROFILE_QUERY,
     {
       variables: {
-        id: me.data.me.id,
+        id: parseInt(me.data.me.id),
       },
       fetchPolicy: "network-only",
     }
@@ -177,7 +177,7 @@ export default function EditProfile({ navigation, route }: any) {
   }, [register]);
 
   useEffect(() => {
-    setValue("id", myProfileData?.seeProfile?.id);
+    setValue("id", parseInt(myProfileData?.seeProfile?.id));
     setValue("username", myProfileData?.seeProfile?.username);
     setValue("email", myProfileData?.seeProfile?.email);
     setValue("avatar", myProfileData?.seeProfile?.avatar);

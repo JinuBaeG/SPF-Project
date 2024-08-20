@@ -162,7 +162,7 @@ export default function MyProfile({ navigation }: any) {
                 <MaterialCommunityIcons
                   name="cog-outline"
                   size={24}
-                  color={"#000000"}
+                  color={isDark ? "white" : "#000000"}
                 />
               </EditBtn>
             </EditWrap>
@@ -182,7 +182,9 @@ export default function MyProfile({ navigation }: any) {
             <ProfileImage
               source={
                 data?.me?.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: data?.me?.avatar }
               }
             />
@@ -238,11 +240,6 @@ export default function MyProfile({ navigation }: any) {
       <Wrapper>
         <BottomContainer>
           <ProfileMenu
-            title={"참가 대회 목록"}
-            navi={"ContestJoinList"}
-            params={{ userId: data?.me.id }}
-          />
-          <ProfileMenu
             title={"차단 목록 관리"}
             navi={"BlockUsers"}
             params={{ id: data?.me?.id }}
@@ -257,7 +254,6 @@ export default function MyProfile({ navigation }: any) {
           />
         </BottomContainer>
       </Wrapper>
-      {/*
       <Wrapper>
         <TitleContainer>
           <Title>튜터 관리</Title>
@@ -284,7 +280,7 @@ export default function MyProfile({ navigation }: any) {
           />
         </MainContainer>
       </Wrapper>
- */}
+
       <Wrapper>
         <TitleContainer>
           <Title>약관</Title>
@@ -292,9 +288,10 @@ export default function MyProfile({ navigation }: any) {
         <BoardLine />
         <BottomContainer>
           <ProfileMenu title={"이용약관"} navi={"UseTerms"} />
+
           <ProfileMenu title={"개인정보처리방침"} navi={"Privacy"} />
+
           <ProfileMenu title={"위치기반서비스 이용약관"} navi={"GPSTerms"} />
-          <ProfileMenu title={"사업자정보안내"} navi={"Business"} />
         </BottomContainer>
       </Wrapper>
     </ProfileContainer>

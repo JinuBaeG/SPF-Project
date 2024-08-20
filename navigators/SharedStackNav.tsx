@@ -30,7 +30,7 @@ import AdminFaq from "../screens/Profile/AdminFaq";
 import AdminFaqDetail from "../screens/Profile/AdminFaqDetail";
 import FindAccount from "../screens/FindAccount";
 import BannerDetail from "../screens/Banner/BannerDetail";
-import SportsFilter from "../screens/Common/SportsFilter";
+import SportsFilter from "../screens/SportsFilter";
 import FacilityNav from "../screens/Facility/FacilityNav";
 import CheckMyAddTutor from "../screens/Tutor/CheckMyAddTutor";
 import TutorRequestDetail from "../screens/Tutor/TutorRequestDetail";
@@ -45,28 +45,6 @@ import Privacy from "../screens/Config/Privacy";
 import UseTerms from "../screens/Config/UseTerms";
 import GPSTerms from "../screens/Config/GPSTerms";
 import BlockUsers from "../screens/Profile/BlockUsers";
-import SportsSelectSearch from "../screens/Common/SportsSelectSearch";
-import Tutor from "../screens/Tutor/Tutor";
-import Facility from "../screens/Facility/Facility";
-import ContestList from "../screens/Contest/ContestList";
-import ContestDetailNav from "../screens/Contest/ContestDetailNav";
-import ContestDetailInfo from "../screens/Contest/ContestDetailInfo";
-import ContestUserList from "../screens/Contest/ContestUserList";
-import ContestNoticeReport from "../screens/Contest/ContestNoticeReport";
-import ContestReport from "../screens/Contest/ContestReport";
-import ContestMatch from "../screens/Contest/ContestMatch";
-import ContestGroupMatch from "../screens/Contest/ContestGroupMatch";
-import ContestMatchDetail from "../screens/Contest/ContestMatchDetail";
-import ContestGroupMatchNav from "../screens/Contest/ContestGroupMatchNav";
-import ContestGroupTournament from "../screens/Contest/ContestGroupTournament";
-import ContestJoin from "../screens/Contest/ContestJoin";
-import ContestJoinCheck from "../screens/Contest/ContestJoinCheck";
-import ContestJoinList from "../screens/Contest/ContestJoinList";
-import PaymentTest from "../screens/Iamport/PaymentTest";
-import Payment from "../screens/Iamport/Payment";
-import PaymentResult from "../screens/Iamport/PaymentResult";
-import Business from "../screens/Config/Business";
-import ContestAward from "../screens/Contest/ContestAward";
 
 interface IStackNavFactoryProps {
   screenName: string;
@@ -74,7 +52,7 @@ interface IStackNavFactoryProps {
 
 const Stack = createStackNavigator();
 
-export default function StackNavFactroy({ screenName, route }: any) {
+export default function StackNavFactroy({ screenName }: IStackNavFactoryProps) {
   const isDark = useColorScheme() === "dark";
 
   return (
@@ -82,9 +60,9 @@ export default function StackNavFactroy({ screenName, route }: any) {
       screenOptions={{
         headerMode: "screen",
         headerBackTitleVisible: false,
-        headerTintColor: "#000000",
+        headerTintColor: isDark ? "#ffffff" : "#000000",
         headerStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: isDark ? "#000000" : "#ffffff",
           borderBottomColor: "rgba(255,255,255,0.5)",
         },
         headerBackImage: () => {
@@ -93,7 +71,7 @@ export default function StackNavFactroy({ screenName, route }: any) {
               name="chevron-back"
               size={24}
               style={{ marginLeft: 8 }}
-              color={"#000000"}
+              color={isDark ? "#ffffff" : "#000000"}
             />
           );
         },
@@ -108,7 +86,7 @@ export default function StackNavFactroy({ screenName, route }: any) {
       {screenName === "Group" ? (
         <Stack.Screen name={"TabGroup"} component={Group} />
       ) : null}
-      {screenName === "TutorFacility" ? (
+      {screenName === "Tutor" ? (
         <Stack.Screen name={"TabTutor"} component={TutorFacilityNav} />
       ) : null}
       {screenName === "MyProfile" ? (
@@ -159,40 +137,9 @@ export default function StackNavFactroy({ screenName, route }: any) {
       <Stack.Screen name="MyReport" component={MyReport} />
       <Stack.Screen name="MyReportDetail" component={MyReportDetail} />
       <Stack.Screen name="Privacy" component={Privacy} />
-      <Stack.Screen name="Business" component={Business} />
       <Stack.Screen name="UseTerms" component={UseTerms} />
       <Stack.Screen name="GPSTerms" component={GPSTerms} />
       <Stack.Screen name="BlockUsers" component={BlockUsers} />
-      <Stack.Screen name="SportsSelectSearch" component={SportsSelectSearch} />
-      <Stack.Screen name="Tutor" component={Tutor} />
-      <Stack.Screen name="Facility" component={Facility} />
-      <Stack.Screen name="ContestList" component={ContestList} />
-      <Stack.Screen name="ContestDetailNav" component={ContestDetailNav} />
-      <Stack.Screen name="ContestDetailInfo" component={ContestDetailInfo} />
-      <Stack.Screen name="ContestUserList" component={ContestUserList} />
-      <Stack.Screen name="ContestAward" component={ContestAward} />
-      <Stack.Screen
-        name="ContestNoticeReport"
-        component={ContestNoticeReport}
-      />
-      <Stack.Screen name="ContestMatch" component={ContestMatch} />
-      <Stack.Screen name="ContestReport" component={ContestReport} />
-      <Stack.Screen
-        name="ContestGroupMatchNav"
-        component={ContestGroupMatchNav}
-      />
-      <Stack.Screen name="ContestGroupMatch" component={ContestGroupMatch} />
-      <Stack.Screen name="ContestMatchDetail" component={ContestMatchDetail} />
-      <Stack.Screen
-        name="ContestGroupTournament"
-        component={ContestGroupTournament}
-      />
-      <Stack.Screen name="ContestJoin" component={ContestJoin} />
-      <Stack.Screen name="ContestJoinCheck" component={ContestJoinCheck} />
-      <Stack.Screen name="ContestJoinList" component={ContestJoinList} />
-      <Stack.Screen name="PaymentTest" component={PaymentTest} />
-      <Stack.Screen name="Payment" component={Payment} />
-      <Stack.Screen name="PaymentResult" component={PaymentResult} />
     </Stack.Navigator>
   );
 }

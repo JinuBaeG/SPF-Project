@@ -12,10 +12,9 @@ interface ITabsNavProps {
 
 const Tabs = createBottomTabNavigator();
 
-export default function TabsNav({ route }: any) {
+export default function TabsNav() {
   const { data } = useMe();
   const isDark = useColorScheme() === "dark";
-
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -23,10 +22,10 @@ export default function TabsNav({ route }: any) {
         headerShown: false,
         headerTransparent: true,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: isDark ? "#000000" : "#ffffff",
           borderTopColor: "rgba(255,255,255,0.5)",
         },
-        tabBarActiveTintColor: "#1e272e",
+        tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
       }}
     >
       <Tabs.Screen
@@ -36,7 +35,6 @@ export default function TabsNav({ route }: any) {
             <TabIcon iconName={"home"} color={color} focused={focused} />
           ),
           tabBarLabelStyle: { fontSize: 12 },
-          unmountOnBlur: true,
         }}
       >
         {() => <StackNavFactroy screenName="Home" />}
@@ -52,7 +50,7 @@ export default function TabsNav({ route }: any) {
       >
         {() => <StackNavFactroy screenName="Feed" />}
       </Tabs.Screen>
-      {/*
+
       <Tabs.Screen
         name="그룹"
         options={{
@@ -65,18 +63,16 @@ export default function TabsNav({ route }: any) {
         {() => <StackNavFactroy screenName="Group" />}
       </Tabs.Screen>
       <Tabs.Screen
-        name="시설튜터"
+        name="시설/튜터"
         options={{
-          title: "시설/튜터",
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"calendar"} color={color} focused={focused} />
           ),
           tabBarLabelStyle: { fontSize: 12 },
         }}
       >
-        {() => <StackNavFactroy screenName="TutorFacility" />}
+        {() => <StackNavFactroy screenName="Tutor" />}
       </Tabs.Screen>
-       */}
       <Tabs.Screen
         name="MyProfile"
         options={{
@@ -96,7 +92,6 @@ export default function TabsNav({ route }: any) {
             ) : (
               <TabIcon iconName={"person"} color={color} focused={focused} />
             ),
-          unmountOnBlur: true,
         }}
       >
         {() => <StackNavFactroy screenName="MyProfile" />}

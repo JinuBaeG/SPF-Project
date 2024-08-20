@@ -6,7 +6,7 @@ import ScreenLayout from "../../components/ScreenLayout";
 import { useWindowDimensions } from "react-native";
 
 const SEE_ADMIN_NOTICE_QUERY = gql`
-  query seeAdminNotice($id: String) {
+  query seeAdminNotice($id: Int) {
     seeAdminNotice(id: $id) {
       id
       title

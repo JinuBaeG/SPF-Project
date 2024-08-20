@@ -18,12 +18,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 
 interface ICommentCompProps {
-  id: string;
+  id: number;
   noticeComment: {
-    id: string;
+    id: number;
   };
   user: {
-    id: string;
+    id: number;
     username: string;
     avatar: string;
   };
@@ -38,7 +38,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const NOTICE_COMMENT_QUERY = gql`
-  query seeNoticeComment($id: String!) {
+  query seeNoticeComment($id: Int!) {
     seeNoticeComment(id: $id) {
       ...NoticeCommentFragmentNative
     }
@@ -47,7 +47,7 @@ const NOTICE_COMMENT_QUERY = gql`
 `;
 
 const SEE_NOTICE_RECOMMENTS_QUERY = gql`
-  query seeNoticeReComments($id: String!, $offset: Int) {
+  query seeNoticeReComments($id: Int!, $offset: Int) {
     seeNoticeReComments(id: $id, offset: $offset) {
       ...NoticeReCommentFragmentNative
     }
@@ -56,7 +56,7 @@ const SEE_NOTICE_RECOMMENTS_QUERY = gql`
 `;
 
 const DELETE_NOTICE_COMMENT_MUTATION = gql`
-  mutation deleteNoticeComment($id: String!) {
+  mutation deleteNoticeComment($id: Int!) {
     deleteNoticeComment(id: $id) {
       ok
       error
@@ -301,7 +301,9 @@ export default function NoticeReComments({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 commentData?.seeNoticeComment?.user.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: commentData?.seeNoticeComment?.user.avatar }
               }
             />

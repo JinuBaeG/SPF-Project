@@ -138,6 +138,8 @@ export default function FacilityHeader({
           source={
             facilityData.facilityImage?.imagePath !== undefined
               ? { uri: facilityData.facilityImage?.imagePath }
+              : isDark
+              ? require("../../assets/emptyAvatar_white.png")
               : require("../../assets/emptyAvatar.png")
           }
         />

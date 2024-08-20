@@ -17,7 +17,7 @@ import ScreenLayoutSec from "../../components/ScreenLayoutSec";
 
 const EDIT_GROUP_MUTATION = gql`
   mutation editGroup(
-    $id: String!
+    $id: Int!
     $name: String!
     $discription: String
     $sidoName: String

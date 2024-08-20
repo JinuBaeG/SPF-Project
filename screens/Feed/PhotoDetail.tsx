@@ -40,11 +40,11 @@ interface toggleLike {
 }
 
 interface toggleLikeVariables {
-  id: string;
+  id: number;
 }
 
 const FEED_DETAIL_QUERY = gql`
-  query seePhoto($id: String) {
+  query seePhoto($id: Int) {
     seePhoto(id: $id) {
       ...PhotoFragmentNative
       user {
@@ -65,7 +65,7 @@ const FEED_DETAIL_QUERY = gql`
 `;
 
 const PHOTO_COMMENTS_QUERY = gql`
-  query seePhotoComments($id: String!) {
+  query seePhotoComments($id: Int!) {
     seePhotoComments(id: $id) {
       id
       photo {
@@ -85,7 +85,7 @@ const PHOTO_COMMENTS_QUERY = gql`
 `;
 
 const TOGGLE_LIKE_MUTATION = gql`
-  mutation toggleLike($id: String!) {
+  mutation toggleLike($id: Int!) {
     toggleLike(id: $id) {
       ok
       error
@@ -288,7 +288,9 @@ export default function PhotoDetail({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 feedData?.seePhoto?.user.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: feedData?.seePhoto?.user.avatar }
               }
             />

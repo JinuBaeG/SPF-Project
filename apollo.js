@@ -14,7 +14,6 @@ import auth from "@react-native-firebase/auth";
 import { appleAuth } from "@invertase/react-native-apple-authentication";
 import { OPER_URL, LOCAL_URL } from "@env";
 import { Platform } from "react-native";
-import jwt_decode from "jwt-decode";
 
 const TOKEN = "token";
 
@@ -22,31 +21,19 @@ export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
 
 export const onAppleButtonPress = async () => {
-  try {
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-    });
+  const appleAuthRequestResponse = await appleAuth.performRequest({
+    requestedOperation: appleAuth.Operation.LOGIN,
+    requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+  });
 
-    const credentialState = await appleAuth.getCredentialStateForUser(
-      appleAuthRequestResponse.user
-    );
+  const credentialState = await appleAuth.getCredentialStateForUser(
+    appleAuthRequestResponse.user
+  );
 
-    if (credentialState === appleAuth.State.AUTHORIZED) {
-      const {
-        user: uid,
-        identityToken: token,
-        email,
-      } = appleAuthRequestResponse;
-      if (email === null) {
-        const decode = jwt_decode(token);
-        const email = decode.email;
-        return { uid, token, email };
-      }
-      return { uid, token, email };
-    }
-  } catch (e) {
-    console.log(appleAuthRequestResponse);
+  if (credentialState === appleAuth.State.AUTHORIZED) {
+    const { user: uid, identityToken: token } = appleAuthRequestResponse;
+
+    return { uid, token };
   }
 };
 
@@ -56,9 +43,9 @@ export const onPressGoogleBtn = async () => {
 
   const googleCredential = auth.GoogleAuthProvider.credential(token);
   const res = await auth().signInWithCredential(googleCredential);
-  const { email, uid, phoneNumber } = res.user;
+  const { email, uid } = res.user;
 
-  return { email, uid, phoneNumber, token };
+  return { email, uid, token };
 };
 
 export const signInWithKakao = async () => {
@@ -106,7 +93,7 @@ const uploadHttpLink = createUploadLink({
     process.env.NODE_ENV === "development"
       ? Platform.OS === "ios"
         ? `${LOCAL_URL}:4000/graphql`
-        : "http://10.44.100.117:4000/graphql"
+        : "http://10.44.100.43:4000/graphql"
       : `${OPER_URL}:4000/graphql`,
 });
 
@@ -115,7 +102,7 @@ const wsLink = new WebSocketLink({
     process.env.NODE_ENV === "development"
       ? Platform.OS === "ios"
         ? `${LOCAL_URL}:4000/graphql`
-        : "http://10.44.100.117:4000/graphql"
+        : "http://10.44.100.43:4000/graphql"
       : `${OPER_URL}:4000/graphql`,
   options: {
     connectionParams: () => ({
@@ -148,9 +135,6 @@ export const cache = new InMemoryCache({
       fields: {
         seeFeed: offsetLimitPagination(),
         seeBoardComments: offsetLimitPagination(),
-        seeGroups: offsetLimitPagination(),
-        seeTutors: offsetLimitPagination(),
-        seeFacilities: offsetLimitPagination(),
       },
     },
     User: {

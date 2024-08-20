@@ -174,12 +174,6 @@ export default function Facility({ navigation }: any) {
     }
   }, [curLocation]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: "우리동네 시설",
-    });
-  }, []);
-
   return (
     <ScreenLayout loading={facilityLoading}>
       {/*
@@ -228,44 +222,44 @@ export default function Facility({ navigation }: any) {
           </CreateGroupSmallBtn>
         </FilterBtnContainer>
       </FilterSmallContainer>
-
-      <FlatList
-        style={{
-          flex: 1,
-        }}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          return facilityFetchMore({
-            variables: {
-              offset: facilityData?.seeFacilities?.length,
-            },
-          });
-        }}
-        onRefresh={refresh}
-        refreshing={refreshing}
-        keyExtractor={(item) => item.id + ""}
-        data={facilityData?.seeFacilities}
-        renderItem={renderFacilityList}
-        ListEmptyComponent={
-          <>
-            <EmptyContainer>
-              <EmptyText>우리 지역에 아직 시설이 없네요!</EmptyText>
-              <EmptyText>시설 등록을 신청해보세요!</EmptyText>
-              <CreateGroupBtn
-                onPress={() => {
-                  if (isLoggedIn) {
-                    navigation.navigate("RequestAddFacility");
-                  } else {
-                    navigation.navigate("LoggedOutNav");
-                  }
-                }}
-              >
-                <CreateGroupText>시설 등록하기</CreateGroupText>
-              </CreateGroupBtn>
-            </EmptyContainer>
-          </>
-        }
-      />
+      {facilityData?.seeFacilities?.length > 0 ? (
+        <FlatList
+          style={{
+            flex: 1,
+          }}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            return facilityFetchMore({
+              variables: {
+                offset: facilityData?.seeFacilities?.length,
+              },
+            });
+          }}
+          onRefresh={refresh}
+          refreshing={refreshing}
+          keyExtractor={(item) => item.id + ""}
+          data={facilityData?.seeFacilities}
+          renderItem={renderFacilityList}
+        />
+      ) : (
+        <>
+          <EmptyContainer>
+            <EmptyText>우리 지역에 아직 시설이 없네요!</EmptyText>
+            <EmptyText>시설 등록을 신청해보세요!</EmptyText>
+            <CreateGroupBtn
+              onPress={() => {
+                if (isLoggedIn) {
+                  navigation.navigate("RequestAddFacility");
+                } else {
+                  navigation.navigate("LoggedOutNav");
+                }
+              }}
+            >
+              <CreateGroupText>시설 등록하기</CreateGroupText>
+            </CreateGroupBtn>
+          </EmptyContainer>
+        </>
+      )}
     </ScreenLayout>
   );
 }

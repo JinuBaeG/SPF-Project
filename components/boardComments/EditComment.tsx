@@ -5,7 +5,7 @@ import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 
 const EDIT_COMMENT_MUTATION = gql`
-  mutation editComment($id: String!, $payload: String!) {
+  mutation editComment($id: Int!, $payload: String!) {
     editComment(id: $id, payload: $payload) {
       ok
       error

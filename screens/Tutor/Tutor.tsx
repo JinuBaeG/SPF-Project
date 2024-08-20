@@ -155,14 +155,9 @@ export default function Tutor({ navigation }: any) {
     }
   }, [curLocation]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: "우리동네 튜터",
-    });
-  }, []);
-
   return (
     <ScreenLayout loading={tutorLoading}>
+      {/*
       <NaverMapView
         style={{ width: "100%", height: "100%", flex: 0.5 }}
         showsMyLocationButton={true}
@@ -183,7 +178,7 @@ export default function Tutor({ navigation }: any) {
           onClick={() => console.warn("onClick! circle")}
         />
       </NaverMapView>
-
+      */}
       <FilterSmallContainer>
         <FilterSmallTitle>우리동네 튜터</FilterSmallTitle>
         <FilterBtnContainer>
@@ -213,57 +208,57 @@ export default function Tutor({ navigation }: any) {
           </CreateGroupSmallBtn>
         </FilterBtnContainer>
       </FilterSmallContainer>
-
-      <FlatList
-        style={{
-          flex: 1,
-        }}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          return tutorFetchMore({
-            variables: {
-              offset: tutorData?.seeTutors?.length,
-            },
-          });
-        }}
-        onRefresh={refresh}
-        refreshing={refreshing}
-        keyExtractor={(item) => item.id + ""}
-        data={tutorData?.seeTutors}
-        renderItem={renderTutorList}
-        ListEmptyComponent={
-          <>
-            <EmptyContainer>
-              <EmptyText>우리 지역에 아직 튜터가 없네요!</EmptyText>
-              <EmptyText>튜터가 되어 사람들을 초대해보세요!</EmptyText>
-              <CreateGroupBtn
-                onPress={() => {
-                  if (isLoggedIn) {
-                    navigation.navigate("RequestAddTutor", {
-                      sidoName: undefined,
-                      gusiName: undefined,
-                      dongEubMyunName: undefined,
-                      riName: undefined,
-                      roadName: undefined,
-                      buildingNumber: undefined,
-                      address: undefined,
-                      addrRoad: undefined,
-                      activeArea: undefined,
-                      areaLatitude: undefined,
-                      areaLongitude: undefined,
-                      zipcode: undefined,
-                    });
-                  } else {
-                    navigation.navigate("LoggedOutNav");
-                  }
-                }}
-              >
-                <CreateGroupText>튜터 신청하기</CreateGroupText>
-              </CreateGroupBtn>
-            </EmptyContainer>
-          </>
-        }
-      />
+      {tutorData?.seeTutors?.length > 0 ? (
+        <FlatList
+          style={{
+            flex: 1,
+          }}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            return tutorFetchMore({
+              variables: {
+                offset: tutorData?.seeTutors?.length,
+              },
+            });
+          }}
+          onRefresh={refresh}
+          refreshing={refreshing}
+          keyExtractor={(item) => item.id + ""}
+          data={tutorData?.seeTutors}
+          renderItem={renderTutorList}
+        />
+      ) : (
+        <>
+          <EmptyContainer>
+            <EmptyText>우리 지역에 아직 튜터가 없네요!</EmptyText>
+            <EmptyText>튜터가 되어 사람들을 초대해보세요!</EmptyText>
+            <CreateGroupBtn
+              onPress={() => {
+                if (isLoggedIn) {
+                  navigation.navigate("RequestAddTutor", {
+                    sidoName: undefined,
+                    gusiName: undefined,
+                    dongEubMyunName: undefined,
+                    riName: undefined,
+                    roadName: undefined,
+                    buildingNumber: undefined,
+                    address: undefined,
+                    addrRoad: undefined,
+                    activeArea: undefined,
+                    areaLatitude: undefined,
+                    areaLongitude: undefined,
+                    zipcode: undefined,
+                  });
+                } else {
+                  navigation.navigate("LoggedOutNav");
+                }
+              }}
+            >
+              <CreateGroupText>튜터 신청하기</CreateGroupText>
+            </CreateGroupBtn>
+          </EmptyContainer>
+        </>
+      )}
     </ScreenLayout>
   );
 }

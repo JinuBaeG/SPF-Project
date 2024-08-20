@@ -17,11 +17,10 @@ import { LOCAL_URL, OPER_URL } from "@env";
 import Modal from "react-native-modal";
 import RenderHTML from "react-native-render-html";
 import { Ionicons } from "@expo/vector-icons";
-import { logUserIn } from "../apollo";
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount(
-    $phoneNumber: String
+    $phoneNumber: String!
     $username: String!
     $email: String!
     $password: String!
@@ -41,8 +40,6 @@ const CREATE_ACCOUNT_MUTATION = gql`
       usetermAccess: $usetermAccess
     ) {
       ok
-      token
-      interlock
       error
     }
   }
@@ -143,26 +140,25 @@ const AlertText = styled.Text`
 
 export default function CreateAccount({ navigation, route: { params } }: any) {
   // 회원가입 완료 후 처리
-  const onCompleted = async (data: any) => {
+  const onCompleted = (data: any) => {
     const {
-      createAccount: { ok, token, interlock, error },
+      createAccount: { ok, error },
     } = data;
     const { email, password } = getValues();
 
     if (ok) {
-      await logUserIn(token);
-      navigation.reset({ routes: [{ name: "Tabs" }] });
-    } else {
-      if (error) {
-        Alert.alert(error);
-      }
+      navigation.navigate("Login", { email, password });
+    }
+
+    if (error) {
+      alert(error);
     }
   };
 
   // 회원가입을 위한 기본 정보 입력 세팅
   const {
     register,
-    handleSubmit: handleSubmitAccount,
+    handleSubmit,
     setValue,
     getValues,
     watch,
@@ -191,11 +187,8 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
     const {
       checkPhone: { ok, error },
     } = data;
-
+    console.log(ok, error);
     if (ok) {
-      if (params.interlock === "apple" || params.interlock === "google") {
-        setValue("password", getValues("phoneNumber"));
-      }
       makeCertifedNumber();
       setCertified(!certified);
       setActiveCertified(true);
@@ -221,9 +214,8 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
   };
 
   // 회원가입 완료처리를 위한 호출
-  const onCreateAccount = (data: any) => {
+  const onValid = (data: any) => {
     toggleModal();
-
     if (!loading) {
       createAccountMutation({
         variables: {
@@ -235,15 +227,18 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
 
   // 회원가입 정보 폼 세팅
   useEffect(() => {
-    register("phoneNumber");
-    register("username");
-    register("email");
-    register("password");
+    register("phoneNumber", { required: true });
+    register("username", { required: true });
+    register("email", { required: true });
+    register("password", {
+      required: true,
+      maxLength: { value: 16, message: "비밀번호는 최소 2 ~ 16자리 입니다." },
+      minLength: { value: 2, message: "비밀번호는 최소 2 ~ 16자리 입니다." },
+    });
     register("interlock");
     register("uid");
     register("privacyAccess");
     register("usetermAccess");
-    setValue("email", params?.email);
     setValue("interlock", params?.interlock);
     setValue("uid", params?.uid);
   }, [register]);
@@ -381,9 +376,6 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
   };
 
   useEffect(() => {
-    if (params.interlock !== "일반") {
-      setValue("password", params.email);
-    }
     if (useTermsAccess && privacyTermsAccess) {
       setAllTermsAccess(true);
     } else {
@@ -407,81 +399,78 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
   return (
     <AuthLayout>
       <TextInput
-        value={watch("username")}
         placeholder="이름 또는 닉네임"
-        placeholderTextColor={"#888888"}
+        placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
         returnKeyType="next"
         lastOne={false}
+        isDark={isDark}
         onSubmitEditing={() => onFocusNext(emailRef)}
         onChangeText={(text: string) => setValue("username", text)}
       />
-      {errors?.username && <AlertText>{errors?.username?.message}</AlertText>}
       <TextInput
         value={watch("email")}
         ref={emailRef}
         placeholder="이메일"
-        placeholderTextColor={"#888888"}
+        placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
         keyboardType="email-address"
         returnKeyType="next"
         lastOne={false}
-        editable={params.interlock === "일반" ? true : false}
+        isDark={isDark}
         onSubmitEditing={() => onFocusNext(passwordRef)}
         onChangeText={(text: string) => setValue("email", text)}
         onBlur={() => checkEmailRegEx()}
       />
-      {params.interlock === "일반" ? (
-        <TextInput
-          value={watch("password")}
-          ref={passwordRef}
-          placeholder="비밀번호"
-          placeholderTextColor={"#888888"}
-          secureTextEntry
-          returnKeyType="next"
-          lastOne={false}
-          onSubmitEditing={() => onFocusNext(phoneNumberRef)}
-          onChangeText={(text: string) => setValue("password", text)}
-        />
-      ) : null}
+      <TextInput
+        ref={passwordRef}
+        placeholder="비밀번호"
+        placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
+        secureTextEntry
+        returnKeyType="next"
+        lastOne={false}
+        isDark={isDark}
+        onSubmitEditing={() => onFocusNext(phoneNumberRef)}
+        onChangeText={(text: string) => setValue("password", text)}
+      />
       {errors?.password && <AlertText>{errors?.password?.message}</AlertText>}
-      {params.interlock === "일반" ? (
-        <PhoneCheck>
-          <TextInput
-            value={watch("phoneNumber")}
-            ref={phoneNumberRef}
-            keyboardType="number-pad"
-            placeholder="휴대폰번호"
-            placeholderTextColor={"#888888"}
-            returnKeyType="join"
-            lastOne={false}
-            maxLength={11}
-            onChangeText={(text: string) => {
-              setValue("phoneNumber", text);
-              checkPhoneNumberLength();
-            }}
-            style={{ width: "62%" }}
-            editable={phoneNumberEditable}
-          />
-          <PhoneCheckBtn
-            onPress={() => {
-              checkJoinPhoneNumber(getValues("phoneNumber"));
-            }}
-            disabled={activeCertified}
-            certified={activeCertified}
-          >
-            <PhoneCheckText>휴대폰문자인증</PhoneCheckText>
-          </PhoneCheckBtn>
-        </PhoneCheck>
-      ) : null}
-
+      <PhoneCheck>
+        <TextInput
+          ref={phoneNumberRef}
+          keyboardType="number-pad"
+          placeholder="휴대폰번호"
+          placeholderTextColor={isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"}
+          returnKeyType="join"
+          lastOne={false}
+          isDark={isDark}
+          maxLength={11}
+          onChangeText={(text: string) => {
+            setValue("phoneNumber", text);
+            checkPhoneNumberLength();
+          }}
+          style={{ width: "62%" }}
+          editable={phoneNumberEditable}
+        />
+        <PhoneCheckBtn
+          onPress={() => {
+            checkJoinPhoneNumber(getValues("phoneNumber"));
+          }}
+          disabled={activeCertified}
+          certified={activeCertified}
+        >
+          <PhoneCheckText>휴대폰문자인증</PhoneCheckText>
+        </PhoneCheckBtn>
+      </PhoneCheck>
       {certified ? (
         <PhoneCheck>
           <TextInput
             ref={phoneNumberRef}
             keyboardType="number-pad"
             placeholder="인증번호입력"
-            placeholderTextColor={"#888888"}
+            placeholderTextColor={
+              isDark ? "rgba(255, 255, 255, 0.8)" : "#888888"
+            }
             returnKeyType="join"
             lastOne={false}
+            isDark={isDark}
             onChangeText={(text: string) => {
               setCertifiedNumber(text);
             }}
@@ -501,26 +490,18 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
           </PhoneCheckBtn>
         </PhoneCheck>
       ) : null}
-      {params.interlock === "일반" ? (
-        <AuthButton
-          onPress={() => emailExistCheck()}
-          text={"회원가입"}
-          loading={loading}
-          disabled={
-            !watch("phoneNumber") ||
-            !watch("username") ||
-            !watch("email") ||
-            !watch("password") ||
-            !certifiedComplete
-          }
-        />
-      ) : (
-        <AuthButton
-          onPress={() => emailExistCheck()}
-          text={"회원가입"}
-          loading={loading}
-        />
-      )}
+      <AuthButton
+        onPress={() => emailExistCheck()}
+        text={"회원가입"}
+        loading={loading}
+        disabled={
+          !watch("phoneNumber") ||
+          !watch("username") ||
+          !watch("email") ||
+          !watch("password") ||
+          !certifiedComplete
+        }
+      />
       <AccessContainer>
         <Modal
           isVisible={visibleModal}
@@ -529,7 +510,7 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
           onBackdropPress={() => setVisibleModal(!visibleModal)}
         >
           <AccessTextContainer>
-            <AccessTextTitle>체육마을 이용약관</AccessTextTitle>
+            <AccessTextTitle>플레이인어스 이용약관</AccessTextTitle>
             <AccessTextContents showsVerticalScrollIndicator={true}>
               <RenderHTML contentWidth={width} source={useTermsContents} />
             </AccessTextContents>
@@ -544,7 +525,7 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
                 size={16}
               />
               <AccessButtonText>
-                체육마을 이용약관 내용에 동의합니다.
+                플레이인어스 이용약관 내용에 동의합니다.
               </AccessButtonText>
             </AccessButton>
           </AccessTextContainer>
@@ -566,7 +547,7 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
                 color={"white"}
               />
               <AccessButtonText>
-                체육마을 개인정보처리방침 내용에 동의합니다.
+                플레이인어스 개인정보처리방침 내용에 동의합니다.
               </AccessButtonText>
             </AccessButton>
             <AccessButton
@@ -583,7 +564,7 @@ export default function CreateAccount({ navigation, route: { params } }: any) {
             </AccessButton>
           </AccessTextContainer>
           <AuthButton
-            onPress={handleSubmitAccount(onCreateAccount)}
+            onPress={handleSubmit(onValid)}
             text={"확인"}
             disabled={!watch("privacyAccess") || !watch("usetermAccess")}
           />

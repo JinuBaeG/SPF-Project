@@ -11,7 +11,11 @@ export default function ScreenLayoutSec({ loading, children }: any) {
   const isDark = useColorScheme() === "dark";
   return (
     <ScreenLayoutContiner>
-      {loading ? <ActivityIndicator color={"black"} /> : children}
+      {loading ? (
+        <ActivityIndicator color={isDark ? "white" : "black"} />
+      ) : (
+        children
+      )}
     </ScreenLayoutContiner>
   );
 }

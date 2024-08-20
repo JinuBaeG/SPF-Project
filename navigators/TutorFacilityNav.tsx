@@ -9,7 +9,6 @@ import Tutor from "../screens/Tutor/Tutor";
 import { useIsFocused } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeaderFilter from "../components/nav/HeaderFilter";
-import StackNavFactroy from "./SharedStackNav";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -20,7 +19,7 @@ const Container = styled.View`
   margin-top: 1px;
 `;
 
-export function TutorFacilityNav({ navigation, route }: any) {
+export function TutorFacilityNav({ navigation }: any) {
   const isDark = useColorScheme() === "dark";
 
   const MessageButton = () => {
@@ -46,31 +45,31 @@ export function TutorFacilityNav({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: "#ffffff",
+              backgroundColor: isDark ? "#1e272e" : "#ffffff",
             },
-            tabBarActiveTintColor: "#1e272e",
+            tabBarActiveTintColor: isDark ? "#ffffff" : "#1e272e",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },
           }}
         >
           <Tab.Screen
-            name="튜터"
+            name="Tutor"
             options={{
               title: "튜터",
               tabBarActiveTintColor: "#01aa73",
               tabBarInactiveTintColor: "rgba(136, 136, 136, 0.4)",
             }}
-            getComponent={() => require("../screens/Tutor/Tutor").default}
+            component={Tutor}
           />
           <Tab.Screen
-            name="시설"
+            name="Facility"
             options={{
               title: "시설",
               tabBarActiveTintColor: "#01aa73",
               tabBarInactiveTintColor: "rgba(136, 136, 136, 0.4)",
             }}
-            getComponent={() => require("../screens/Facility/Facility").default}
+            component={Facility}
           />
         </Tab.Navigator>
       </Container>

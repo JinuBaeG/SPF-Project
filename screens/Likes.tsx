@@ -10,7 +10,7 @@ interface ILikesProps {
     key: string;
     name: string;
     params: {
-      photoId: string;
+      photoId: number;
     };
     path: string;
   };
@@ -21,7 +21,7 @@ interface ILikesItemProps {
 }
 
 const LIKES_QUERY = gql`
-  query seePhotoLikes($id: String!) {
+  query seePhotoLikes($id: Int!) {
     seePhotoLikes(id: $id) {
       ...UserFragmentNative
     }

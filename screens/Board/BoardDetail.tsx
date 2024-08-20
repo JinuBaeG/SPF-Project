@@ -22,7 +22,7 @@ type BoardCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const SEE_BOARDS_QUERY = gql`
-  query seeBoard($id: String) {
+  query seeBoard($id: Int) {
     seeBoard(id: $id) {
       ...BoardFragmentNative
     }
@@ -31,7 +31,7 @@ const SEE_BOARDS_QUERY = gql`
 `;
 
 const BOARD_COMMENTS_QUERY = gql`
-  query seeBoardComments($id: String!, $offset: Int) {
+  query seeBoardComments($id: Int!, $offset: Int) {
     seeBoardComments(id: $id, offset: $offset) {
       ...BoardCommentFragmentNative
     }
@@ -40,7 +40,7 @@ const BOARD_COMMENTS_QUERY = gql`
 `;
 
 const BOARD_TOGGLE_LIKE_MUTATION = gql`
-  mutation boardToggleLike($id: String!) {
+  mutation boardToggleLike($id: Int!) {
     boardToggleLike(id: $id) {
       ok
       error
@@ -245,7 +245,9 @@ export default function BoardDetail({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 boardData?.seeBoard?.user.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: boardData?.seeBoard?.user.avatar }
               }
             />

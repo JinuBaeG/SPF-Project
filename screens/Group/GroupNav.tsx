@@ -11,7 +11,7 @@ import GroupHeader from "../../components/group/GroupHeader";
 import ScreenLayout from "../../components/ScreenLayout";
 
 const GROUP_INFO_QUERY = gql`
-  query seeGroup($id: String!) {
+  query seeGroup($id: Int!) {
     seeGroup(id: $id) {
       ...GroupFragmentNative
     }
@@ -69,9 +69,9 @@ export default function GroupNav({ navigation, route }: any) {
           tabBarPosition="top"
           screenOptions={{
             tabBarStyle: {
-              backgroundColor: "#ffffff",
+              backgroundColor: isDark ? "#000000" : "#ffffff",
             },
-            tabBarActiveTintColor: "#000000",
+            tabBarActiveTintColor: isDark ? "#ffffff" : "#000000",
             tabBarIndicatorStyle: {
               backgroundColor: "#01aa73",
             },
@@ -82,7 +82,7 @@ export default function GroupNav({ navigation, route }: any) {
             options={{
               title: "게시판",
               tabBarActiveTintColor: "#01aa73",
-              tabBarInactiveTintColor: "#000000",
+              tabBarInactiveTintColor: isDark ? "#ffffff" : "#000000",
             }}
             initialParams={{ data: data?.seeGroup }}
             component={GroupBoard}

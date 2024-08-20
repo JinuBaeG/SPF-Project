@@ -45,7 +45,11 @@ export default function AuthLayout({ children }: any) {
         >
           <Logo
             resizeMode="contain"
-            source={require("../../assets/logo.png")}
+            source={
+              isDark
+                ? require("../../assets/splash.png")
+                : require("../../assets/black_logo.png")
+            }
           />
           {children}
         </KeyboardAvoidingView>

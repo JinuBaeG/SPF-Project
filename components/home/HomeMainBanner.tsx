@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Image, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Swiper from "react-native-swiper";
 import styled from "styled-components/native";
 import { gql, useQuery } from "@apollo/client";
@@ -26,7 +26,6 @@ const SEE_BANNERS_QUERY = gql`
 const HomeMainBannerContainer = styled.View`
   background-color: ${(props) => props.theme.mainBgColor};
   border-radius: ${(props) => props.theme.size8};
-  margin-bottom: 50px;
 `;
 
 const BannerBtn = styled.TouchableOpacity``;
@@ -38,7 +37,7 @@ const Banner = styled.Image`
 export default function HomeMainBanner({ setMainBannerLoading }: any) {
   const navigation = useNavigation<BannerCompNavigationProps>();
   const { width, height } = useWindowDimensions();
-  const [imageHeight, setImageHeight] = useState(0);
+  const [imageHeight, setImageHeight] = useState(height / 5);
 
   const { data, loading } = useQuery(SEE_BANNERS_QUERY, {
     variables: {
@@ -46,11 +45,9 @@ export default function HomeMainBanner({ setMainBannerLoading }: any) {
       sortation: "main",
     },
   });
-
   useEffect(() => {
     setMainBannerLoading(loading);
   }, [loading]);
-
   return (
     <ScreenLayout loading={loading}>
       <HomeMainBannerContainer>
@@ -62,7 +59,6 @@ export default function HomeMainBanner({ setMainBannerLoading }: any) {
           autoplay={true}
           autoplayTimeout={3.5}
           containerStyle={{
-            width: "100%",
             height: imageHeight,
           }}
           dot={
@@ -101,9 +97,6 @@ export default function HomeMainBanner({ setMainBannerLoading }: any) {
         >
           {data?.seeMainBanners !== undefined && data?.seeMainBanners !== null
             ? data?.seeMainBanners?.map((item: any) => {
-                Image.getSize(item.bannerImagePath, (w, h) => {
-                  setImageHeight(h * (width / w));
-                });
                 return (
                   <BannerBtn
                     key={item.id}

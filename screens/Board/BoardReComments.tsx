@@ -18,12 +18,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 
 interface ICommentCompProps {
-  id: string;
+  id: number;
   boardComment: {
-    id: string;
+    id: number;
   };
   user: {
-    id: string;
+    id: number;
     username: string;
     avatar: string;
   };
@@ -38,7 +38,7 @@ type CommentCompNavigationProps = NativeStackNavigationProp<
 >;
 
 const BOARD_COMMENT_QUERY = gql`
-  query seeBoardComment($id: String!) {
+  query seeBoardComment($id: Int!) {
     seeBoardComment(id: $id) {
       ...BoardCommentFragmentNative
     }
@@ -47,7 +47,7 @@ const BOARD_COMMENT_QUERY = gql`
 `;
 
 const SEE_BOARD_RECOMMENTS_QUERY = gql`
-  query seeBoardReComments($id: String!, $offset: Int) {
+  query seeBoardReComments($id: Int!, $offset: Int) {
     seeBoardReComments(id: $id, offset: $offset) {
       ...BoardReCommentFragmentNative
     }
@@ -302,7 +302,9 @@ export default function BoardReComments({ navigation, route }: any) {
               resizeMode="cover"
               source={
                 commentData?.seeBoardComment?.user.avatar === null
-                  ? require(`../../assets/emptyAvatar.png`)
+                  ? isDark
+                    ? require(`../../assets/emptyAvatar_white.png`)
+                    : require(`../../assets/emptyAvatar.png`)
                   : { uri: commentData?.seeBoardComment?.user.avatar }
               }
             />
